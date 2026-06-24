@@ -182,7 +182,7 @@ export function mediaPerformancePlugin() {
             playsInline
             style={{ objectPosition: "center" }}
           >
-            <source src={\`${import.meta.env.BASE_URL}hero-desktop.mp4\`} type="video/mp4" />
+            <source src={\`\${import.meta.env.BASE_URL}hero-desktop.mp4\`} type="video/mp4" />
           </video>`,
         `          <video
             ref={heroVideoRef}
@@ -190,10 +190,10 @@ export function mediaPerformancePlugin() {
             muted
             playsInline
             preload="auto"
-            poster={\`${import.meta.env.BASE_URL}hero-sharp.webp\`}
+            poster={\`\${import.meta.env.BASE_URL}hero-sharp.webp\`}
             style={{ objectPosition: "center", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
           >
-            <source src={\`${import.meta.env.BASE_URL}hero-desktop.mp4\`} type="video/mp4" />
+            <source src={\`\${import.meta.env.BASE_URL}hero-desktop.mp4\`} type="video/mp4" />
           </video>`,
       );
 
@@ -206,7 +206,7 @@ export function mediaPerformancePlugin() {
             playsInline
             style={{ objectPosition: "center" }}
           >
-            <source src={\`${import.meta.env.BASE_URL}airport-desktop.mp4\`} type="video/mp4" />
+            <source src={\`\${import.meta.env.BASE_URL}airport-desktop.mp4\`} type="video/mp4" />
           </video>`,
         `          <video
             ref={ctaVideoRef}
@@ -217,7 +217,7 @@ export function mediaPerformancePlugin() {
             poster={ctaFramePath(1)}
             style={{ objectPosition: "center", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
           >
-            <source src={\`${import.meta.env.BASE_URL}airport-desktop.mp4\`} type="video/mp4" />
+            <source src={\`\${import.meta.env.BASE_URL}airport-desktop.mp4\`} type="video/mp4" />
           </video>`,
       );
 
