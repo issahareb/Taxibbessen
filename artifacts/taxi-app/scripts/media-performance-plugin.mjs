@@ -6,6 +6,14 @@ function removeBetween(source, startMarker, endMarker) {
   return source.slice(0, start) + source.slice(end);
 }
 
+function insertBeforeAfterMarker(source, marker, target, insertion) {
+  const markerIndex = source.indexOf(marker);
+  if (markerIndex < 0) return source;
+  const targetIndex = source.indexOf(target, markerIndex);
+  if (targetIndex < 0) return source;
+  return source.slice(0, targetIndex) + insertion + source.slice(targetIndex);
+}
+
 export function mediaPerformancePlugin() {
   return {
     name: "taxi-content-and-media-normalization",
@@ -24,19 +32,12 @@ export function mediaPerformancePlugin() {
 
       let output = code;
 
-      output = output
-        .replace('import { ReviewCarousel } from "@/components/ReviewCarousel";\n', "")
-        .replace('import brushStroke from "@assets/brush-stroke.png";\n', "");
+      output = output.replace('import brushStroke from "@assets/brush-stroke.png";\n', "");
 
       output = removeBetween(
         output,
         "        {/* ─── BEWERTUNGS-CTA ─── */}",
         "        {/* ─── STORY SECTION ─── */}",
-      );
-      output = removeBetween(
-        output,
-        "        {/* ─── REVIEWS ─── */}",
-        "        {/* ─── CTA / KONTAKT ─── */}",
       );
 
       output = output.replace(
@@ -51,7 +52,7 @@ export function mediaPerformancePlugin() {
       const contentReplacements = new Map([
         [
           "Taxi B&B GmbH ist seit 1992 für Pünktlichkeit und Zuverlässigkeit bekannt – mit 5-Sterne-Bewertungen und 30+ Jahren Erfahrung. Wir sind 24/7 für Sie da: 0201 707060.",
-          "Taxi B&B GmbH ist seit 1992 in Essen tätig und rund um die Uhr unter 0201 707060 erreichbar. Abholzeit und Fahrzeugverfügbarkeit werden bei der Anfrage bestätigt.",
+          "Taxi B&B GmbH ist in Essen tätig und rund um die Uhr unter 0201 707060 erreichbar. Abholzeit und Fahrzeugverfügbarkeit werden bei der Anfrage bestätigt.",
         ],
         [
           "Wir berechnen transparente Festpreise ohne böse Überraschungen. Die Strecke Essen–Flughafen Düsseldorf beträgt ca. 35–40 km. Rufen Sie uns für ein konkretes Angebot an: 0201 707060.",
@@ -98,6 +99,30 @@ export function mediaPerformancePlugin() {
           '{ src: "hauszuhaus.webp",        titleKey: "hero_service6_title", descKey: "hero_service6_desc", href: "/book" }',
         );
 
+      output = output
+        .replace(
+          "  const heroLayerRef = useRef<HTMLDivElement>(null);\n",
+          "  const heroLayerRef = useRef<HTMLDivElement>(null);\n  const heroVideoRef = useRef<HTMLVideoElement>(null);\n",
+        )
+        .replace(
+          "  const ctaLayerRef = useRef<HTMLDivElement>(null);\n",
+          "  const ctaLayerRef = useRef<HTMLDivElement>(null);\n  const ctaVideoRef = useRef<HTMLVideoElement>(null);\n",
+        );
+
+      output = output.replace(
+        `    const img = imgRef.current;
+    const heroLayer = heroLayerRef.current;
+    if (!img) return;
+    // Desktop uses the autoplay video — skip loading all 97 frames
+    if (!window.matchMedia('(max-width: 767px)').matches) return;`,
+        `    const img = imgRef.current;
+    const heroLayer = heroLayerRef.current;
+    const heroVideo = heroVideoRef.current;
+    if (!img || !heroLayer) return;
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (!isMobile && heroVideo) heroVideo.pause();`,
+      );
+
       output = output.replace(
         "const loadFrames = () => {\n      if (framesLoaded) return;",
         `const shouldReduceMedia =
@@ -105,7 +130,100 @@ export function mediaPerformancePlugin() {
       (navigator).connection?.saveData === true;
 
     const loadFrames = () => {
-      if (framesLoaded || shouldReduceMedia) return;`,
+      if (!isMobile || framesLoaded || shouldReduceMedia) return;`,
+      );
+
+      output = output.replace(
+        "      if (sharpOverlayRef.current) {",
+        `      if (!isMobile && heroVideo && heroVideo.readyState >= 2 && Number.isFinite(heroVideo.duration) && heroVideo.duration > 0) {
+        const nextTime = currentProgress * Math.max(heroVideo.duration - 0.05, 0);
+        if (Math.abs(heroVideo.currentTime - nextTime) > 0.025) heroVideo.currentTime = nextTime;
+      }
+      if (sharpOverlayRef.current) {`,
+      );
+
+      output = output.replace(
+        `    const img = ctaImgRef.current;
+    const layer = ctaLayerRef.current;
+    const sectionEl = ctaSectionRef.current;
+    if (!layer || !sectionEl) return;
+
+    // CTA frames are only shown on mobile (img has md:hidden); skip on desktop
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;`,
+        `    const img = ctaImgRef.current;
+    const layer = ctaLayerRef.current;
+    const sectionEl = ctaSectionRef.current;
+    const ctaVideo = ctaVideoRef.current;
+    if (!layer || !sectionEl) return;
+
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (!isMobile && ctaVideo) ctaVideo.pause();`,
+      );
+
+      output = insertBeforeAfterMarker(
+        output,
+        "      if (isMobile && img && frames.length > 0) {",
+        "      layer.style.opacity = String(currentOpacity);",
+        `      if (!isMobile && ctaVideo && ctaVideo.readyState >= 2 && Number.isFinite(ctaVideo.duration) && ctaVideo.duration > 0) {
+        const nextTime = currentProgress * Math.max(ctaVideo.duration - 0.05, 0);
+        if (Math.abs(ctaVideo.currentTime - nextTime) > 0.025) ctaVideo.currentTime = nextTime;
+      }
+`,
+      );
+
+      output = output.replaceAll("            lastFrame = idx;", "            lastFrame = ready;");
+
+      output = output.replace(
+        `          <video
+            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            style={{ objectPosition: "center" }}
+          >
+            <source src={\`${import.meta.env.BASE_URL}hero-desktop.mp4\`} type="video/mp4" />
+          </video>`,
+        `          <video
+            ref={heroVideoRef}
+            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+            muted
+            playsInline
+            preload="auto"
+            poster={\`${import.meta.env.BASE_URL}hero-sharp.webp\`}
+            style={{ objectPosition: "center", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
+          >
+            <source src={\`${import.meta.env.BASE_URL}hero-desktop.mp4\`} type="video/mp4" />
+          </video>`,
+      );
+
+      output = output.replace(
+        `          <video
+            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            style={{ objectPosition: "center" }}
+          >
+            <source src={\`${import.meta.env.BASE_URL}airport-desktop.mp4\`} type="video/mp4" />
+          </video>`,
+        `          <video
+            ref={ctaVideoRef}
+            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+            muted
+            playsInline
+            preload="auto"
+            poster={ctaFramePath(1)}
+            style={{ objectPosition: "center", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
+          >
+            <source src={\`${import.meta.env.BASE_URL}airport-desktop.mp4\`} type="video/mp4" />
+          </video>`,
+      );
+
+      output = output.replaceAll(
+        'style={{ height: "100lvh", zIndex: 1,',
+        'style={{ height: "100lvh", zIndex: 1, willChange: "opacity", transform: "translateZ(0)",',
       );
 
       output = output.replaceAll(
