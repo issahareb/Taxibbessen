@@ -1,0 +1,447 @@
+{
+  "communities": {
+    "0": [
+      "lib_utils",
+      "lib_utils_cn",
+      "ui_button",
+      "ui_button_button",
+      "ui_button_buttonprops",
+      "ui_button_buttonvariants",
+      "ui_dialog",
+      "ui_dialog_dialogcontent",
+      "ui_dialog_dialogdescription",
+      "ui_dialog_dialogfooter",
+      "ui_dialog_dialogheader",
+      "ui_dialog_dialogoverlay",
+      "ui_dialog_dialogtitle",
+      "ui_input",
+      "ui_label",
+      "ui_label_label",
+      "ui_label_labelvariants",
+      "ui_separator",
+      "ui_separator_separator",
+      "ui_sheet",
+      "ui_sheet_sheetcontent",
+      "ui_sheet_sheetcontentprops",
+      "ui_sheet_sheetdescription",
+      "ui_sheet_sheetfooter",
+      "ui_sheet_sheetheader",
+      "ui_sheet_sheetoverlay",
+      "ui_sheet_sheettitle",
+      "ui_sheet_sheetvariants",
+      "ui_skeleton",
+      "ui_textarea",
+      "ui_textarea_textarea",
+      "ui_toggle",
+      "ui_toggle_toggle",
+      "ui_toggle_togglevariants",
+      "ui_tooltip",
+      "ui_tooltip_tooltipcontent"
+    ],
+    "1": [
+      "components_herobookingwidget",
+      "components_herobookingwidget_props",
+      "components_ui",
+      "components_ui_badge",
+      "components_ui_button",
+      "components_ui_buttonprops",
+      "components_ui_card",
+      "components_ui_input",
+      "components_ui_label",
+      "hooks_use_bookings",
+      "hooks_use_bookings_calculatetaxiprice",
+      "hooks_use_bookings_fetchdistanceestimate",
+      "hooks_use_bookings_getperkmrate",
+      "hooks_use_bookings_networkerror",
+      "hooks_use_bookings_networkerrormessage",
+      "hooks_use_bookings_parsenetworkerror",
+      "hooks_use_bookings_taxipricebreakdown",
+      "hooks_use_bookings_usecreatebooking",
+      "hooks_use_bookings_userealtimebookings",
+      "hooks_use_bookings_useupdatebookingstatus",
+      "pages_admin",
+      "pages_admin_admin",
+      "pages_admin_found_via_config",
+      "pages_confirmation",
+      "pages_fahrtstatus",
+      "pages_fahrtstatus_bookingstatus",
+      "pages_fahrtstatus_lookuperror",
+      "pages_fahrtstatus_status_colors",
+      "pages_fahrtstatus_status_icons",
+      "pages_fahrtstatus_statusresult",
+      "pages_fahrtstatus_title_fstitle_description_fsdesc_noindex_fsnoindex",
+      "test_use_bookings_test",
+      "ui_input_input"
+    ],
+    "2": [
+      "components_layout",
+      "components_layout_languages",
+      "components_layout_languageswitcher",
+      "components_layout_layout",
+      "hooks_use_page_meta",
+      "hooks_use_page_meta_default_meta",
+      "hooks_use_page_meta_pagemeta",
+      "hooks_use_page_meta_setmetacontent",
+      "i18n_uselanguage",
+      "pages_agb",
+      "pages_agb_agb",
+      "pages_agb_title_agbtitle_description_agbdesc",
+      "pages_book",
+      "pages_book_book",
+      "pages_book_title_booktitle_description_bookdesc",
+      "pages_datenschutz",
+      "pages_datenschutz_title_dstitle_description_dsdesc",
+      "pages_fahrzeuge",
+      "pages_fahrzeuge_cars",
+      "pages_fahrzeuge_getcardprops",
+      "pages_fahrzeuge_mod",
+      "pages_fahrzeuge_qualityitems",
+      "pages_fahrzeuge_title_fztitle_description_fzdesc",
+      "pages_home_home",
+      "pages_not_found",
+      "pages_not_found_notfound",
+      "pages_ueberuns",
+      "pages_ueberuns_certifications",
+      "pages_ueberuns_fadeup",
+      "pages_ueberuns_reveal",
+      "pages_ueberuns_services",
+      "pages_ueberuns_timeline",
+      "pages_ueberuns_values"
+    ],
+    "3": [
+      "hooks_use_toast",
+      "hooks_use_toast_action",
+      "hooks_use_toast_actiontype",
+      "hooks_use_toast_actiontypes",
+      "hooks_use_toast_addtoremovequeue",
+      "hooks_use_toast_dispatch",
+      "hooks_use_toast_genid",
+      "hooks_use_toast_listeners",
+      "hooks_use_toast_memorystate",
+      "hooks_use_toast_reducer",
+      "hooks_use_toast_state",
+      "hooks_use_toast_toast",
+      "hooks_use_toast_toastertoast",
+      "hooks_use_toast_toasttimeouts",
+      "ui_toast",
+      "ui_toast_toast",
+      "ui_toast_toastaction",
+      "ui_toast_toastactionelement",
+      "ui_toast_toastclose",
+      "ui_toast_toastdescription",
+      "ui_toast_toastprops",
+      "ui_toast_toasttitle",
+      "ui_toast_toastvariants",
+      "ui_toast_toastviewport",
+      "ui_toaster",
+      "ui_toaster_toaster"
+    ],
+    "4": [
+      "app",
+      "app_app",
+      "app_appinner",
+      "app_componenttype",
+      "app_queryclient",
+      "app_routecomponents",
+      "app_router",
+      "app_scrolltotop",
+      "components_cookiebanner",
+      "hooks_uselenis",
+      "hooks_uselenis_uselenis",
+      "lib_lenis",
+      "lib_lenis_getlenis",
+      "lib_lenis_setlenis",
+      "main",
+      "routes",
+      "routes_indexableroutes",
+      "routes_routeconfig"
+    ],
+    "5": [
+      "components_contactform",
+      "components_contactform_base",
+      "components_contactform_waicon",
+      "components_reviewcarousel",
+      "components_reviewcarousel_duplicated",
+      "components_reviewcarousel_review",
+      "components_reviewcarousel_reviews",
+      "components_reviewcarousel_stars",
+      "pages_home",
+      "pages_home_aeofaktenblock",
+      "pages_home_ctaglow",
+      "pages_home_ctaglowcontainer",
+      "pages_home_ctaglowitem",
+      "pages_home_faq_items",
+      "pages_home_faqsection",
+      "pages_home_service_items",
+      "pages_home_servicecard",
+      "pages_home_servicesrevealsection"
+    ],
+    "6": [
+      "i18n_languagecontext",
+      "i18n_languagecontext_languagecontexttype",
+      "i18n_languagecontext_languageprovider",
+      "i18n_translations",
+      "i18n_translations_language",
+      "i18n_translations_languageflags",
+      "i18n_translations_languagenames",
+      "i18n_translations_translationkey",
+      "locales_ar",
+      "locales_ar_ar",
+      "locales_de",
+      "locales_de_de",
+      "locales_en",
+      "locales_en_en",
+      "locales_fr",
+      "locales_fr_fr",
+      "locales_tr",
+      "locales_tr_tr"
+    ],
+    "7": [
+      "components_addressautocomplete",
+      "components_addressautocomplete_addressselection",
+      "components_addressautocomplete_formatfordisplay",
+      "components_addressautocomplete_nominatimresult",
+      "components_addressautocomplete_parseresult",
+      "components_addressautocomplete_props",
+      "components_addressfield",
+      "components_addressfield_addressbase",
+      "components_addressfield_buildcombined",
+      "components_addressfield_props"
+    ],
+    "8": [
+      "page_meta_manifest",
+      "page_meta_manifest_getpagemeta",
+      "page_meta_manifest_pagemetaentry",
+      "pages_impressum",
+      "pages_impressum_title_imptitle_description_impdesc",
+      "pages_taxiruettenscheid",
+      "pages_taxiruettenscheid_schema",
+      "pages_taxiruettenscheid_sections",
+      "pages_taxiruettenscheid_title_title_description_desc"
+    ],
+    "9": [
+      "components_servicepagetemplate",
+      "components_servicepagetemplate_contentsection",
+      "components_servicepagetemplate_fadeup",
+      "components_servicepagetemplate_faqaccordion",
+      "components_servicepagetemplate_faqitem",
+      "components_servicepagetemplate_relatedlink",
+      "components_servicepagetemplate_reveal",
+      "components_servicepagetemplate_servicepagetemplateprops"
+    ],
+    "10": [
+      "components_bookingeditpanel",
+      "components_bookingeditpanel_bookingresult",
+      "components_bookingeditpanel_fmt",
+      "components_bookingeditpanel_laterpickup",
+      "components_bookingeditpanel_useremainingseconds",
+      "components_bookingeditpanel_view"
+    ],
+    "11": [
+      "pages_dialysefahrtenessen",
+      "pages_dialysefahrtenessen_dialogsefahrtenessen",
+      "pages_dialysefahrtenessen_faq",
+      "pages_dialysefahrtenessen_schema",
+      "pages_dialysefahrtenessen_sections",
+      "pages_dialysefahrtenessen_title_title_description_desc"
+    ],
+    "12": [
+      "pages_flughafentransferessen",
+      "pages_flughafentransferessen_faq",
+      "pages_flughafentransferessen_schema",
+      "pages_flughafentransferessen_sections",
+      "pages_flughafentransferessen_title_title_description_desc"
+    ],
+    "13": [
+      "pages_grossraumtaxiessen",
+      "pages_grossraumtaxiessen_faq",
+      "pages_grossraumtaxiessen_schema",
+      "pages_grossraumtaxiessen_sections",
+      "pages_grossraumtaxiessen_title_title_description_desc"
+    ],
+    "14": [
+      "pages_krankenfahrtenessen",
+      "pages_krankenfahrtenessen_faq",
+      "pages_krankenfahrtenessen_schema",
+      "pages_krankenfahrtenessen_sections",
+      "pages_krankenfahrtenessen_title_title_description_desc"
+    ],
+    "15": [
+      "pages_kurierdienstessen",
+      "pages_kurierdienstessen_faq",
+      "pages_kurierdienstessen_schema",
+      "pages_kurierdienstessen_sections",
+      "pages_kurierdienstessen_title_title_description_desc"
+    ],
+    "16": [
+      "pages_taxiessenhbf",
+      "pages_taxiessenhbf_faq",
+      "pages_taxiessenhbf_schema",
+      "pages_taxiessenhbf_sections",
+      "pages_taxiessenhbf_title_title_description_desc"
+    ],
+    "17": [
+      "pages_taxisuedviertel",
+      "pages_taxisuedviertel_schema",
+      "pages_taxisuedviertel_sections",
+      "pages_taxisuedviertel_taxisuedviertel",
+      "pages_taxisuedviertel_title_title_description_desc"
+    ],
+    "18": [
+      "pages_taxifrohnhausen",
+      "pages_taxifrohnhausen_schema",
+      "pages_taxifrohnhausen_sections",
+      "pages_taxifrohnhausen_title_title_description_desc"
+    ],
+    "19": [
+      "pages_taxiholsterhausen",
+      "pages_taxiholsterhausen_schema",
+      "pages_taxiholsterhausen_sections",
+      "pages_taxiholsterhausen_title_title_description_desc"
+    ],
+    "20": [
+      "hooks_use_mobile",
+      "hooks_use_mobile_useismobile"
+    ],
+    "21": [
+      "test_setup"
+    ]
+  },
+  "cohesion": {
+    "0": 0.07777777777777778,
+    "1": 0.10416666666666667,
+    "2": 0.08901515151515152,
+    "3": 0.11692307692307692,
+    "4": 0.1568627450980392,
+    "5": 0.1111111111111111,
+    "6": 0.13725490196078433,
+    "7": 0.24444444444444444,
+    "8": 0.2777777777777778,
+    "9": 0.25,
+    "10": 0.3333333333333333,
+    "11": 0.3333333333333333,
+    "12": 0.4,
+    "13": 0.4,
+    "14": 0.4,
+    "15": 0.4,
+    "16": 0.4,
+    "17": 0.4,
+    "18": 0.5,
+    "19": 0.5,
+    "20": 1.0,
+    "21": 1.0
+  },
+  "gods": [
+    {
+      "id": "page_meta_manifest_getpagemeta",
+      "label": "getPageMeta()",
+      "degree": 21
+    },
+    {
+      "id": "lib_utils_cn",
+      "label": "cn()",
+      "degree": 19
+    },
+    {
+      "id": "components_layout_layout",
+      "label": "Layout()",
+      "degree": 14
+    },
+    {
+      "id": "components_ui_button",
+      "label": "Button",
+      "degree": 6
+    },
+    {
+      "id": "components_ui_card",
+      "label": "Card()",
+      "degree": 5
+    },
+    {
+      "id": "components_ui_badge",
+      "label": "Badge()",
+      "degree": 4
+    },
+    {
+      "id": "hooks_use_bookings_calculatetaxiprice",
+      "label": "calculateTaxiPrice()",
+      "degree": 4
+    },
+    {
+      "id": "i18n_translations_language",
+      "label": "Language",
+      "degree": 4
+    },
+    {
+      "id": "pages_admin_admin",
+      "label": "Admin()",
+      "degree": 4
+    },
+    {
+      "id": "pages_home_home",
+      "label": "Home()",
+      "degree": 4
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Card()",
+      "target": "cn()",
+      "source_files": [
+        "components/ui.tsx",
+        "lib/utils.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "Badge()",
+      "target": "cn()",
+      "source_files": [
+        "components/ui.tsx",
+        "lib/utils.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "DialogHeader()",
+      "target": "cn()",
+      "source_files": [
+        "components/ui/dialog.tsx",
+        "lib/utils.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `DialogHeader()` unexpectedly reaches hub `cn()`"
+    },
+    {
+      "source": "DialogFooter()",
+      "target": "cn()",
+      "source_files": [
+        "components/ui/dialog.tsx",
+        "lib/utils.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `DialogFooter()` unexpectedly reaches hub `cn()`"
+    },
+    {
+      "source": "SheetHeader()",
+      "target": "cn()",
+      "source_files": [
+        "components/ui/sheet.tsx",
+        "lib/utils.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `SheetHeader()` unexpectedly reaches hub `cn()`"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

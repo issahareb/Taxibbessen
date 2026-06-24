@@ -1,0 +1,16 @@
+export default {
+  nav_book_cta: "Jetzt Taxi anfragen!",
+  hero_service1_sub: "In Essen und nach Absprache darüber hinaus",
+  hero_service2_sub: "Voraussetzungen und Abrechnung vorab klären",
+  hero_service3_sub: "Abholzeit, Fahrzeug und Gepäck vorab abstimmen",
+  hero_service1_desc: "Private, geschäftliche und längere Fahrten können angefragt werden. Verfügbarkeit, Fahrzeug und Preis werden vor der Fahrt bestätigt.",
+  hero_service2_desc: "Kranken- und Dialysefahrten können angefragt werden. Kostenübernahme und Abrechnung hängen von Verordnung, Genehmigung und den Vorgaben der Krankenkasse ab.",
+  hero_service3_desc: "Flughafentransfers nach Düsseldorf und zu weiteren Flughäfen können angefragt werden. Abholzeit, Fahrzeug, Gepäck und Preis werden vorab bestätigt.",
+  hero_service4_desc: "Dokumente und kleinere Sendungen können nach vorheriger Abstimmung transportiert werden. Inhalt, Übergabe und Preis werden vorab geklärt.",
+  hero_service6_desc: "Abholung und Ziel werden vereinbart. Benötigte Hilfe oder besondere Anforderungen sollten bereits bei der Anfrage genannt werden.",
+  features_sub: "Fahrten für private und geschäftliche Anlässe. Verfügbarkeit, Fahrzeug und Preis werden bei der Anfrage bestätigt.",
+  feat3_desc: "Eine Mercedes V-Klasse für bis zu 7 Fahrgäste kann angefragt werden. Die mögliche Gepäckmenge hängt von der Personenzahl ab.",
+  feat4_desc: "Krankenfahrten können angefragt werden. Verordnung, Genehmigung und mögliche Abrechnung werden vor der ersten Fahrt geprüft.",
+  price_guaranteed: "Preis wird vor der Fahrt bestätigt",
+  reviews_sub: "Bewertungen werden erst nach überprüfbarer Zuordnung veröffentlicht.",
+};

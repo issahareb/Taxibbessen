@@ -1,0 +1,8 @@
+.claude/completions/
+.claude/sessions/
+docs/archive/
+*.log
+dist/
+node_modules/
+graphify-out/
+attached_assets/

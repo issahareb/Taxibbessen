@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,800&display=swap');
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+
+@theme inline {
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Archivo', sans-serif;
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  --animate-call-glow: callGlow 1.4s ease-out infinite;
+  --animate-call-glow-delay: callGlowDelay 1.4s ease-out infinite;
+  --animate-call-bounce: callBounce 1.4s ease-in-out infinite;
+}
+
+:root {
+  --background: 220 20% 4%;
+  --foreground: 0 0% 100%;
+  --card: 220 18% 8%;
+  --card-foreground: 0 0% 100%;
+  --popover: 220 18% 8%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 45 100% 51%;
+  --primary-foreground: 220 20% 4%;
+  --secondary: 220 15% 10%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 220 15% 15%;
+  --muted-foreground: 220 10% 60%;
+  --accent: 220 15% 15%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 220 15% 18%;
+  --input: 220 15% 15%;
+  --ring: 45 100% 51%;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * { @apply border-border; }
+  html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+    background-color: hsl(220, 20%, 4%);
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    @apply font-bold tracking-tight text-foreground;
+  }
+}
+
+/* Subtle dot-grid background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.025) 1px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Stroke text utility */
+.stroke-text {
+  -webkit-text-stroke: 2px hsl(45 100% 51%);
+  color: transparent;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: hsl(var(--background)); }
+::-webkit-scrollbar-thumb { background: hsl(var(--muted)); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary)); }
+
+/* Call button glow pulse */
+@keyframes callGlow {
+  0%        { transform: scale(1);    opacity: 0.9; }
+  70%       { transform: scale(2.6);  opacity: 0; }
+  100%      { transform: scale(2.6);  opacity: 0; }
+}
+@keyframes callGlowDelay {
+  0%, 35%   { transform: scale(1);    opacity: 0; }
+  36%       { transform: scale(1);    opacity: 0.7; }
+  100%      { transform: scale(2.4);  opacity: 0; }
+}
+@keyframes callBounce {
+  0%, 100%  { transform: scale(1); }
+  20%       { transform: scale(1.12); }
+  40%       { transform: scale(0.96); }
+  60%       { transform: scale(1.06); }
+}

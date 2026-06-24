@@ -1,0 +1,26 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "H-NbVuHFtTL7x_9E8wqP4"
+uri = "file://attached_assets/preview_247_nobg.png"
+type = "image"
+title = "24/7 — ohne Hintergrund"
+
+[[outputs]]
+id = "90b6MDnXamVsa0N5u3hBr"
+uri = "file://attached_assets/preview_bundesweit_nobg.png"
+type = "image"
+title = "Bundesweit & Ausland — ohne Hintergrund"
+
+[[outputs]]
+id = "jticWg2QO1OREYlWPVlJD"
+uri = "file://attached_assets/preview_grossraum7_nobg.png"
+type = "image"
+title = "Großraum 7 Personen — ohne Hintergrund"
+
+[[outputs]]
+id = "oDx6SKRKGcZ3f1_VdhiVH"
+uri = "file://graphify-vault.tar.gz"
+type = "unspecified"
+title = "Taxi B&B Graphify Vault (Obsidian)"

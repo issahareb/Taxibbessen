@@ -1,0 +1,16 @@
+export default {
+  nav_book_cta: "Request a Taxi",
+  hero_service1_sub: "In Essen and beyond by prior arrangement",
+  hero_service2_sub: "Confirm requirements and billing in advance",
+  hero_service3_sub: "Confirm pickup time, vehicle and luggage in advance",
+  hero_service1_desc: "Private, business and longer rides can be requested. Availability, vehicle and price are confirmed before the ride.",
+  hero_service2_desc: "Medical and dialysis rides can be requested. Coverage and billing depend on prescriptions, approvals and the insurer's requirements.",
+  hero_service3_desc: "Airport transfers to Düsseldorf and other airports can be requested. Pickup time, vehicle, luggage and price are confirmed in advance.",
+  hero_service4_desc: "Documents and smaller items can be transported after prior agreement. Contents, handover and price are confirmed in advance.",
+  hero_service6_desc: "Pickup and destination are agreed in advance. Mention luggage assistance or special requirements when requesting the ride.",
+  features_sub: "Rides for private and business purposes. Availability, vehicle and price are confirmed when requested.",
+  feat3_desc: "A Mercedes V-Class for up to 7 passengers can be requested. Luggage capacity depends on the number of passengers.",
+  feat4_desc: "Medical rides can be requested. Prescriptions, approvals and billing options are checked before the first ride.",
+  price_guaranteed: "Price confirmed before the ride",
+  reviews_sub: "Reviews are published only after their source can be verified.",
+};

@@ -1,0 +1,16 @@
+export default {
+  nav_book_cta: "Demander un taxi",
+  hero_service1_sub: "À Essen et au-delà sur accord préalable",
+  hero_service2_sub: "Conditions et facturation à vérifier à l'avance",
+  hero_service3_sub: "Horaire, véhicule et bagages à confirmer à l'avance",
+  hero_service1_desc: "Les trajets privés, professionnels et longue distance peuvent être demandés. Disponibilité, véhicule et prix sont confirmés avant le trajet.",
+  hero_service2_desc: "Les trajets médicaux et de dialyse peuvent être demandés. La prise en charge dépend de l'ordonnance, de l'autorisation et des règles de la caisse.",
+  hero_service3_desc: "Les transferts vers Düsseldorf et d'autres aéroports peuvent être demandés. Horaire, véhicule, bagages et prix sont confirmés à l'avance.",
+  hero_service4_desc: "Les documents et petits envois peuvent être transportés après accord. Contenu, remise et prix sont confirmés à l'avance.",
+  hero_service6_desc: "Le lieu de prise en charge et la destination sont convenus. Signalez les bagages et besoins particuliers lors de la demande.",
+  features_sub: "Trajets privés et professionnels. Disponibilité, véhicule et prix sont confirmés lors de la demande.",
+  feat3_desc: "Une Mercedes Classe V jusqu'à 7 passagers peut être demandée. La capacité de bagages dépend du nombre de passagers.",
+  feat4_desc: "Les trajets médicaux peuvent être demandés. Ordonnance, autorisation et facturation sont vérifiées avant le premier trajet.",
+  price_guaranteed: "Prix confirmé avant le trajet",
+  reviews_sub: "Les avis ne sont publiés qu'après vérification de leur source.",
+};

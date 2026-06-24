@@ -1,0 +1,16 @@
+export default {
+  nav_book_cta: "Taksi Talebi Gönder",
+  hero_service1_sub: "Essen ve önceden anlaşmayla diğer bölgeler",
+  hero_service2_sub: "Koşullar ve faturalama önceden kontrol edilir",
+  hero_service3_sub: "Saat, araç ve bagaj önceden teyit edilir",
+  hero_service1_desc: "Özel, ticari ve uzun mesafe yolculukları talep edilebilir. Uygunluk, araç ve fiyat yolculuktan önce teyit edilir.",
+  hero_service2_desc: "Hasta ve diyaliz yolculukları talep edilebilir. Ödeme ve doğrudan faturalama reçete, onay ve sigorta kurallarına bağlıdır.",
+  hero_service3_desc: "Düsseldorf ve diğer havalimanlarına transfer talep edilebilir. Saat, araç, bagaj ve fiyat önceden teyit edilir.",
+  hero_service4_desc: "Belge ve küçük gönderiler önceden anlaşarak taşınabilir. İçerik, teslim ve fiyat önceden teyit edilir.",
+  hero_service6_desc: "Alış ve varış adresi kararlaştırılır. Bagaj yardımı ve özel ihtiyaçlar talep sırasında belirtilmelidir.",
+  features_sub: "Özel ve ticari yolculuklar. Uygunluk, araç ve fiyat talep sırasında teyit edilir.",
+  feat3_desc: "7 yolcuya kadar Mercedes V-Serisi talep edilebilir. Bagaj kapasitesi yolcu sayısına bağlıdır.",
+  feat4_desc: "Hasta yolculukları talep edilebilir. Reçete, onay ve faturalama seçenekleri ilk yolculuktan önce kontrol edilir.",
+  price_guaranteed: "Fiyat yolculuktan önce teyit edilir",
+  reviews_sub: "Yorumlar yalnızca kaynağı doğrulandıktan sonra yayınlanır.",
+};

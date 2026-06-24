@@ -1,0 +1,48 @@
+# Taxi B&B GmbH Essen
+
+Taxi B&B GmbH ist ein Taxiunternehmen mit Sitz in Essen. Das Unternehmen bietet klassische Taxifahrten, Flughafentransfers, Krankenfahrten, Dialysefahrten, Großraumfahrten und Kurierfahrten an.
+
+## Verbindliche Unternehmensdaten
+
+- Name: Taxi B&B GmbH
+- Website: https://www.taxibbessen.de/
+- Telefon: 0201 707060
+- E-Mail: taxibb@outlook.com
+- Adresse: Menzelstraße 8-10, 45147 Essen, Deutschland
+- Handelsregister: HRB 36284, Amtsgericht Essen
+- Gründungsjahr: 1992
+
+## Sprache und Markt
+
+- Hauptsprache: Deutsch (de-DE)
+- Hauptmarkt: Essen und umliegendes Ruhrgebiet
+
+## Hauptseiten
+
+- Startseite: https://www.taxibbessen.de/
+- Fahrzeuge: https://www.taxibbessen.de/fahrzeuge/
+- Über uns: https://www.taxibbessen.de/ueber-uns/
+
+## Leistungen
+
+- Flughafentransfer Essen–Düsseldorf: https://www.taxibbessen.de/flughafentransfer-essen-duesseldorf/
+- Krankenfahrten in Essen: https://www.taxibbessen.de/krankenfahrten-essen/
+- Großraumtaxi in Essen: https://www.taxibbessen.de/grossraumtaxi-essen/
+- Dialysefahrten in Essen: https://www.taxibbessen.de/dialysefahrten-essen/
+- Kurierdienst in Essen: https://www.taxibbessen.de/kurierdienst-essen/
+- Taxi am Essen Hauptbahnhof: https://www.taxibbessen.de/taxi-essen-hbf/
+
+## Stadtteile
+
+- Essen-Holsterhausen: https://www.taxibbessen.de/taxi-essen-holsterhausen/
+- Essen-Rüttenscheid: https://www.taxibbessen.de/taxi-essen-ruettenscheid/
+- Essen-Frohnhausen: https://www.taxibbessen.de/taxi-essen-frohnhausen/
+- Essen-Südviertel: https://www.taxibbessen.de/taxi-essen-suedviertel/
+
+## Rechtliches
+
+- Impressum: https://www.taxibbessen.de/impressum/
+- Datenschutz: https://www.taxibbessen.de/datenschutz/
+- AGB: https://www.taxibbessen.de/agb/
+
+Hinweis: Preise, Abrechnungsmöglichkeiten, Fahrzeugverfügbarkeit und besondere Anforderungen werden vor der Fahrt individuell bestätigt.

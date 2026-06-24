@@ -1,0 +1,5 @@
+- [Scroll reveal & image-sequence hero pitfalls](scroll-reveal-and-image-sequence.md) — use one parent observer + staggerChildren for word reveals; nearest-loaded-frame fallback + small assets for scroll-scrubbed image sequences (mobile).
+- [Taxi B&B canonical domain](taxibb-canonical-domain.md) — live domain is taxibbessen.de (NO hyphen); taxibb-essen.de is NXDOMAIN. Verify a domain resolves before putting it in canonicals/sitemap.
+- [Deploy path GitHub→Railway](deploy-railway-github.md) — push main triggers Railway build; env reset wipes SSH keys → use GitHub integration token + `git push --no-verify` (LFS hook, git-lfs not installed).
+- [Railway build: NODE_ENV=production bricht devDeps](railway-node-env.md) — Nixpacks setzt NODE_ENV=production → pnpm überspringt devDependencies; buildCommand muss NODE_ENV=development voranstellen.
+- [iOS Safari header scroll](ios-header-scroll.md) — pin header via visualViewport.offsetTop read DIRECTLY (no accumulation); the old drift-accumulation loop dropped the header to mid-screen. Keep mobile call glow.
