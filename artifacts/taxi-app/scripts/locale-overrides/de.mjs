@@ -12,5 +12,5 @@ export default {
   feat3_desc: "Eine Mercedes V-Klasse für bis zu 7 Fahrgäste kann angefragt werden. Die mögliche Gepäckmenge hängt von der Personenzahl ab.",
   feat4_desc: "Krankenfahrten können angefragt werden. Verordnung, Genehmigung und mögliche Abrechnung werden vor der ersten Fahrt geprüft.",
   price_guaranteed: "Preis wird vor der Fahrt bestätigt",
-  reviews_sub: "Bewertungen werden erst nach überprüfbarer Zuordnung veröffentlicht.",
+  reviews_sub: "Echte Google-Rezensionen unserer Fahrgäste.",
 };
