@@ -6,6 +6,20 @@ function removeBetween(source, startMarker, endMarker) {
   return source.slice(0, start) + source.slice(end);
 }
 
+function replaceWithin(source, startMarker, endMarker, replacements) {
+  const start = source.indexOf(startMarker);
+  if (start < 0) return source;
+  const end = source.indexOf(endMarker, start);
+  if (end < 0) return source;
+
+  let segment = source.slice(start, end);
+  for (const [from, to] of replacements) {
+    segment = segment.replaceAll(from, to);
+  }
+
+  return source.slice(0, start) + segment + source.slice(end);
+}
+
 export function mediaPerformancePlugin() {
   return {
     name: "taxi-content-and-media-normalization",
@@ -98,6 +112,43 @@ export function mediaPerformancePlugin() {
           '{ src: "hauszuhaus.webp",        titleKey: "hero_service6_title", descKey: "hero_service6_desc", href: "/book" }',
         );
 
+      output = replaceWithin(
+        output,
+        "  // ─── Third image-sequence",
+        "  return (\n    <Layout>",
+        [
+          [
+            "    // CTA frames are only shown on mobile (img has md:hidden); skip on desktop\n    const isMobile = window.matchMedia('(max-width: 767px)').matches;",
+            "    // Use one deterministic scroll-controlled frame sequence on every viewport.",
+          ],
+          ["if (isMobile && img && frames.length > 0)", "if (img && frames.length > 0)"],
+          ["            lastFrame = idx;", "            lastFrame = ready;"],
+          ["    if (isMobile && img) {", "    if (img) {"],
+          ["      observer.observe(sectionEl);", "      observer.observe(storySectionRef.current ?? sectionEl);"],
+        ],
+      );
+
+      output = replaceWithin(
+        output,
+        "        {/* ─── CTA/AIRPORT BACKGROUND ─── */}",
+        "        {/* ─── HERO ─── */}",
+        [
+          ['className="md:hidden w-full h-full object-cover"', 'className="w-full h-full object-cover"'],
+          ['className="md:hidden absolute inset-0"', 'className="absolute inset-0"'],
+          ['decoding="async"', 'decoding="sync"'],
+          [
+            'style={{ height: "100lvh", zIndex: 1, opacity: 0, backgroundColor: "#100a0a" }}',
+            'style={{ height: "100lvh", zIndex: 1, opacity: 0, backgroundColor: "#100a0a", willChange: "opacity", transform: "translateZ(0)" }}',
+          ],
+        ],
+      );
+
+      output = removeBetween(
+        output,
+        "          {/* Desktop: looping autoplay airport video (16:9) */}",
+        '          <div\n            className="absolute inset-0"',
+      );
+
       output = output.replace(
         "const loadFrames = () => {\n      if (framesLoaded) return;",
         `const shouldReduceMedia =
@@ -118,9 +169,10 @@ export function mediaPerformancePlugin() {
       for (let i = 1; i <=`,
       );
 
-      output = output
-        .replace("{ rootMargin: '500% 0px' }", "{ rootMargin: '100% 0px' }")
-        .replace("{ rootMargin: '300% 0px' }", "{ rootMargin: '100% 0px' }");
+      output = output.replace(
+        "{ rootMargin: '500% 0px' }",
+        "{ rootMargin: '100% 0px' }",
+      );
 
       return { code: output, map: null };
     },
