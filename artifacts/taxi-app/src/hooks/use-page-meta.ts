@@ -1,9 +1,5 @@
 import { useEffect } from "react";
-import {
-  ORGANIZATION_ID,
-  SITE_ORIGIN,
-  canonicalUrl,
-} from "@/seo/business";
+import { canonicalUrl } from "@/seo/business";
 
 interface PageMeta {
   title: string;
@@ -28,11 +24,7 @@ function setMetaContent(selector: string, createAttrs: [string, string], content
 }
 
 function serializeSchema(schemaOrg: Record<string, unknown>): string {
-  return JSON.stringify(schemaOrg)
-    .replaceAll("https://taxibbessen.de", SITE_ORIGIN)
-    .replaceAll(`${SITE_ORIGIN}/#localbusiness`, ORGANIZATION_ID)
-    .replaceAll('"MedicalBusiness"', '"Service"')
-    .replaceAll('"MedicalTherapy"', '"Service"');
+  return JSON.stringify(schemaOrg);
 }
 
 function hasPrerenderedSchemaForUrl(url: string): boolean {
