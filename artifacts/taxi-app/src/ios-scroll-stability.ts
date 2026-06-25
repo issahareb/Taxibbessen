@@ -6,7 +6,6 @@ if (isIOS) {
   const ROOT_CLASS = "ios-scroll-stability";
   const HEADER_CLASS = "ios-stable-header";
   const HERO_SECTION_CLASS = "ios-stable-hero-section";
-  const POSTER_CLASS = "ios-hero-poster-locked";
 
   document.documentElement.classList.add(ROOT_CLASS);
 
@@ -35,23 +34,10 @@ if (isIOS) {
     html.${ROOT_CLASS} .${HERO_SECTION_CLASS} {
       min-height: 100lvh !important;
     }
-
-    html.${ROOT_CLASS} img.${POSTER_CLASS} {
-      opacity: 0 !important;
-      transition: none !important;
-      pointer-events: none !important;
-    }
   `;
   document.head.appendChild(style);
 
-  let hasScrolled = window.scrollY > 0;
-  let posterLocked = false;
   let scheduled = false;
-
-  const findImage = (fragment: string) =>
-    Array.from(document.images).find(
-      (image) => image.currentSrc.includes(fragment) || image.src.includes(fragment),
-    );
 
   const refresh = () => {
     scheduled = false;
@@ -61,25 +47,6 @@ if (isIOS) {
 
     const heroLogo = document.getElementById("hero-logo");
     heroLogo?.closest("section")?.classList.add(HERO_SECTION_CLASS);
-
-    if (!hasScrolled || posterLocked) return;
-
-    const poster = findImage("hero-sharp");
-    const sequence = findImage("hero-frames/");
-    if (!poster || !sequence || !sequence.complete || sequence.naturalWidth === 0) return;
-
-    const posterOpacity = Number.parseFloat(poster.style.opacity || "1");
-    if (!Number.isFinite(posterOpacity) || posterOpacity > 0.05) return;
-
-    sequence.decoding = "sync";
-    void sequence.decode().catch(() => undefined).finally(() => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          poster.classList.add(POSTER_CLASS);
-          posterLocked = true;
-        });
-      });
-    });
   };
 
   const scheduleRefresh = () => {
@@ -88,24 +55,16 @@ if (isIOS) {
     requestAnimationFrame(refresh);
   };
 
-  window.addEventListener(
-    "scroll",
-    () => {
-      hasScrolled = true;
-      scheduleRefresh();
-    },
-    { passive: true },
-  );
   window.addEventListener("resize", scheduleRefresh, { passive: true });
   window.visualViewport?.addEventListener("resize", scheduleRefresh, { passive: true });
-  window.visualViewport?.addEventListener("scroll", scheduleRefresh, { passive: true });
 
+  // Only observe DOM insertions (React mount / route changes). Watching every
+  // `src` and `style` mutation made this observer fire continuously while the
+  // hero image sequence was scrubbing and added unnecessary work on iOS.
   const observer = new MutationObserver(scheduleRefresh);
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true,
-    attributes: true,
-    attributeFilter: ["src", "style"],
   });
 
   if (document.readyState === "loading") {
