@@ -1,19 +1,10 @@
-import { Router, type Request, type Response, type NextFunction } from "express";
+import { Router, type Request, type Response } from "express";
 import { db, bookingsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { sendBookingNotification } from "../lib/email";
+import { requireAdminKey } from "../middleware/require-admin-key";
 
 const router = Router();
-
-function requireAdminKey(req: Request, res: Response, next: NextFunction) {
-  const adminKey = process.env.ADMIN_API_KEY;
-  if (!adminKey) return next();
-  const provided = req.headers["x-admin-key"] ?? req.query["adminKey"];
-  if (provided !== adminKey) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  next();
-}
 
 router.get("/bookings", requireAdminKey, async (_req, res) => {
   const bookings = await db.select().from(bookingsTable).orderBy(bookingsTable.createdAt);
@@ -50,7 +41,7 @@ router.post("/bookings", async (req, res) => {
   res.status(201).json(booking);
 });
 
-router.get("/bookings/:id", async (req, res) => {
+router.get("/bookings/:id", requireAdminKey, async (req, res) => {
   const id = Number(req.params.id);
   const [booking] = await db.select().from(bookingsTable).where(eq(bookingsTable.id, id));
   if (!booking) return res.status(404).json({ error: "Not found" });
