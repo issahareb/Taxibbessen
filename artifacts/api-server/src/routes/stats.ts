@@ -1,10 +1,11 @@
 import { Router, type IRouter } from "express";
 import { db, bookingsTable } from "@workspace/db";
 import { count, sql } from "drizzle-orm";
+import { requireAdminKey } from "../middleware/require-admin-key";
 
 const router: IRouter = Router();
 
-router.get("/stats", async (_req, res): Promise<void> => {
+router.get("/stats", requireAdminKey, async (_req, res): Promise<void> => {
   const [total] = await db.select({ total: count() }).from(bookingsTable);
   const [newBookings] = await db.select({ total: count() }).from(bookingsTable).where(sql`${bookingsTable.status} = 'new'`);
   const [accepted] = await db.select({ total: count() }).from(bookingsTable).where(sql`${bookingsTable.status} = 'accepted'`);
