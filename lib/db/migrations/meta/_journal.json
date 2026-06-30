@@ -8,6 +8,13 @@
       "when": 1781788151737,
       "tag": "0000_long_wild_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782812048973,
+      "tag": "0001_secure_admin_remove_nexus",
+      "breakpoints": true
     }
   ]
 }
