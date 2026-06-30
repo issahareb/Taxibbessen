@@ -1,4 +1,4 @@
-import { Router, type Request } from "express";
+import { Router, type Request, type Response } from "express";
 import {
   ADMIN_COOKIE_NAME,
   configureAdminPassword,
@@ -58,7 +58,7 @@ function clearFailures(key: string): void {
   loginAttempts.delete(key);
 }
 
-function setSessionCookie(res: Parameters<typeof router.post>[1] extends never ? never : any, token: string): void {
+function setSessionCookie(res: Response, token: string): void {
   res.cookie(ADMIN_COOKIE_NAME, token, getAdminCookieOptions());
 }
 
@@ -157,6 +157,7 @@ router.post("/admin/login", async (req, res) => {
 
 router.post("/admin/logout", async (req, res) => {
   const token = req.cookies?.[ADMIN_COOKIE_NAME] as string | undefined;
+  const { maxAge: _maxAge, ...clearOptions } = getAdminCookieOptions();
 
   try {
     const session = await getAdminSession(token);
@@ -169,12 +170,12 @@ router.post("/admin/logout", async (req, res) => {
     }
 
     await destroyAdminSession(token);
-  } finally {
-    const { maxAge: _maxAge, ...clearOptions } = getAdminCookieOptions();
     res.clearCookie(ADMIN_COOKIE_NAME, clearOptions);
+    return res.json({ ok: true });
+  } catch {
+    res.clearCookie(ADMIN_COOKIE_NAME, clearOptions);
+    return res.status(503).json({ error: "Logout failed safely" });
   }
-
-  return res.json({ ok: true });
 });
 
 export default router;
