@@ -1,13 +1,12 @@
-name: Frontend diagnostics
+name: API security checks
 
 on:
   pull_request:
-
-permissions:
-  contents: write
+  push:
+    branches: [main]
 
 jobs:
-  diagnose:
+  api-security:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,12 +18,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: pnpm
       - run: pnpm install --no-frozen-lockfile --reporter=silent
-      - shell: bash
-        run: pnpm --filter @workspace/taxi-app run typecheck > taxi-typecheck.log 2>&1 || true
-      - env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          encoded=$(base64 -w0 taxi-typecheck.log)
-          gh api --method PUT "/repos/${GITHUB_REPOSITORY}/contents/diagnostics/${GITHUB_RUN_ID}.txt"             -f message="Update output"             -f content="$encoded"             -f branch="diagnostic-output"
+      - run: pnpm --filter @workspace/api-spec run codegen
+      - run: git diff --exit-code -- lib/api-client-react/src/generated lib/api-zod/src/generated
+      - run: pnpm --filter @workspace/api-server run typecheck
+      - run: pnpm --filter @workspace/taxi-app run typecheck
+      - run: pnpm --filter @workspace/api-server run test:security
