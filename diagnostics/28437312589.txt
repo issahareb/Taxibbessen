@@ -1,0 +1,47 @@
+REFS
+TYPECHECK
+
+> @workspace/api-server@0.0.0 typecheck /home/runner/work/Taxibbessen/Taxibbessen/artifacts/api-server
+> tsc -p tsconfig.json --noEmit
+
+src/routes/bookings.ts(36,27): error TS2345: Argument of type '{ id: number; createdAt: Date; updatedAt: Date; pickupLocation: string; destination: string; customerName: string; customerLastName: string; customerPhone: string; scheduledTime: Date | null; ... 10 more ...; status: "new" | ... 2 more ... | "rejected"; }' is not assignable to parameter of type 'BookingEmailData'.
+  Types of property 'scheduledTime' are incompatible.
+    Type 'Date | null' is not assignable to type 'string | null | undefined'.
+      Type 'Date' is not assignable to type 'string'.
+/home/runner/work/Taxibbessen/Taxibbessen/artifacts/api-server:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/api-server@0.0.0 typecheck: `tsc -p tsconfig.json --noEmit`
+Exit status 2
+SECURITY
+
+> @workspace/api-server@0.0.0 test:security /home/runner/work/Taxibbessen/Taxibbessen/artifacts/api-server
+> pnpm run build && node ./test/security.mjs
+
+
+> @workspace/api-server@0.0.0 build /home/runner/work/Taxibbessen/Taxibbessen/artifacts/api-server
+> node ./build.mjs
+
+
+  dist/index.mjs                       1.9mb ⚠️
+  dist/pino-worker.mjs               153.4kb
+  dist/pino-file.mjs                 142.1kb
+  dist/pino-pretty.mjs               114.6kb
+  dist/thread-stream-worker.mjs        7.3kb
+  dist/index.mjs.map                   3.3mb
+  dist/pino-worker.mjs.map           256.9kb
+  dist/pino-file.mjs.map             229.1kb
+  dist/pino-pretty.mjs.map           204.0kb
+  dist/thread-stream-worker.mjs.map   12.0kb
+
+⚡ Done in 182ms
+file:///home/runner/work/Taxibbessen/Taxibbessen/artifacts/api-server/test/security.mjs:27
+  throw new Error("API server did not become ready");
+        ^
+
+Error: API server did not become ready
+    at waitForServer (file:///home/runner/work/Taxibbessen/Taxibbessen/artifacts/api-server/test/security.mjs:27:9)
+    at async file:///home/runner/work/Taxibbessen/Taxibbessen/artifacts/api-server/test/security.mjs:39:3
+
+Node.js v20.20.2
+/home/runner/work/Taxibbessen/Taxibbessen/artifacts/api-server:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/api-server@0.0.0 test:security: `pnpm run build && node ./test/security.mjs`
+Exit status 1
