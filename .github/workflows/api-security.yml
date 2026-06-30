@@ -1,0 +1,30 @@
+name: Frontend diagnostics
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          show-progress: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: pnpm install --no-frozen-lockfile --reporter=silent
+      - shell: bash
+        run: pnpm --filter @workspace/taxi-app run typecheck > taxi-typecheck.log 2>&1 || true
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          encoded=$(base64 -w0 taxi-typecheck.log)
+          gh api --method PUT "/repos/${GITHUB_REPOSITORY}/contents/diagnostics/${GITHUB_RUN_ID}.txt"             -f message="Update output"             -f content="$encoded"             -f branch="diagnostic-output"
