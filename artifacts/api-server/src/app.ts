@@ -1,9 +1,23 @@
 import express, { type Express } from "express";
 import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
+import {
+  AdminLoginRequestSchema,
+  AdminSetupRequestSchema,
+  BookingIdParamsSchema,
+  BookingRequestSchema,
+  BookingStatusRequestSchema,
+  ContactRequestSchema,
+} from "@workspace/api-zod";
 import { serveAdminConsole } from "./admin-console";
 import router from "./routes";
 import { logger } from "./lib/logger";
+import {
+  apiRateLimiter,
+  bookingSubmissionRateLimiter,
+  contactSubmissionRateLimiter,
+} from "./middleware/rate-limit";
+import { validateBody, validateParams } from "./middleware/validate-request";
 
 const app: Express = express();
 
@@ -64,6 +78,19 @@ app.use((req, res, next): void => {
 app.use(cookieParser());
 app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: true, limit: "100kb" }));
+
+app.use("/api", apiRateLimiter);
+app.post("/api/bookings", bookingSubmissionRateLimiter, validateBody(BookingRequestSchema));
+app.post("/api/contact", contactSubmissionRateLimiter, validateBody(ContactRequestSchema));
+app.post("/api/admin/setup", validateBody(AdminSetupRequestSchema));
+app.post("/api/admin/login", validateBody(AdminLoginRequestSchema));
+app.get("/api/bookings/:id", validateParams(BookingIdParamsSchema));
+app.patch(
+  "/api/bookings/:id/status",
+  validateParams(BookingIdParamsSchema),
+  validateBody(BookingStatusRequestSchema),
+);
+
 app.get("/admin-console", serveAdminConsole);
 app.use("/api", router);
 
