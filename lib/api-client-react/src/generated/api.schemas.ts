@@ -19,6 +19,12 @@ export const BookingStatus = {
   rejected: 'rejected',
 } as const;
 
+export interface BookingReceipt {
+  ok: true;
+  requestId: number;
+  message: string;
+}
+
 export interface Booking {
   id: number;
   pickupLocation: string;

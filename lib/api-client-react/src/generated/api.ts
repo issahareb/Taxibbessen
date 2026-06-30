@@ -22,6 +22,7 @@ import type {
 import type {
   Booking,
   BookingInput,
+  BookingReceipt,
   BookingStatusUpdate,
   HealthStatus
 } from './api.schemas';
@@ -148,7 +149,7 @@ export const getListBookingsQueryKey = () => {
     }
 
 
-export const getListBookingsQueryOptions = <TData = Awaited<ReturnType<typeof listBookings>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listBookings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export const getListBookingsQueryOptions = <TData = Awaited<ReturnType<typeof listBookings>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listBookings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -167,14 +168,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ListBookingsQueryResult = NonNullable<Awaited<ReturnType<typeof listBookings>>>
-export type ListBookingsQueryError = ErrorType<unknown>
+export type ListBookingsQueryError = ErrorType<void>
 
 
 /**
  * @summary List all bookings
  */
 
-export function useListBookings<TData = Awaited<ReturnType<typeof listBookings>>, TError = ErrorType<unknown>>(
+export function useListBookings<TData = Awaited<ReturnType<typeof listBookings>>, TError = ErrorType<void>>(
   options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listBookings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
@@ -201,11 +202,11 @@ export const getCreateBookingUrl = () => {
 }
 
 /**
- * @summary Create a booking
+ * @summary Create a booking request
  */
-export const createBooking = async (bookingInput: BookingInput, options?: RequestInit): Promise<Booking> => {
+export const createBooking = async (bookingInput: BookingInput, options?: RequestInit): Promise<BookingReceipt> => {
 
-  return customFetch<Booking>(getCreateBookingUrl(),
+  return customFetch<BookingReceipt>(getCreateBookingUrl(),
   {
     ...options,
     method: 'POST',
@@ -250,7 +251,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type CreateBookingMutationError = ErrorType<unknown>
 
     /**
- * @summary Create a booking
+ * @summary Create a booking request
  */
 export const useCreateBooking = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createBooking>>, TError,{data: BodyType<BookingInput>}, TContext>, request?: SecondParameter<typeof customFetch>}

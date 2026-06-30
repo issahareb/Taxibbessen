@@ -1,4 +1,5 @@
 import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
 import { cn } from "@/lib/utils"
 import { Loader2 } from "lucide-react"
 
@@ -6,10 +7,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg' | 'icon';
   isLoading?: boolean;
+  asChild?: boolean;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'default', size = 'md', isLoading, children, disabled, ...props }, ref) => {
+  ({ className, variant = 'default', size = 'md', isLoading, children, disabled, asChild = false, ...props }, ref) => {
     const variants = {
       default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20",
       secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90",
@@ -23,11 +25,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       lg: "h-14 px-8 text-base font-bold rounded-xl",
       icon: "h-12 w-12 justify-center rounded-xl",
     }
+    const Component = asChild ? Slot : "button"
 
     return (
-      <button
+      <Component
         ref={ref}
-        disabled={isLoading || disabled}
+        disabled={asChild ? undefined : isLoading || disabled}
+        aria-disabled={asChild && (isLoading || disabled) ? true : undefined}
         className={cn(
           "inline-flex items-center justify-center whitespace-nowrap transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
           variants[variant],
@@ -38,7 +42,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {children}
-      </button>
+      </Component>
     )
   }
 )

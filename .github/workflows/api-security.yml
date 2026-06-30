@@ -1,0 +1,27 @@
+name: API security checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  api-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          show-progress: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --no-frozen-lockfile --reporter=silent
+      - run: pnpm --filter @workspace/api-spec run codegen
+      - run: git diff --exit-code -- lib/api-client-react/src/generated lib/api-zod/src/generated
+      - run: pnpm --filter @workspace/api-server run typecheck
+      - run: pnpm --filter @workspace/taxi-app run typecheck
+      - run: pnpm --filter @workspace/api-server run test:security

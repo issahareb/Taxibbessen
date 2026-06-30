@@ -45,7 +45,7 @@ export const ListBookingsResponse = zod.array(ListBookingsResponseItem)
 
 
 /**
- * @summary Create a booking
+ * @summary Create a booking request
  */
 export const CreateBookingBody = zod.object({
   "pickupLocation": zod.string(),

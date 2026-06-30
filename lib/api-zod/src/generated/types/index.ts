@@ -8,6 +8,7 @@
 
 export * from './booking';
 export * from './bookingInput';
+export * from './bookingReceipt';
 export * from './bookingStatus';
 export * from './bookingStatusUpdate';
 export * from './healthStatus';
