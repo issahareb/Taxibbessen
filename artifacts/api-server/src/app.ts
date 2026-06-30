@@ -2,6 +2,7 @@ import express, { type Express } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import { serveAdminConsole } from "./admin-console";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
@@ -57,6 +58,7 @@ app.use(cookieParser());
 app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: true, limit: "100kb" }));
 
+app.get("/admin-console", serveAdminConsole);
 app.use("/api", router);
 
 export default app;
