@@ -39,10 +39,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Booking"
+        "401":
+          description: Admin authentication required
     post:
       operationId: createBooking
       tags: [bookings]
-      summary: Create a booking
+      summary: Create a booking request
       requestBody:
         required: true
         content:
@@ -51,11 +53,11 @@ paths:
               $ref: "#/components/schemas/BookingInput"
       responses:
         "201":
-          description: Created booking
+          description: Neutral confirmation without personal booking data
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Booking"
+                $ref: "#/components/schemas/BookingReceipt"
 
   /bookings/{id}:
     get:
@@ -75,6 +77,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Booking"
+        "401":
+          description: Admin authentication required
         "404":
           description: Not found
 
@@ -102,6 +106,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Booking"
+        "401":
+          description: Admin authentication required
+        "403":
+          description: Invalid CSRF token
         "404":
           description: Not found
 
@@ -118,6 +126,21 @@ components:
     BookingStatus:
       type: string
       enum: [new, accepted, completed, rejected]
+
+    BookingReceipt:
+      type: object
+      required:
+        - ok
+        - requestId
+        - message
+      properties:
+        ok:
+          type: boolean
+          const: true
+        requestId:
+          type: integer
+        message:
+          type: string
 
     Booking:
       type: object
