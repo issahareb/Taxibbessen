@@ -1,0 +1,32 @@
+name: API security checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  api-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --no-frozen-lockfile
+      - id: typecheck
+        shell: bash
+        run: |
+          pnpm exec tsc -b artifacts/api-server/tsconfig.json --pretty false > typecheck.log 2>&1 || echo "failed=true" >> "$GITHUB_OUTPUT"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-typecheck-log
+          path: typecheck.log
+      - if: steps.typecheck.outputs.failed == 'true'
+        run: exit 1
+      - run: pnpm --filter @workspace/api-server run test:security
