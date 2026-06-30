@@ -1,0 +1,22 @@
+
+> @workspace/taxi-app@0.0.0 typecheck /home/runner/work/Taxibbessen/Taxibbessen/artifacts/taxi-app
+> tsc -p tsconfig.json --noEmit
+
+src/components/HeroBookingWidget.tsx(79,62): error TS2339: Property 'data' does not exist on type 'unknown'.
+src/hooks/use-bookings.ts(8,8): error TS6305: Output file '/home/runner/work/Taxibbessen/Taxibbessen/lib/api-client-react/dist/index.d.ts' has not been built from source file '/home/runner/work/Taxibbessen/Taxibbessen/lib/api-client-react/src/index.ts'.
+src/hooks/use-bookings.ts(42,15): error TS7006: Parameter 'failureCount' implicitly has an 'any' type.
+src/hooks/use-bookings.ts(42,29): error TS7006: Parameter 'error' implicitly has an 'any' type.
+src/hooks/use-bookings.ts(46,20): error TS7006: Parameter 'attempt' implicitly has an 'any' type.
+src/main.tsx(2,28): error TS6305: Output file '/home/runner/work/Taxibbessen/Taxibbessen/lib/api-client-react/dist/index.d.ts' has not been built from source file '/home/runner/work/Taxibbessen/Taxibbessen/lib/api-client-react/src/index.ts'.
+src/pages/Confirmation.tsx(4,54): error TS6305: Output file '/home/runner/work/Taxibbessen/Taxibbessen/lib/api-client-react/dist/index.d.ts' has not been built from source file '/home/runner/work/Taxibbessen/Taxibbessen/lib/api-client-react/src/index.ts'.
+src/pages/Confirmation.tsx(32,19): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'.
+src/pages/Confirmation.tsx(53,19): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'.
+src/pages/Confirmation.tsx(218,21): error TS2322: Type '{ children: Element; asChild: true; className: string; }' is not assignable to type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'.
+src/pages/Confirmation.tsx(221,21): error TS2322: Type '{ children: Element; asChild: true; variant: "outline"; className: string; }' is not assignable to type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'.
+/home/runner/work/Taxibbessen/Taxibbessen/artifacts/taxi-app:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/taxi-app@0.0.0 typecheck: `tsc -p tsconfig.json --noEmit`
+Exit status 2
