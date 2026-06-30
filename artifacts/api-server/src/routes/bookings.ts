@@ -1,12 +1,12 @@
-import { Router, type Request, type Response } from "express";
+import { Router } from "express";
 import { db, bookingsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { sendBookingNotification } from "../lib/email";
-import { requireAdminKey } from "../middleware/require-admin-key";
+import { requireAdmin, requireAdminCsrf } from "../middleware/require-admin-key";
 
 const router = Router();
 
-router.get("/bookings", requireAdminKey, async (_req, res) => {
+router.get("/bookings", requireAdmin, async (_req, res) => {
   const bookings = await db.select().from(bookingsTable).orderBy(bookingsTable.createdAt);
   res.json(bookings);
 });
@@ -33,22 +33,25 @@ router.post("/bookings", async (req, res) => {
     status: "new",
   }).returning();
 
-  // E-Mail-Benachrichtigung asynchron senden (blockiert die Antwort nicht)
   sendBookingNotification(booking)
     .then(() => console.log(`[EMAIL] Buchung #${booking.id}: E-Mail erfolgreich gesendet`))
     .catch((err) => console.error(`[EMAIL] Buchung #${booking.id}: Fehler beim Senden:`, err?.message ?? err));
 
-  res.status(201).json(booking);
+  res.status(201).json({
+    ok: true,
+    requestId: booking.id,
+    message: "Ihre Anfrage wurde übermittelt. Wir melden uns so schnell wie möglich.",
+  });
 });
 
-router.get("/bookings/:id", requireAdminKey, async (req, res) => {
+router.get("/bookings/:id", requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
   const [booking] = await db.select().from(bookingsTable).where(eq(bookingsTable.id, id));
   if (!booking) return res.status(404).json({ error: "Not found" });
   res.json(booking);
 });
 
-router.patch("/bookings/:id/status", requireAdminKey, async (req, res) => {
+router.patch("/bookings/:id/status", requireAdmin, requireAdminCsrf, async (req, res) => {
   const id = Number(req.params.id);
   const { status } = req.body;
   const [booking] = await db.update(bookingsTable)
