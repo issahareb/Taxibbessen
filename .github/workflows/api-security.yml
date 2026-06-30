@@ -18,5 +18,17 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --no-frozen-lockfile
-      - run: pnpm --filter @workspace/api-server run typecheck
+      - id: typecheck
+        shell: bash
+        run: |
+          if ! pnpm --filter @workspace/api-server run typecheck > typecheck.log 2>&1; then
+            echo "failed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-typecheck-log
+          path: typecheck.log
+      - if: steps.typecheck.outputs.failed == 'true'
+        run: exit 1
       - run: pnpm --filter @workspace/api-server run test:security
