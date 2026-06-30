@@ -1,0 +1,39 @@
+
+> @workspace/api-spec@0.0.0 codegen /home/runner/work/Taxibbessen/Taxibbessen/lib/api-spec
+> orval --config ./orval.config.ts && pnpm -w run typecheck:libs
+
+🍻 [36m[1morval[22m[39m v8.9.1 - A swagger client generator for typescript
+api-client-react Cleaning output folder
+🎉 api-client-react - Your OpenAPI spec has been converted into ready to use orval!
+zod Cleaning output folder
+🎉 zod - Your OpenAPI spec has been converted into ready to use orval!
+
+> workspace@0.0.0 typecheck:libs /home/runner/work/Taxibbessen/Taxibbessen
+> tsc --build
+
+
+> @workspace/api-server@0.0.0 typecheck /home/runner/work/Taxibbessen/Taxibbessen/artifacts/api-server
+> tsc -p tsconfig.json --noEmit
+
+
+> @workspace/api-server@0.0.0 test:security /home/runner/work/Taxibbessen/Taxibbessen/artifacts/api-server
+> pnpm run build && node ./test/security.mjs
+
+
+> @workspace/api-server@0.0.0 build /home/runner/work/Taxibbessen/Taxibbessen/artifacts/api-server
+> node ./build.mjs
+
+
+  dist/index.mjs                       1.9mb ⚠️
+  dist/pino-worker.mjs               153.4kb
+  dist/pino-file.mjs                 142.1kb
+  dist/pino-pretty.mjs               114.6kb
+  dist/thread-stream-worker.mjs        7.3kb
+  dist/index.mjs.map                   3.3mb
+  dist/pino-worker.mjs.map           256.9kb
+  dist/pino-file.mjs.map             229.1kb
+  dist/pino-pretty.mjs.map           204.0kb
+  dist/thread-stream-worker.mjs.map   12.0kb
+
+⚡ Done in 182ms
+Security regression checks passed.
