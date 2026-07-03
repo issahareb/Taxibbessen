@@ -71,6 +71,18 @@ Value: xxxx.up.railway.app
 
 ---
 
+## Hinweis: `/api/health` auf der Live-Domain liefert die SPA-404
+
+Das ist **erwartetes Verhalten**, kein Fehler:
+
+- Die Live-Domain `www.taxibbessen.de` zeigt auf den **taxi-app Service** (statischer Webserver für die React-App). Dieser Service hat keine `/api`-Routen; für unbekannte Pfade liefert er die SPA aus, die dann ihre 404-Seite anzeigt.
+- Der **api-server** ist ein eigener Railway-Service mit eigener URL (`VITE_API_URL`). Das Frontend spricht die API direkt über diese URL an — es gibt keinen Proxy von der Live-Domain auf den API-Server.
+- Der Railway-Healthcheck des api-servers läuft über `healthcheckPath = "/api/healthz"` in `artifacts/api-server/railway.toml` und prüft direkt den API-Service, nicht die Live-Domain.
+
+Ein Healthcheck der API von außen muss also gegen die API-Service-URL gehen (z. B. `https://api-server-xxxx.up.railway.app/api/healthz`), nicht gegen `www.taxibbessen.de/api/health`.
+
+---
+
 ## Umgebungsvariablen Übersicht
 
 | Variable | Service | Beschreibung |

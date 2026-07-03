@@ -1,0 +1,63 @@
+import React from "react";
+import type { PageContent } from "./types";
+
+export const content: PageContent = {
+  path: "/taxi-essen-ruettenscheid",
+  h1: "Taxi Rüttenscheid",
+  badge: "Rüttenscheider Straße · Messe · Grugahalle",
+  intro: "Taxifahrten in Rüttenscheid zu Restaurants, Hotels, Messe Essen, Grugahalle und weiteren Zielen. Treffpunkt und Abholzeit werden vorab abgestimmt.",
+  sections: [
+    {
+      h2: "Taxi auf der Rüttenscheider Straße und im Stadtteil",
+      body: (
+        <>
+          <p>Rüttenscheid verbindet Wohngebiete, Gastronomie, Büros und Veranstaltungsorte. Taxi B&B kann Abholungen entlang der <strong>Rüttenscheider Straße</strong> sowie an Wohn- und Geschäftsadressen im Stadtteil einplanen.</p>
+          <p>Bei stark besuchten Veranstaltungen oder am Wochenende ist ein eindeutiger Treffpunkt besonders wichtig. Nennen Sie am besten Hausnummer, Restaurant, Hoteleingang oder eine gut erreichbare Seitenstraße.</p>
+        </>
+      ),
+    },
+    {
+      h2: "Messe, Grugahalle und Grugapark",
+      body: (
+        <ul className="list-disc list-inside space-y-2">
+          <li><strong>Messe Essen</strong> – Abholung an einem vereinbarten Eingang oder Taxihaltepunkt</li>
+          <li><strong>Grugahalle</strong> – für Konzerte, Shows und Veranstaltungen</li>
+          <li><strong>Grugapark</strong> – Abholung an einem vorher genannten Eingang</li>
+          <li><strong>Museum Folkwang</strong> – Verbindung Richtung Südviertel und Innenstadt</li>
+          <li><strong>Essen Hauptbahnhof</strong> – Anschluss an Fern- und Regionalzüge</li>
+        </ul>
+      ),
+    },
+    {
+      h2: "Abendfahrten und Gruppen in Rüttenscheid",
+      body: (
+        <>
+          <p>Für Restaurantbesuche, Veranstaltungen und Abendtermine können Hin- und Rückfahrten vorbestellt werden. Bei einer Gruppe sollten Personenzahl und gewünschte Abholzeit bereits bei der Anfrage angegeben werden.</p>
+          <p>Eine <a href="/grossraumtaxi-essen" className="text-primary hover:underline">Mercedes V-Klasse für bis zu 7 Fahrgäste</a> kann angefragt werden. Die Verfügbarkeit wird vor der Fahrt bestätigt.</p>
+        </>
+      ),
+    },
+    {
+      h2: "Taxi in Rüttenscheid anfragen",
+      body: (
+        <>
+          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book" className="text-primary hover:underline">Online-Anfrage</a>. Bei Veranstaltungen sollten Sie genügend Vorlauf einplanen.</p>
+        </>
+      ),
+    },
+  ],
+  faq: [
+    {
+      q: "Wo kann ich mich in Rüttenscheid abholen lassen?",
+      a: "Abholungen sind an Wohnadressen, Hotels, Restaurants und vereinbarten Treffpunkten möglich. Bei Veranstaltungen sollte ein genauer Eingang oder eine Seitenstraße genannt werden.",
+    },
+    {
+      q: "Kann ich eine Rückfahrt nach einer Veranstaltung vorbestellen?",
+      a: "Ja, eine Rückfahrt kann vorab angefragt werden. Wegen möglicher Straßensperrungen oder hoher Auslastung wird der genaue Treffpunkt bei der Buchung abgestimmt.",
+    },
+    {
+      q: "Ist ein Großraumtaxi in Rüttenscheid verfügbar?",
+      a: "Eine Mercedes V-Klasse für bis zu 7 Fahrgäste kann angefragt werden. Bitte Personenzahl und Gepäck beziehungsweise zusätzliche Gegenstände angeben.",
+    },
+  ],
+};

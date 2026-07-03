@@ -53,44 +53,9 @@ export function mediaPerformancePlugin() {
         "        {/* ─── CTA / KONTAKT ─── */}",
       );
 
-      output = output.replace(
-        `  {
-    q: "Muss ich die Fahrt vorab bezahlen?",
-    a: "Nein – Sie bezahlen bequem nach der Fahrt. Wir akzeptieren Bargeld, EC-Karte und Kreditkarte (Visa/Mastercard). Bei Krankenfahrten rechnen wir direkt mit Ihrer Krankenkasse ab.",
-  },
-`,
-        "",
-      );
-
+      // Die Startseiten-FAQ liegt inzwischen bereinigt in src/content/home.ts;
+      // frühere FAQ-Textersetzungen an dieser Stelle sind daher entfallen.
       const contentReplacements = new Map([
-        [
-          "Taxi B&B GmbH ist seit 1992 für Pünktlichkeit und Zuverlässigkeit bekannt – mit 5-Sterne-Bewertungen und 30+ Jahren Erfahrung. Wir sind 24/7 für Sie da: 0201 707060.",
-          "Taxi B&B GmbH ist seit 1992 in Essen tätig und rund um die Uhr unter 0201 707060 erreichbar. Abholzeit und Fahrzeugverfügbarkeit werden bei der Anfrage bestätigt.",
-        ],
-        [
-          "Wir berechnen transparente Festpreise ohne böse Überraschungen. Die Strecke Essen–Flughafen Düsseldorf beträgt ca. 35–40 km. Rufen Sie uns für ein konkretes Angebot an: 0201 707060.",
-          "Der Preis hängt von Abholort, Abholzeit und Fahrzeug ab. Die Strecke Essen–Flughafen Düsseldorf beträgt je nach Startpunkt ungefähr 35–40 km. Rufen Sie für eine konkrete Auskunft an: 0201 707060.",
-        ],
-        [
-          "Ja! Für viele Strecken – besonders Flughafentransfers und regelmäßige Fahrten – bieten wir Festpreise an. So wissen Sie vorab genau, was Ihre Fahrt kostet. Anfragen unter 0201 707060.",
-          "Für bestimmte vorbestellte Strecken kann vorab eine Preisangabe vereinbart werden. Fragen Sie unter 0201 707060 nach und lassen Sie sich den Preis vor der Fahrt bestätigen.",
-        ],
-        [
-          "Ja, wir unterstützen mobilitätseingeschränkte Fahrgäste und bieten barrierefreie Fahrten an. Bitte teilen Sie uns Ihre Anforderungen bei der Buchung mit: 0201 707060.",
-          "Bitte teilen Sie uns Mobilitätshilfen und benötigte Unterstützung bereits bei der Anfrage mit. Wir prüfen anschließend, ob ein geeignetes Fahrzeug verfügbar ist.",
-        ],
-        [
-          "Für Langstrecken berechnen wir Festpreise, die Sie vorab kennen. Essen–Köln sind ca. 75 km, Essen–Dortmund ca. 40 km. Rufen Sie uns für ein konkretes Angebot an: 0201 707060.",
-          "Der Preis für Langstrecken hängt von Start, Ziel, Zeit und Fahrzeug ab. Rufen Sie unter 0201 707060 an und lassen Sie sich vor der Fahrt eine konkrete Auskunft geben.",
-        ],
-        [
-          "Der Fahrpreis besteht aus Grundgebühr, Kilometerpreis und ggf. Zeittarif (Stau, Warten). Für viele Strecken bieten wir Festpreise an – so gibt es keine Überraschungen. Alle Preise nach offizieller Essener Taxitarifordnung.",
-          "Der reguläre Taxipreis richtet sich nach der geltenden örtlichen Tarifordnung. Bei vorbestellten Sonder- oder Fernfahrten kann eine individuelle Preisabsprache möglich sein; lassen Sie diese vorher bestätigen.",
-        ],
-        [
-          "Ja! Unser Kurierdienst ist besonders bei Firmen in Essen gefragt – Vertragsdokumente, Musterteile, dringende Unterlagen. Diskret, schnell und zuverlässig. Regelmäßige Firmenkunden erhalten Vorzugskonditionen: 0201 707060.",
-          "Kurierfahrten für Dokumente und kleinere Sendungen können angefragt werden. Inhalt, Abholung, Ziel, Übergabe, Verfügbarkeit und Preis werden vorab abgestimmt.",
-        ],
         ["taxibbessen.de", "www.taxibbessen.de"],
       ]);
 

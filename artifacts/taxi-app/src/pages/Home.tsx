@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, type ComponentType } from "react";
 import { usePageMeta } from "@/hooks/use-page-meta";
 import { getPageMeta } from "@/page-meta-manifest";
+import { HOME_FAQ as FAQ_ITEMS } from "@/content/home";
 import { Link } from "wouter";
 import { Layout } from "@/components/Layout";
 import { ReviewCarousel } from "@/components/ReviewCarousel";
@@ -185,109 +186,6 @@ function ServicesRevealSection() {
     </div>
   );
 }
-
-const FAQ_ITEMS = [
-  {
-    q: "Welches Taxiunternehmen ist in Essen am zuverlässigsten?",
-    a: "Taxi B&B GmbH ist seit 1992 für Pünktlichkeit und Zuverlässigkeit bekannt – mit 5-Sterne-Bewertungen und 30+ Jahren Erfahrung. Wir sind 24/7 für Sie da: 0201 707060.",
-  },
-  {
-    q: "Wie viel kostet ein Taxi zum Flughafen Düsseldorf aus Essen?",
-    a: "Wir berechnen transparente Festpreise ohne böse Überraschungen. Die Strecke Essen–Flughafen Düsseldorf beträgt ca. 35–40 km. Rufen Sie uns für ein konkretes Angebot an: 0201 707060.",
-  },
-  {
-    q: "Gibt es Festpreise für meine Taxifahrt?",
-    a: "Ja! Für viele Strecken – besonders Flughafentransfers und regelmäßige Fahrten – bieten wir Festpreise an. So wissen Sie vorab genau, was Ihre Fahrt kostet. Anfragen unter 0201 707060.",
-  },
-  {
-    q: "Kann ich ein Großraumtaxi für 7 Personen buchen?",
-    a: "Ja! Unsere Mercedes V-Klasse bietet Platz für bis zu 7 Personen – ideal für Gruppen, Familien und Firmenausflüge. Kindersitze auf Anfrage. Jetzt buchen: 0201 707060.",
-  },
-  {
-    q: "Bieten Sie Krankenfahrten und Dialysefahrten an?",
-    a: "Ja, wir führen Krankenfahrten, Dialysefahrten und Therapiefahrten in Essen und Umgebung durch. Wir arbeiten mit Krankenkassen zusammen und holen Sie pünktlich ab.",
-  },
-  {
-    q: "Fahren Sie auch Rollstuhlfahrer oder mobilitätseingeschränkte Personen?",
-    a: "Ja, wir unterstützen mobilitätseingeschränkte Fahrgäste und bieten barrierefreie Fahrten an. Bitte teilen Sie uns Ihre Anforderungen bei der Buchung mit: 0201 707060.",
-  },
-  {
-    q: "Wie viel Gepäck darf ich mitnehmen?",
-    a: "Unser Mercedes E-Klasse Kombi bietet reichlich Kofferraumplatz. Mit der Mercedes V-Klasse können bis zu 7 Personen mit großem Gepäck reisen. Größere Mengen bitte vorab anfragen.",
-  },
-  {
-    q: "Darf ich mit Haustieren ins Taxi?",
-    a: "Kleine Haustiere in einer Transportbox sind in der Regel kein Problem. Bitte informieren Sie uns bei der Buchung, damit wir alles vorbereiten können.",
-  },
-  {
-    q: "Muss ich die Fahrt vorab bezahlen?",
-    a: "Nein – Sie bezahlen bequem nach der Fahrt. Wir akzeptieren Bargeld, EC-Karte und Kreditkarte (Visa/Mastercard). Bei Krankenfahrten rechnen wir direkt mit Ihrer Krankenkasse ab.",
-  },
-  {
-    q: "Wie kann ich eine Fahrt stornieren?",
-    a: "Rufen Sie uns so früh wie möglich an: 0201 707060. Bei rechtzeitiger Absage entstehen keine Kosten. Für kurzfristige Stornierungen sprechen Sie uns bitte direkt an.",
-  },
-  {
-    q: "Bekomme ich eine Quittung oder einen Beleg?",
-    a: "Selbstverständlich! Sie erhalten auf Wunsch einen Taxibeleg nach jeder Fahrt. Für Geschäftskunden stellen wir auch Rechnungen aus. Einfach beim Fahrer anfragen.",
-  },
-  {
-    q: "Ist Taxi B&B GmbH wirklich 24 Stunden erreichbar?",
-    a: "Absolut – 24 Stunden, 7 Tage die Woche, 365 Tage im Jahr. Egal ob Nachtflug oder Frühschicht: Wir sind da. Rufen Sie einfach an: 0201 707060.",
-  },
-  {
-    q: "Fahren Sie auch ins Ausland oder bundesweit?",
-    a: "Ja! Wir fahren bundesweit und ins europäische Ausland. Amsterdam, Zürich, Wien – kein Problem. Festpreise auf Anfrage.",
-  },
-  {
-    q: "Welche Fahrzeuge hat Taxi B&B GmbH?",
-    a: "Unsere Flotte umfasst den Mercedes E-Klasse Kombi, den Mercedes E 300 e Hybrid (elektrisch) und die Mercedes V-Klasse für Gruppen. Alle Fahrzeuge sind klimatisiert und regelmäßig gewartet.",
-  },
-  {
-    q: "Wie schnell kommt das Taxi nach meiner Bestellung?",
-    a: "In der Regel sind wir innerhalb weniger Minuten bei Ihnen in Essen. Rufen Sie uns an oder buchen Sie direkt über das Formular auf dieser Seite.",
-  },
-  {
-    q: "Kann ich ein Taxi per WhatsApp buchen?",
-    a: "Ja! Sie können uns bequem per WhatsApp kontaktieren und Ihre Fahrt anfragen. Schreiben Sie uns einfach unter +49 171 1111535 – wir antworten schnell und bestätigen Ihre Buchung.",
-  },
-  {
-    q: "Wie weit im Voraus muss ich eine Fahrt vorbestellen?",
-    a: "Für Sofortfahrten rufen Sie einfach an: 0201 707060. Für Flughafentransfers, Krankenfahrten oder Gruppenfahrten empfehlen wir eine Vorbestellung von mindestens 24 Stunden, damit wir alles optimal planen können.",
-  },
-  {
-    q: "Bieten Sie Kindersitze an?",
-    a: "Ja, Kindersitze sind auf Anfrage erhältlich. Bitte teilen Sie uns bei der Buchung das Alter und Gewicht Ihres Kindes mit, damit wir den passenden Sitz bereitstellen können. Sicherheit geht vor.",
-  },
-  {
-    q: "Wie läuft eine Geschäftsfahrt mit Rechnung ab?",
-    a: "Für Firmenkunden stellen wir auf Wunsch eine Rechnung mit allen steuerlich relevanten Angaben aus. Einfach bei der Buchung mitteilen und die Firmendaten angeben. Regelmäßige Geschäftskunden erhalten auf Anfrage auch Monatsabrechnungen.",
-  },
-  {
-    q: "Was kostet eine Fahrt von Essen nach Köln oder Dortmund?",
-    a: "Für Langstrecken berechnen wir Festpreise, die Sie vorab kennen. Essen–Köln sind ca. 75 km, Essen–Dortmund ca. 40 km. Rufen Sie uns für ein konkretes Angebot an: 0201 707060.",
-  },
-  {
-    q: "Wie setzt sich der Taxipreis zusammen?",
-    a: "Der Fahrpreis besteht aus Grundgebühr, Kilometerpreis und ggf. Zeittarif (Stau, Warten). Für viele Strecken bieten wir Festpreise an – so gibt es keine Überraschungen. Alle Preise nach offizieller Essener Taxitarifordnung.",
-  },
-  {
-    q: "Bieten Sie Kurierdienste für Unternehmen an?",
-    a: "Ja! Unser Kurierdienst ist besonders bei Firmen in Essen gefragt – Vertragsdokumente, Musterteile, dringende Unterlagen. Diskret, schnell und zuverlässig. Regelmäßige Firmenkunden erhalten Vorzugskonditionen: 0201 707060.",
-  },
-  {
-    q: "In welchen Stadtteilen in Essen fahren Sie?",
-    a: "Wir fahren in ganz Essen – von Holsterhausen und Rüttenscheid über den Hauptbahnhof, Südviertel, Frohnhausen, Altenessen, Steele bis nach Kettwig. Auch Essen-Kettwig, Werden und alle Randgebiete. Einfach anrufen: 0201 707060.",
-  },
-  {
-    q: "Wie schützen Sie meine persönlichen Daten?",
-    a: "Ihre Daten werden ausschließlich zur Fahrtdurchführung verwendet und nicht an Dritte weitergegeben. Wir arbeiten DSGVO-konform. Weitere Informationen finden Sie in unserer Datenschutzerklärung auf dieser Website.",
-  },
-  {
-    q: "Wo hat Taxi B&B GmbH seinen Sitz?",
-    a: "Taxi B&B GmbH hat seinen Sitz in der Menzelstraße 8–10, 45147 Essen-Holsterhausen. Das Unternehmen wurde 1992 gegründet und ist im Handelsregister Essen unter HRB 36284 eingetragen. Telefon: 0201 707060.",
-  },
-];
 
 function AeoFaktenblock() {
   return (
@@ -830,7 +728,6 @@ export default function Home() {
     };
   }, []);
 
-
   return (
     <Layout>
       <div>
@@ -1241,7 +1138,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
 
         {/* ─── REVIEWS ─── */}
         <section id="bewertungen" ref={reviewsSectionRef} className="py-20 sm:py-28 relative" style={{ zIndex: 2 }}>
