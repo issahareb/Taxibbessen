@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Großraumtaxi in Essen anfragen",
       body: (
         <>
-          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book" className="text-primary hover:underline">Online-Anfrage</a>. Personenzahl, Gepäck, Abholort, Ziel und gewünschte Zeit sollten vollständig angegeben werden.</p>
+          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Personenzahl, Gepäck, Abholort, Ziel und gewünschte Zeit sollten vollständig angegeben werden.</p>
           <p>Fahrzeugverfügbarkeit und Preis werden vor der Fahrt bestätigt.</p>
         </>
       ),

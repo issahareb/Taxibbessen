@@ -32,7 +32,7 @@ export const content: PageContent = {
       h2: "Kranken- und Dialysefahrten aus Frohnhausen",
       body: (
         <>
-          <p><a href="/krankenfahrten-essen" className="text-primary hover:underline">Krankenfahrten</a> und <a href="/dialysefahrten-essen" className="text-primary hover:underline">Dialysefahrten</a> können für einzelne oder wiederkehrende Termine angefragt werden.</p>
+          <p><a href="/krankenfahrten-essen/" className="text-primary hover:underline">Krankenfahrten</a> und <a href="/dialysefahrten-essen/" className="text-primary hover:underline">Dialysefahrten</a> können für einzelne oder wiederkehrende Termine angefragt werden.</p>
           <p>Ob eine Kostenübernahme oder direkte Abrechnung möglich ist, hängt von Verordnung, Genehmigung und den Vorgaben der Krankenkasse ab. Die Unterlagen werden vor der ersten Fahrt abgestimmt.</p>
         </>
       ),
@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Taxi in Frohnhausen anfragen",
       body: (
         <>
-          <p>Rufen Sie unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book" className="text-primary hover:underline">Online-Anfrage</a>. Abholzeit, Fahrzeug und Preis werden anschließend bestätigt.</p>
+          <p>Rufen Sie unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Abholzeit, Fahrzeug und Preis werden anschließend bestätigt.</p>
         </>
       ),
     },

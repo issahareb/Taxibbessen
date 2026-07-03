@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Fahrten mit Gepäck oder als Gruppe",
       body: (
         <>
-          <p>Bitte geben Sie größere Koffer, Kinderwagen oder Sportausrüstung bei der Anfrage an. Für Gruppen kann eine <a href="/grossraumtaxi-essen" className="text-primary hover:underline">Mercedes V-Klasse für bis zu 7 Fahrgäste</a> angefragt werden.</p>
+          <p>Bitte geben Sie größere Koffer, Kinderwagen oder Sportausrüstung bei der Anfrage an. Für Gruppen kann eine <a href="/grossraumtaxi-essen/" className="text-primary hover:underline">Mercedes V-Klasse für bis zu 7 Fahrgäste</a> angefragt werden.</p>
         </>
       ),
     },

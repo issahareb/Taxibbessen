@@ -23,9 +23,9 @@ export default function GrossraumtaxiEssen() {
       sections={content.sections}
       faq={content.faq}
       relatedLinks={[
-        { href: "/flughafentransfer-essen-duesseldorf", label: "Flughafentransfer Essen" },
-        { href: "/krankenfahrten-essen", label: "Krankenfahrten Essen" },
-        { href: "/kurierdienst-essen", label: "Kurierdienst Essen" },
+        { href: "/flughafentransfer-essen-duesseldorf/", label: "Flughafentransfer Essen" },
+        { href: "/krankenfahrten-essen/", label: "Krankenfahrten Essen" },
+        { href: "/kurierdienst-essen/", label: "Kurierdienst Essen" },
       ]}
       schema={schema}
       breadcrumbLabel="Großraumtaxi Essen"

@@ -33,7 +33,7 @@ export const content: PageContent = {
       body: (
         <>
           <p>Für Restaurantbesuche, Veranstaltungen und Abendtermine können Hin- und Rückfahrten vorbestellt werden. Bei einer Gruppe sollten Personenzahl und gewünschte Abholzeit bereits bei der Anfrage angegeben werden.</p>
-          <p>Eine <a href="/grossraumtaxi-essen" className="text-primary hover:underline">Mercedes V-Klasse für bis zu 7 Fahrgäste</a> kann angefragt werden. Die Verfügbarkeit wird vor der Fahrt bestätigt.</p>
+          <p>Eine <a href="/grossraumtaxi-essen/" className="text-primary hover:underline">Mercedes V-Klasse für bis zu 7 Fahrgäste</a> kann angefragt werden. Die Verfügbarkeit wird vor der Fahrt bestätigt.</p>
         </>
       ),
     },
@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Taxi in Rüttenscheid anfragen",
       body: (
         <>
-          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book" className="text-primary hover:underline">Online-Anfrage</a>. Bei Veranstaltungen sollten Sie genügend Vorlauf einplanen.</p>
+          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Bei Veranstaltungen sollten Sie genügend Vorlauf einplanen.</p>
         </>
       ),
     },

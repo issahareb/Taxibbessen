@@ -23,15 +23,15 @@ export default function TaxiSuedviertel() {
       sections={content.sections}
       faq={content.faq}
       stadtteileLinks={[
-        { href: "/taxi-essen-hbf", label: "Taxi Essen HBF" },
-        { href: "/taxi-essen-ruettenscheid", label: "Taxi Rüttenscheid" },
-        { href: "/taxi-essen-holsterhausen", label: "Taxi Holsterhausen" },
-        { href: "/taxi-essen-frohnhausen", label: "Taxi Frohnhausen" },
+        { href: "/taxi-essen-hbf/", label: "Taxi Essen HBF" },
+        { href: "/taxi-essen-ruettenscheid/", label: "Taxi Rüttenscheid" },
+        { href: "/taxi-essen-holsterhausen/", label: "Taxi Holsterhausen" },
+        { href: "/taxi-essen-frohnhausen/", label: "Taxi Frohnhausen" },
       ]}
       relatedLinks={[
-        { href: "/flughafentransfer-essen-duesseldorf", label: "Flughafentransfer Essen" },
-        { href: "/krankenfahrten-essen", label: "Krankenfahrten Essen" },
-        { href: "/grossraumtaxi-essen", label: "Großraumtaxi Essen" },
+        { href: "/flughafentransfer-essen-duesseldorf/", label: "Flughafentransfer Essen" },
+        { href: "/krankenfahrten-essen/", label: "Krankenfahrten Essen" },
+        { href: "/grossraumtaxi-essen/", label: "Großraumtaxi Essen" },
       ]}
       schema={schema}
       breadcrumbLabel="Taxi Südviertel Essen"

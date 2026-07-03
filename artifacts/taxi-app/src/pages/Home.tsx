@@ -62,12 +62,12 @@ function ServiceCard({ title, sub, index, icon: Icon }: { title: string; sub: st
 }
 
 const SERVICE_ITEMS = [
-  { src: "krankenfahrten.webp",    titleKey: "hero_service2_title", descKey: "hero_service2_desc", href: "/krankenfahrten-essen" },
-  { src: "geschaeftsfahrten.webp", titleKey: "hero_service1_title", descKey: "hero_service1_desc", href: "/grossraumtaxi-essen" },
-  { src: "flughafentransfer.webp", titleKey: "hero_service3_title", descKey: "hero_service3_desc", href: "/flughafentransfer-essen-duesseldorf" },
-  { src: "kurierdokumente.webp",   titleKey: "hero_service4_title", descKey: "hero_service4_desc", href: "/dialysefahrten-essen" },
-  { src: "kurierdienst.webp",      titleKey: "hero_service5_title", descKey: "hero_service5_desc", href: "/kurierdienst-essen" },
-  { src: "hauszuhaus.webp",        titleKey: "hero_service6_title", descKey: "hero_service6_desc", href: "/taxi-essen-hbf" },
+  { src: "krankenfahrten.webp",    titleKey: "hero_service2_title", descKey: "hero_service2_desc", href: "/krankenfahrten-essen/" },
+  { src: "geschaeftsfahrten.webp", titleKey: "hero_service1_title", descKey: "hero_service1_desc", href: "/grossraumtaxi-essen/" },
+  { src: "flughafentransfer.webp", titleKey: "hero_service3_title", descKey: "hero_service3_desc", href: "/flughafentransfer-essen-duesseldorf/" },
+  { src: "kurierdokumente.webp",   titleKey: "hero_service4_title", descKey: "hero_service4_desc", href: "/dialysefahrten-essen/" },
+  { src: "kurierdienst.webp",      titleKey: "hero_service5_title", descKey: "hero_service5_desc", href: "/kurierdienst-essen/" },
+  { src: "hauszuhaus.webp",        titleKey: "hero_service6_title", descKey: "hero_service6_desc", href: "/taxi-essen-hbf/" },
 ] as const;
 
 function ServicesRevealSection() {
@@ -963,7 +963,7 @@ export default function Home() {
                     Krankenfahrten, Flughafentransfer oder Geschäftsfahrten
                   </a>{" "}
                   – wir sind 24 Stunden am Tag, 7 Tage die Woche für Sie erreichbar. Entdecken Sie{" "}
-                  <Link href="/fahrzeuge" className="text-primary/80 hover:text-primary underline underline-offset-2 transition-colors">
+                  <Link href="/fahrzeuge/" className="text-primary/80 hover:text-primary underline underline-offset-2 transition-colors">
                     unsere modernen Mercedes-Fahrzeuge
                   </Link>{" "}
                   oder finden Sie Antworten auf die{" "}
@@ -1130,7 +1130,7 @@ export default function Home() {
                 <p className="text-lg text-white/55 leading-relaxed mb-10 font-medium">
                   {t("story_text")}
                 </p>
-                <Link href="/ueber-uns" className="inline-flex items-center gap-4 text-sm font-black uppercase tracking-[0.2em] hover:text-primary transition-colors group">
+                <Link href="/ueber-uns/" className="inline-flex items-center gap-4 text-sm font-black uppercase tracking-[0.2em] hover:text-primary transition-colors group">
                   {t("story_cta")}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                 </Link>

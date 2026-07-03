@@ -23,9 +23,9 @@ export default function FlughafentransferEssen() {
       sections={content.sections}
       faq={content.faq}
       relatedLinks={[
-        { href: "/grossraumtaxi-essen", label: "Großraumtaxi Essen" },
-        { href: "/krankenfahrten-essen", label: "Krankenfahrten Essen" },
-        { href: "/kurierdienst-essen", label: "Kurierdienst Essen" },
+        { href: "/grossraumtaxi-essen/", label: "Großraumtaxi Essen" },
+        { href: "/krankenfahrten-essen/", label: "Krankenfahrten Essen" },
+        { href: "/kurierdienst-essen/", label: "Kurierdienst Essen" },
       ]}
       schema={schema}
       breadcrumbLabel="Flughafentransfer Essen Düsseldorf"

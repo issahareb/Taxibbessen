@@ -115,8 +115,8 @@ export function Layout({ children }: { children: ReactNode }) {
 
   const navLinks = [
     { href: "/", label: t("nav_home") },
-    { href: "/fahrzeuge", label: t("nav_vehicles") },
-    { href: "/book", label: t("nav_book") },
+    { href: "/fahrzeuge/", label: t("nav_vehicles") },
+    { href: "/book/", label: t("nav_book") },
   ];
 
   const scrollToSection = (id: string) => {
@@ -196,9 +196,9 @@ export function Layout({ children }: { children: ReactNode }) {
               {t("nav_services")}
             </button>
             <Link
-              href="/ueber-uns"
+              href="/ueber-uns/"
               className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
-                location === "/ueber-uns"
+                location === "/ueber-uns/"
                   ? "bg-primary text-primary-foreground"
                   : "text-white/60 hover:text-white"
               }`}
@@ -327,10 +327,10 @@ export function Layout({ children }: { children: ReactNode }) {
                   {t("nav_services")}
                 </button>
                 <Link
-                  href="/ueber-uns"
+                  href="/ueber-uns/"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`flex items-center px-3 py-2.5 rounded-xl font-black text-base transition-all ${
-                    location === "/ueber-uns" ? "bg-primary/10 text-primary" : "text-foreground hover:bg-white/5"
+                    location === "/ueber-uns/" ? "bg-primary/10 text-primary" : "text-foreground hover:bg-white/5"
                   }`}
                 >
                   {t("nav_about")}
@@ -446,22 +446,22 @@ export function Layout({ children }: { children: ReactNode }) {
             <div>
               <h4 className="font-black text-white uppercase tracking-widest text-xs mb-6">Regionen</h4>
               <ul className="space-y-3 text-sm font-bold">
-                <li><Link href="/taxi-essen-holsterhausen" className="text-muted-foreground hover:text-primary transition-colors">Holsterhausen</Link></li>
-                <li><Link href="/taxi-essen-ruettenscheid" className="text-muted-foreground hover:text-primary transition-colors">Rüttenscheid</Link></li>
-                <li><Link href="/taxi-essen-frohnhausen" className="text-muted-foreground hover:text-primary transition-colors">Frohnhausen</Link></li>
-                <li><Link href="/taxi-essen-suedviertel" className="text-muted-foreground hover:text-primary transition-colors">Südviertel</Link></li>
-                <li className="pt-2 border-t border-white/5"><Link href="/taxi-essen-hbf" className="text-muted-foreground hover:text-primary transition-colors">Hauptbahnhof</Link></li>
-                <li><Link href="/flughafentransfer-essen-duesseldorf" className="text-muted-foreground hover:text-primary transition-colors">Flughafentransfer</Link></li>
+                <li><Link href="/taxi-essen-holsterhausen/" className="text-muted-foreground hover:text-primary transition-colors">Holsterhausen</Link></li>
+                <li><Link href="/taxi-essen-ruettenscheid/" className="text-muted-foreground hover:text-primary transition-colors">Rüttenscheid</Link></li>
+                <li><Link href="/taxi-essen-frohnhausen/" className="text-muted-foreground hover:text-primary transition-colors">Frohnhausen</Link></li>
+                <li><Link href="/taxi-essen-suedviertel/" className="text-muted-foreground hover:text-primary transition-colors">Südviertel</Link></li>
+                <li className="pt-2 border-t border-white/5"><Link href="/taxi-essen-hbf/" className="text-muted-foreground hover:text-primary transition-colors">Hauptbahnhof</Link></li>
+                <li><Link href="/flughafentransfer-essen-duesseldorf/" className="text-muted-foreground hover:text-primary transition-colors">Flughafentransfer</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-black text-white uppercase tracking-widest text-xs mb-6">{t("footer_legal")}</h4>
               <ul className="space-y-4 text-sm font-bold">
-                <li><Link href="/book" className="text-muted-foreground hover:text-primary transition-colors">{t("nav_book")}</Link></li>
-                <li className="pt-2 border-t border-white/5"><Link href="/impressum" className="text-muted-foreground hover:text-primary transition-colors">{t("footer_imprint")}</Link></li>
-                <li><Link href="/datenschutz" className="text-muted-foreground hover:text-primary transition-colors">{t("footer_privacy")}</Link></li>
-                <li><Link href="/agb" className="text-muted-foreground hover:text-primary transition-colors">{t("footer_terms")}</Link></li>
+                <li><Link href="/book/" className="text-muted-foreground hover:text-primary transition-colors">{t("nav_book")}</Link></li>
+                <li className="pt-2 border-t border-white/5"><Link href="/impressum/" className="text-muted-foreground hover:text-primary transition-colors">{t("footer_imprint")}</Link></li>
+                <li><Link href="/datenschutz/" className="text-muted-foreground hover:text-primary transition-colors">{t("footer_privacy")}</Link></li>
+                <li><Link href="/agb/" className="text-muted-foreground hover:text-primary transition-colors">{t("footer_terms")}</Link></li>
               </ul>
             </div>
           </div>

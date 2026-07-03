@@ -115,7 +115,7 @@ export function ServicePageTemplate({
                   0201 707060
                 </a>
                 <Link
-                  href="/book"
+                  href="/book/"
                   className="inline-flex items-center gap-2 border border-white/20 text-white font-black px-6 py-3.5 rounded-2xl hover:bg-white/5 transition-all text-sm uppercase tracking-widest"
                 >
                   Online buchen
@@ -228,7 +228,7 @@ export function ServicePageTemplate({
                     0201 707060
                   </a>
                   <Link
-                    href="/book"
+                    href="/book/"
                     className="inline-flex items-center gap-2 border border-white/20 text-white font-black px-8 py-4 rounded-2xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm"
                   >
                     Online buchen

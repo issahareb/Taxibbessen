@@ -23,9 +23,9 @@ export default function KrankenfahrtenEssen() {
       sections={content.sections}
       faq={content.faq}
       relatedLinks={[
-        { href: "/dialysefahrten-essen", label: "Dialysefahrten Essen" },
-        { href: "/flughafentransfer-essen-duesseldorf", label: "Flughafentransfer Essen" },
-        { href: "/grossraumtaxi-essen", label: "Großraumtaxi Essen" },
+        { href: "/dialysefahrten-essen/", label: "Dialysefahrten Essen" },
+        { href: "/flughafentransfer-essen-duesseldorf/", label: "Flughafentransfer Essen" },
+        { href: "/grossraumtaxi-essen/", label: "Großraumtaxi Essen" },
       ]}
       schema={schema}
       breadcrumbLabel="Krankenfahrten Essen"

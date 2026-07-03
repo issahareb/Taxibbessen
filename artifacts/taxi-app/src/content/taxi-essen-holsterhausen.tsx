@@ -32,7 +32,7 @@ export const content: PageContent = {
       h2: "Kranken- und Dialysefahrten aus Holsterhausen",
       body: (
         <>
-          <p><a href="/krankenfahrten-essen" className="text-primary hover:underline">Krankenfahrten</a> und <a href="/dialysefahrten-essen" className="text-primary hover:underline">Dialysefahrten</a> können regelmäßig oder für einzelne Termine angefragt werden. Verordnung, Genehmigung und Abrechnungsmöglichkeiten werden vor der ersten Fahrt geprüft.</p>
+          <p><a href="/krankenfahrten-essen/" className="text-primary hover:underline">Krankenfahrten</a> und <a href="/dialysefahrten-essen/" className="text-primary hover:underline">Dialysefahrten</a> können regelmäßig oder für einzelne Termine angefragt werden. Verordnung, Genehmigung und Abrechnungsmöglichkeiten werden vor der ersten Fahrt geprüft.</p>
           <p>Bei einer Abholung am Universitätsklinikum oder einer Praxis sollte der genaue Eingang beziehungsweise Gebäudeteil angegeben werden.</p>
         </>
       ),
@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Taxi in Holsterhausen anfragen",
       body: (
         <>
-          <p>Rufen Sie unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book" className="text-primary hover:underline">Online-Anfrage</a>. Abholzeit und Verfügbarkeit werden anschließend bestätigt.</p>
+          <p>Rufen Sie unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Abholzeit und Verfügbarkeit werden anschließend bestätigt.</p>
         </>
       ),
     },

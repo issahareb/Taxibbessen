@@ -18,12 +18,12 @@ import { motion } from "framer-motion";
 import { BUSINESS } from "@/seo/business";
 
 const services = [
-  { label: "Krankenfahrten Essen", href: "/krankenfahrten-essen" },
-  { label: "Flughafentransfer Düsseldorf", href: "/flughafentransfer-essen-duesseldorf" },
-  { label: "Großraumtaxi Essen", href: "/grossraumtaxi-essen" },
-  { label: "Kurierdienst Essen", href: "/kurierdienst-essen" },
-  { label: "Dialysefahrten Essen", href: "/dialysefahrten-essen" },
-  { label: "Unsere Fahrzeuge", href: "/fahrzeuge" },
+  { label: "Krankenfahrten Essen", href: "/krankenfahrten-essen/" },
+  { label: "Flughafentransfer Düsseldorf", href: "/flughafentransfer-essen-duesseldorf/" },
+  { label: "Großraumtaxi Essen", href: "/grossraumtaxi-essen/" },
+  { label: "Kurierdienst Essen", href: "/kurierdienst-essen/" },
+  { label: "Dialysefahrten Essen", href: "/dialysefahrten-essen/" },
+  { label: "Unsere Fahrzeuge", href: "/fahrzeuge/" },
 ];
 
 const facts = [

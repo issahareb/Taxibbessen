@@ -29,7 +29,7 @@ export default function Confirmation() {
       <Layout>
         <div className="min-h-[60vh] flex items-center justify-center flex-col gap-4 px-4">
           <h2 className="text-2xl font-bold text-center">{t("admin_no_bookings")}</h2>
-          <Button asChild><Link href="/book">{t("nav_book")}</Link></Button>
+          <Button asChild><Link href="/book/">{t("nav_book")}</Link></Button>
         </div>
       </Layout>
     );
@@ -50,7 +50,7 @@ export default function Confirmation() {
       <Layout>
         <div className="min-h-[60vh] flex items-center justify-center flex-col gap-4 px-4">
           <h2 className="text-xl sm:text-2xl font-bold text-destructive text-center">Buchung nicht gefunden</h2>
-          <Button asChild><Link href="/book">{t("conf_new_booking")}</Link></Button>
+          <Button asChild><Link href="/book/">{t("conf_new_booking")}</Link></Button>
         </div>
       </Layout>
     );
@@ -216,7 +216,7 @@ export default function Confirmation() {
           {/* Actions */}
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <Button asChild className="w-full sm:w-auto">
-              <Link href="/book">{t("conf_new_booking")}</Link>
+              <Link href="/book/">{t("conf_new_booking")}</Link>
             </Button>
             <Button asChild variant="outline" className="gap-2 w-full sm:w-auto">
               <Link href="/">{t("conf_home")} <ArrowRight className="w-4 h-4" /></Link>

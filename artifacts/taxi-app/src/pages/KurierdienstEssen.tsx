@@ -23,9 +23,9 @@ export default function KurierdienstEssen() {
       sections={content.sections}
       faq={content.faq}
       relatedLinks={[
-        { href: "/flughafentransfer-essen-duesseldorf", label: "Flughafentransfer Essen" },
-        { href: "/grossraumtaxi-essen", label: "Großraumtaxi Essen" },
-        { href: "/krankenfahrten-essen", label: "Krankenfahrten Essen" },
+        { href: "/flughafentransfer-essen-duesseldorf/", label: "Flughafentransfer Essen" },
+        { href: "/grossraumtaxi-essen/", label: "Großraumtaxi Essen" },
+        { href: "/krankenfahrten-essen/", label: "Krankenfahrten Essen" },
       ]}
       schema={schema}
       breadcrumbLabel="Kurierdienst Essen"

@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Krankenfahrt in Essen anfragen",
       body: (
         <>
-          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book" className="text-primary hover:underline">Online-Anfrage</a>. Halten Sie vorhandene Verordnungen, Genehmigungen, Terminzeiten und die vollständigen Abhol- und Zieladressen bereit.</p>
+          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Halten Sie vorhandene Verordnungen, Genehmigungen, Terminzeiten und die vollständigen Abhol- und Zieladressen bereit.</p>
           <p>Für regelmäßige Fahrten kann nach Abstimmung ein wiederkehrender Fahrplan eingerichtet werden.</p>
         </>
       ),

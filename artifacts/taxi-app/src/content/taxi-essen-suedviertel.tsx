@@ -32,8 +32,8 @@ export const content: PageContent = {
       h2: "Flughafentransfer und Gruppenfahrten",
       body: (
         <>
-          <p>Ein <a href="/flughafentransfer-essen-duesseldorf" className="text-primary hover:underline">Flughafentransfer nach Düsseldorf</a> kann aus dem Südviertel vorbestellt werden. Flugzeit, Personenzahl, Gepäck und gewünschte Abholung sollten vollständig angegeben werden.</p>
-          <p>Für Gruppen kann eine <a href="/grossraumtaxi-essen" className="text-primary hover:underline">Mercedes V-Klasse für bis zu 7 Fahrgäste</a> angefragt werden. Fahrzeugverfügbarkeit und Preis werden vor der Fahrt bestätigt.</p>
+          <p>Ein <a href="/flughafentransfer-essen-duesseldorf/" className="text-primary hover:underline">Flughafentransfer nach Düsseldorf</a> kann aus dem Südviertel vorbestellt werden. Flugzeit, Personenzahl, Gepäck und gewünschte Abholung sollten vollständig angegeben werden.</p>
+          <p>Für Gruppen kann eine <a href="/grossraumtaxi-essen/" className="text-primary hover:underline">Mercedes V-Klasse für bis zu 7 Fahrgäste</a> angefragt werden. Fahrzeugverfügbarkeit und Preis werden vor der Fahrt bestätigt.</p>
         </>
       ),
     },
@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Taxi im Südviertel anfragen",
       body: (
         <>
-          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book" className="text-primary hover:underline">Online-Anfrage</a>. Bei Veranstaltungen empfiehlt sich eine frühzeitige Vorbestellung.</p>
+          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Bei Veranstaltungen empfiehlt sich eine frühzeitige Vorbestellung.</p>
         </>
       ),
     },
