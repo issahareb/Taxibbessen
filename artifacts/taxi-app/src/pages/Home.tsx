@@ -311,6 +311,7 @@ function FAQSection() {
 export default function Home() {
   const { t } = useLanguage();
   const imgRef = useRef<HTMLImageElement>(null);
+  const desktopImgRef = useRef<HTMLImageElement>(null);
   const sharpOverlayRef = useRef<HTMLImageElement>(null);
   const servicesRef = useRef<HTMLElement>(null);
   const ctaHeadingRef = useRef<HTMLParagraphElement>(null);
@@ -353,13 +354,17 @@ export default function Home() {
   const FRAME_COUNT = 97;
   const framePath = (n: number) =>
     `${import.meta.env.BASE_URL}hero-frames/frame_${String(n).padStart(3, "0")}.jpg`;
+  // Desktop scrubs its own 16:9 sequence (extracted from hero-desktop.mp4,
+  // same 97-frame count as mobile)
+  const desktopFramePath = (n: number) =>
+    `${import.meta.env.BASE_URL}hero-frames-desktop/frame_${String(n).padStart(3, "0")}.jpg`;
 
   useEffect(() => {
-    const img = imgRef.current;
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    const img = isMobile ? imgRef.current : desktopImgRef.current;
+    const path = isMobile ? framePath : desktopFramePath;
     const heroLayer = heroLayerRef.current;
     if (!img) return;
-    // Desktop uses the autoplay video — skip loading all 97 frames
-    if (!window.matchMedia('(max-width: 767px)').matches) return;
 
     let heroTargetOpacity = 1;
 
@@ -385,7 +390,7 @@ export default function Home() {
       framesLoaded = true;
       for (let i = 1; i <= FRAME_COUNT; i++) {
         const f = new Image();
-        f.src = framePath(i);
+        f.src = path(i);
         frames.push(f);
       }
     };
@@ -433,7 +438,7 @@ export default function Home() {
           }
         }
       }
-      if (sharpOverlayRef.current) {
+      if (isMobile && sharpOverlayRef.current) {
         const sharpOpacity = Math.max(0, 1 - currentProgress * 25);
         sharpOverlayRef.current.style.opacity = String(sharpOpacity);
       }
@@ -760,17 +765,19 @@ export default function Home() {
             className="md:hidden absolute inset-0 w-full h-full object-cover"
             style={{ objectPosition: "center", opacity: 1 }}
           />
-          {/* Desktop: looping autoplay video (16:9) */}
-          <video
+          {/* Desktop: scroll-scrubbed image-sequence (16:9) — same behaviour as mobile */}
+          <img
+            ref={desktopImgRef}
+            src={desktopFramePath(1)}
+            alt=""
+            aria-hidden
+            width="1280"
+            height="722"
+            fetchPriority="high"
+            decoding="sync"
             className="hidden md:block absolute inset-0 w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            style={{ objectPosition: "center" }}
-          >
-            <source src={`${import.meta.env.BASE_URL}hero-desktop.mp4`} type="video/mp4" />
-          </video>
+            style={{ objectPosition: "center", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
+          />
           {/* Cover AI-generated video watermark bottom-right */}
           <div
             className="hidden md:block absolute bottom-0 right-0 pointer-events-none"
