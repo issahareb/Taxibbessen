@@ -4,7 +4,6 @@ import { getPageMeta } from "@/page-meta-manifest";
 import { HOME_FAQ as FAQ_ITEMS } from "@/content/home";
 import { Link } from "wouter";
 import { Layout } from "@/components/Layout";
-import { ReviewCarousel } from "@/components/ReviewCarousel";
 import { HeroBookingWidget } from "@/components/HeroBookingWidget";
 import { ContactForm } from "@/components/ContactForm";
 import { Button } from "@/components/ui";
@@ -12,7 +11,6 @@ import { Phone, Shield, Sparkles, Navigation, ArrowRight, Mail, Globe, MessageCi
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useLanguage } from "@/i18n/useLanguage";
 import depotPoster from "@assets/IMG_1642_1780001838765.png";
-import brushStroke from "@assets/brush-stroke.png";
 
 const glassCard = "backdrop-blur-2xl bg-white/[0.03] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.6)]";
 
@@ -316,7 +314,6 @@ export default function Home() {
   const storyImgRef = useRef<HTMLImageElement>(null);
   const storyLayerRef = useRef<HTMLDivElement>(null);
   const storySectionRef = useRef<HTMLElement>(null);
-  const reviewsSectionRef = useRef<HTMLElement>(null);
   const ctaSectionRef = useRef<HTMLElement>(null);
   const ctaImgRef = useRef<HTMLImageElement>(null);
   const ctaLayerRef = useRef<HTMLDivElement>(null);
@@ -1093,39 +1090,6 @@ export default function Home() {
                 </Link>
               </motion.div>
             </div>
-          </div>
-        </section>
-
-        {/* ─── REVIEWS ─── */}
-        <section id="bewertungen" ref={reviewsSectionRef} className="py-20 sm:py-28 relative" style={{ zIndex: 2 }}>
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 className="relative inline-block text-3xl sm:text-4xl font-display font-black uppercase tracking-tighter mb-3">
-                <img
-                  src={brushStroke}
-                  alt=""
-                  aria-hidden="true"
-                  loading="lazy"
-                  decoding="async"
-                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[165%] max-w-none h-[210%] pointer-events-none select-none"
-                  style={{ filter: "brightness(0) invert(1)", opacity: 0.7 }}
-                />
-                <span className="relative" style={{ color: "#FFC107", WebkitTextStroke: "0.6px black", textShadow: "0 2px 8px rgba(0,0,0,0.35)" }}>{t("reviews_title")}</span>
-              </h2>
-              <p className="text-muted-foreground text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
-                {t("reviews_sub")}
-              </p>
-            </motion.div>
-          </div>
-          {/* Full-bleed: Tiles laufen über den Bildschirmrand hinaus */}
-          <div className="relative left-1/2 right-1/2 -mx-[50vw] w-screen">
-            <ReviewCarousel />
           </div>
         </section>
 
