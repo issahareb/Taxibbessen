@@ -426,7 +426,7 @@ export function Layout({ children }: { children: ReactNode }) {
             </div>
 
             <div>
-              <h4 className="font-black text-white uppercase tracking-widest text-xs mb-6">{t("footer_contact")}</h4>
+              <h2 className="font-black text-white uppercase tracking-widest text-xs mb-6">{t("footer_contact")}</h2>
               <ul className="space-y-4 text-sm text-muted-foreground">
                 <li className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
@@ -444,7 +444,7 @@ export function Layout({ children }: { children: ReactNode }) {
             </div>
 
             <div>
-              <h4 className="font-black text-white uppercase tracking-widest text-xs mb-6">Regionen</h4>
+              <h2 className="font-black text-white uppercase tracking-widest text-xs mb-6">Regionen</h2>
               <ul className="space-y-3 text-sm font-bold">
                 <li><Link href="/taxi-essen-holsterhausen/" className="text-muted-foreground hover:text-primary transition-colors">Holsterhausen</Link></li>
                 <li><Link href="/taxi-essen-ruettenscheid/" className="text-muted-foreground hover:text-primary transition-colors">Rüttenscheid</Link></li>
@@ -456,7 +456,7 @@ export function Layout({ children }: { children: ReactNode }) {
             </div>
 
             <div>
-              <h4 className="font-black text-white uppercase tracking-widest text-xs mb-6">{t("footer_legal")}</h4>
+              <h2 className="font-black text-white uppercase tracking-widest text-xs mb-6">{t("footer_legal")}</h2>
               <ul className="space-y-4 text-sm font-bold">
                 <li><Link href="/book/" className="text-muted-foreground hover:text-primary transition-colors">{t("nav_book")}</Link></li>
                 <li className="pt-2 border-t border-white/5"><Link href="/impressum/" className="text-muted-foreground hover:text-primary transition-colors">{t("footer_imprint")}</Link></li>
