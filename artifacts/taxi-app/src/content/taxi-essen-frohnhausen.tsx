@@ -3,7 +3,7 @@ import type { PageContent } from "./types";
 
 export const content: PageContent = {
   path: "/taxi-essen-frohnhausen",
-  h1: "Taxi Frohnhausen",
+  h1: "Taxi in Essen-Frohnhausen – S-Bahnhof und Wohnadressen",
   badge: "S-Bahnhof · Frohnhauser Markt · Wohnadressen",
   intro: "Taxifahrten in Essen-Frohnhausen mit Abholung an Wohnadressen, dem S-Bahnhof und vereinbarten Treffpunkten im Stadtteil.",
   sections: [

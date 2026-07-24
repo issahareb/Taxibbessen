@@ -18,7 +18,7 @@ export default function Datenschutz() {
             Zurück zur Startseite
           </Link>
 
-          <h1 className="text-3xl sm:text-4xl font-display font-bold mb-2">Datenschutzerklärung</h1>
+          <h1 className="text-3xl sm:text-4xl font-display font-bold mb-2">Datenschutzerklärung der Taxi B&B GmbH</h1>
           <p className="text-muted-foreground mb-10">Taxi B&B GmbH – Essen · Gemäß DSGVO & TDDDG</p>
 
           <div className="space-y-6">

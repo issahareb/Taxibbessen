@@ -5,7 +5,7 @@ export const content: PageContent = {
   path: "/flughafentransfer-essen-duesseldorf",
   h1: "Flughafentransfer Essen Düsseldorf",
   badge: "Taxi B&B GmbH · Essen",
-  intro: "Flughafentransfer von Essen nach Düsseldorf und zu weiteren Flughäfen. Abholzeit, Fahrzeug, Gepäck und Preis stimmen wir vor der Fahrt mit Ihnen ab.",
+  intro: "Flughafentransfer Essen–Düsseldorf: Wir fahren Sie von Essen nach Düsseldorf und zu weiteren Flughäfen. Abholzeit, Fahrzeug, Gepäck und Preis stimmen wir vor der Fahrt mit Ihnen ab.",
   sections: [
     {
       h2: "Von Essen zu den großen Flughäfen",

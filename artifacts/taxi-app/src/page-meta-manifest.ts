@@ -101,7 +101,7 @@ export const PAGE_META_MANIFEST: PageMetaEntry[] = [
   },
   {
     path: '/taxi-essen-suedviertel',
-    title: 'Taxi im Essen-Südviertel | Taxi B&B',
+    title: 'Taxi in Essen-Südviertel | Taxi B&B',
     description: 'Taxi im Essener Südviertel für Geschäftstermine, lokale Fahrten, Flughafentransfers und Krankenfahrten.',
   },
 ];

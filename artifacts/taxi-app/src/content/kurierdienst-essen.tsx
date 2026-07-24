@@ -3,9 +3,9 @@ import type { PageContent } from "./types";
 
 export const content: PageContent = {
   path: "/kurierdienst-essen",
-  h1: "Kurierdienst Essen",
+  h1: "Kurierdienst Essen für Dokumente und Sendungen",
   badge: "Direkt · Persönlich · Planbar",
-  intro: "Direkte Kurierfahrten für Dokumente und kleinere Sendungen in Essen und der Region. Inhalt, Übergabe, Verfügbarkeit und Preis werden vorab abgestimmt.",
+  intro: "Der Kurierdienst von Taxi B&B übernimmt direkte Kurierfahrten für Dokumente und kleinere Sendungen in Essen und der Region. Inhalt, Übergabe, Verfügbarkeit und Preis werden vorab abgestimmt.",
   sections: [
     {
       h2: "Direkte Kurierfahrten in Essen und der Region",

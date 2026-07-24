@@ -3,9 +3,9 @@ import type { PageContent } from "./types";
 
 export const content: PageContent = {
   path: "/taxi-essen-ruettenscheid",
-  h1: "Taxi Rüttenscheid",
+  h1: "Taxi in Essen-Rüttenscheid – Messe und Grugahalle",
   badge: "Rüttenscheider Straße · Messe · Grugahalle",
-  intro: "Taxifahrten in Rüttenscheid zu Restaurants, Hotels, Messe Essen, Grugahalle und weiteren Zielen. Treffpunkt und Abholzeit werden vorab abgestimmt.",
+  intro: "Taxi in Essen-Rüttenscheid: Fahrten zu Restaurants, Hotels, Messe Essen, Grugahalle und weiteren Zielen. Treffpunkt und Abholzeit werden vorab abgestimmt.",
   sections: [
     {
       h2: "Taxi auf der Rüttenscheider Straße und im Stadtteil",

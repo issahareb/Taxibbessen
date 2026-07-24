@@ -73,10 +73,10 @@ export default function Fahrzeuge() {
             <div className="max-w-3xl">
               <p className="text-[11px] font-black text-primary uppercase tracking-[0.4em] mb-4">Taxi B&amp;B GmbH · Essen</p>
               <h1 className="font-display font-black uppercase tracking-tighter leading-none mb-5" style={{ fontSize: "clamp(2.5rem,7vw,5.5rem)" }}>
-                Unsere <span className="text-primary">Fahrzeuge</span>
+                Unsere <span className="text-primary">Fahrzeugflotte</span> in Essen
               </h1>
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                Unterschiedliche Fahrzeuggrößen für klassische Taxifahrten, Gruppen und Flughafentransfers. Teilen Sie uns Personenzahl, Gepäck und besondere Anforderungen mit; das passende verfügbare Fahrzeug wird anschließend bestätigt.
+                Die Fahrzeugflotte von Taxi B&amp;B in Essen umfasst unterschiedliche Fahrzeuggrößen für klassische Taxifahrten, Gruppen und Flughafentransfers. Teilen Sie uns Personenzahl, Gepäck und besondere Anforderungen mit; das passende verfügbare Fahrzeug wird anschließend bestätigt.
               </p>
             </div>
           </div>

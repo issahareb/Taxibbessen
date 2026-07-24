@@ -17,10 +17,10 @@ export const serviceNames: Record<string, string> = {
 
 export const fallbackHeadings: Record<string, string> = {
   "/": "Taxi B&B GmbH in Essen",
-  "/fahrzeuge": "Fahrzeuge von Taxi B&B GmbH",
+  "/fahrzeuge": "Unsere Fahrzeugflotte in Essen",
   "/ueber-uns": "Über Taxi B&B GmbH",
-  "/impressum": "Impressum",
-  "/datenschutz": "Datenschutz",
+  "/impressum": "Impressum der Taxi B&B GmbH",
+  "/datenschutz": "Datenschutzerklärung der Taxi B&B GmbH",
   "/agb": "Allgemeine Geschäftsbedingungen",
   "/book": "Fahrt anfragen",
   "/confirmation": "Anfrage übermittelt",

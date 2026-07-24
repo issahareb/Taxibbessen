@@ -3,7 +3,7 @@ import type { PageContent } from "./types";
 
 export const content: PageContent = {
   path: "/taxi-essen-holsterhausen",
-  h1: "Taxi Holsterhausen",
+  h1: "Taxi in Essen-Holsterhausen – Abholung im Stadtteil",
   badge: "Unternehmenssitz in Essen-Holsterhausen",
   intro: "Taxifahrten in Holsterhausen mit Abholung an Wohnadressen, Praxen, dem Universitätsklinikum und vereinbarten Treffpunkten im Stadtteil.",
   sections: [

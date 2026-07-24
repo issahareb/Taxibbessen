@@ -5,7 +5,7 @@ export const content: PageContent = {
   path: "/taxi-essen-suedviertel",
   h1: "Taxi Südviertel Essen",
   badge: "Huyssenallee · Aalto-Theater · Philharmonie",
-  intro: "Taxifahrten im Essener Südviertel zu Hotels, Büros, Kulturveranstaltungen, dem Hauptbahnhof und weiteren Zielen.",
+  intro: "Taxi in Essen-Südviertel: Fahrten im Essener Südviertel zu Hotels, Büros, Kulturveranstaltungen, dem Hauptbahnhof und weiteren Zielen.",
   sections: [
     {
       h2: "Taxi an der Huyssenallee und im Südviertel",

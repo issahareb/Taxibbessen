@@ -3,7 +3,7 @@ import type { PageContent } from "./types";
 
 export const content: PageContent = {
   path: "/grossraumtaxi-essen",
-  h1: "Großraumtaxi Essen",
+  h1: "Großraumtaxi Essen für Gruppen und Familien",
   badge: "Bis zu 7 Fahrgäste · Mercedes V-Klasse",
   intro: "Großraumtaxi für Gruppen, Familien und Firmenteams in Essen. Personenzahl, Gepäck und besondere Anforderungen werden vor der Fahrt abgestimmt.",
   sections: [

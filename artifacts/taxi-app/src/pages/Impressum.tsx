@@ -18,7 +18,7 @@ export default function Impressum() {
             Zurück zur Startseite
           </Link>
 
-          <h1 className="text-3xl sm:text-4xl font-display font-bold mb-2">Impressum</h1>
+          <h1 className="text-3xl sm:text-4xl font-display font-bold mb-2">Impressum der Taxi B&B GmbH</h1>
           <p className="text-muted-foreground mb-10">Anbieterkennzeichnung der Taxi B&B GmbH</p>
 
           <div className="space-y-8">
