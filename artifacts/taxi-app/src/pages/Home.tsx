@@ -145,19 +145,16 @@ function ServicesRevealSection() {
                   transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)",
                 }}
               >
-                <picture>
-                  <source type="image/avif" srcSet={`${base}icons/${src.replace(/\.webp$/, ".avif")}`} />
-                  <img
-                    src={`${base}icons/${src}`}
-                    alt={t(titleKey)}
-                    width="128"
-                    height="128"
-                    loading="lazy"
-                    decoding="async"
-                    className="h-20 lg:h-32 w-auto object-contain"
-                    style={{ filter: "drop-shadow(0 0 18px rgba(255,193,7,0.55))" }}
-                  />
-                </picture>
+                <img
+                  src={`${base}icons/line/${src}`}
+                  alt={t(titleKey)}
+                  width="440"
+                  height="200"
+                  loading="lazy"
+                  decoding="async"
+                  className="h-16 lg:h-24 w-auto object-contain"
+                  style={{ filter: "drop-shadow(0 3px 12px rgba(0,0,0,0.55))" }}
+                />
               </div>
 
               <h3
@@ -323,7 +320,6 @@ export default function Home() {
   const ctaSectionRef = useRef<HTMLElement>(null);
   const ctaImgRef = useRef<HTMLImageElement>(null);
   const ctaLayerRef = useRef<HTMLDivElement>(null);
-  const [iconsHidden, setIconsHidden] = useState(false);
 
   const { title: _homeTitle, description: _homeDesc } = getPageMeta('/');
   usePageMeta({
@@ -851,7 +847,7 @@ export default function Home() {
 
           <section className="relative min-h-screen flex flex-col overflow-hidden pt-20 pb-8" style={{ zIndex: 1 }}>
 
-            {/* ── Logo + Subtitle + Slogan ── */}
+            {/* ── Logo + Slogan ── */}
             <div className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-20 pt-6 pb-0">
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -874,15 +870,12 @@ export default function Home() {
                     filter: "drop-shadow(0 4px 32px rgba(255,193,7,0.35))",
                   }}
                 />
-                <p className="text-center font-display font-bold uppercase tracking-[0.18em] text-white/80 mt-1.5 mb-1" style={{ fontSize: "clamp(0.65rem, 1.8vw, 0.95rem)" }}>
-                  Taxi-Service Essen
-                </p>
-                <div className="flex items-center justify-center gap-3 mt-1.5">
-                  <div className="h-px w-8 bg-primary/70 shrink-0" />
-                  <span className="text-[9px] font-semibold tracking-[0.28em] text-primary uppercase whitespace-nowrap drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
+                <div className="flex items-center justify-center gap-3 mt-3">
+                  <div className="h-px w-10 bg-primary/70 shrink-0" />
+                  <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.28em] text-primary uppercase whitespace-nowrap drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
                     {t("hero_tagline")}
                   </span>
-                  <div className="h-px w-8 bg-primary/70 shrink-0" />
+                  <div className="h-px w-10 bg-primary/70 shrink-0" />
                 </div>
               </motion.div>
             </div>
@@ -895,43 +888,7 @@ export default function Home() {
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="w-full lg:w-[82%] lg:max-w-5xl"
               >
-                <HeroBookingWidget onExpand={() => setIconsHidden(true)} onCollapse={() => setIconsHidden(false)} />
-              </motion.div>
-            </div>
-
-            {/* ── Service Icons — normaler Fluss unter Widget ── */}
-            <div className="relative z-20 px-4 sm:px-6 lg:px-12 mt-5 lg:mt-8">
-              <motion.div
-                initial={{ opacity: 0, y: 0 }}
-                animate={{ opacity: iconsHidden ? 0 : 1, y: iconsHidden ? 18 : 0 }}
-                transition={iconsHidden ? { duration: 0.45, ease: "easeInOut" } : { opacity: { duration: 0.7, delay: 0.5 } }}
-                style={{ pointerEvents: iconsHidden ? "none" : undefined }}
-                className="grid grid-cols-3 gap-x-2 gap-y-4 lg:gap-x-8 w-full lg:w-[82%] lg:max-w-5xl mx-auto"
-              >
-                {[
-                  { src: "krankenfahrten.webp",    label: t("hero_service2_title") },
-                  { src: "geschaeftsfahrten.webp", label: t("hero_service1_title") },
-                  { src: "flughafentransfer.webp", label: t("hero_service3_title") },
-                  { src: "kurierdokumente.webp",   label: t("hero_service4_title") },
-                  { src: "kurierdienst.webp",      label: t("hero_service5_title") },
-                  { src: "hauszuhaus.webp",        label: t("hero_service6_title") },
-                ].map(({ src, label }) => (
-                  <div key={src} className="flex flex-col items-center text-center gap-1.5 group px-1">
-                    <div className="h-14 lg:h-20 flex items-center justify-center">
-                      <img
-                        src={`${import.meta.env.BASE_URL}icons/${src}`}
-                        alt={label}
-                        className="h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-110"
-                        style={{ filter: "drop-shadow(0 0 10px rgba(255,193,7,0.55))" }}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </div>
-                    <span className="text-[9px] lg:text-[11px] font-black tracking-wide text-white/65 uppercase leading-tight group-hover:text-primary transition-colors">
-                      {label}
-                    </span>
-                  </div>
-                ))}
+                <HeroBookingWidget />
               </motion.div>
             </div>
 
