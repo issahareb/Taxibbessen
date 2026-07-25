@@ -1010,7 +1010,7 @@ export default function Home() {
                 Helfen Sie anderen Fahrgästen und hinterlassen Sie uns eine Bewertung auf Google. Es dauert nur eine Minute.
               </p>
               <a
-                href="https://www.google.com/maps/search/Taxi+B%26B+GmbH+Essen"
+                href="https://www.google.com/maps/place/BB+Taxi+Essen,+Menzelstra%C3%9Fe+8-10,+45147+Essen/@51.44145,6.98577,16z/data=!4m6!3m5!1s0x47b8c2c2c2e3a687:0x62c65c2ad983a6f2!8m2!3d51.44145!4d6.98577!16s%2Fg%2F11vd3lt6kg"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 bg-primary text-black font-black text-sm uppercase tracking-widest px-7 py-3.5 rounded-full hover:shadow-[0_0_28px_rgba(255,193,7,0.5)] transition-all hover:scale-[1.03]"
