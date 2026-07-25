@@ -730,7 +730,7 @@ export default function Home() {
           <img
             ref={imgRef}
             src={framePath(1)}
-            alt=""
+            alt="Fahrzeugflotte von Taxi B&amp;B auf dem Betriebshof in Essen-Holsterhausen"
             aria-hidden
             width="1080"
             height="1920"
@@ -744,7 +744,7 @@ export default function Home() {
             src={`${import.meta.env.BASE_URL}hero-sharp.webp`}
             srcSet={`${import.meta.env.BASE_URL}hero-sharp-540w.webp 540w, ${import.meta.env.BASE_URL}hero-sharp.webp 1080w`}
             sizes="100vw"
-            alt=""
+            alt="Mercedes-Taxis von Taxi B&amp;B vor der Zentrale in Essen-Holsterhausen"
             aria-hidden
             width="1080"
             height="1920"
@@ -780,7 +780,7 @@ export default function Home() {
           <img
             ref={storyImgRef}
             src={storyFramePath(1)}
-            alt=""
+            alt="Taxi auf dem Weg zur Haustür als Sinnbild für den Haus-zu-Haus-Service"
             aria-hidden
             width="1080"
             height="1920"
@@ -805,7 +805,7 @@ export default function Home() {
           <img
             ref={ctaImgRef}
             src={ctaFramePath(1)}
-            alt=""
+            alt="Taxi vor einem Flughafenterminal als Sinnbild für den Flughafentransfer"
             aria-hidden
             width="1080"
             height="1920"

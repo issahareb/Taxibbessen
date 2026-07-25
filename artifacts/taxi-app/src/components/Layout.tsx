@@ -116,7 +116,6 @@ export function Layout({ children }: { children: ReactNode }) {
   const navLinks = [
     { href: "/", label: t("nav_home") },
     { href: "/fahrzeuge/", label: t("nav_vehicles") },
-    { href: "/book/", label: t("nav_book") },
   ];
 
   const scrollToSection = (id: string) => {
@@ -189,6 +188,12 @@ export function Layout({ children }: { children: ReactNode }) {
                 {link.label}
               </Link>
             ))}
+            <button
+              onClick={() => scrollToSection("anfrage")}
+              className="px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest text-white/60 hover:text-white transition-all"
+            >
+              {t("nav_book")}
+            </button>
             <button
               onClick={() => scrollToSection("leistungen")}
               className="px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest text-white/60 hover:text-white transition-all"
@@ -320,6 +325,12 @@ export function Layout({ children }: { children: ReactNode }) {
                     {link.label}
                   </Link>
                 ))}
+                <button
+                  onClick={() => scrollToSection("anfrage")}
+                  className="flex items-center px-3 py-2.5 rounded-xl font-black text-base text-foreground hover:bg-white/5 transition-all text-left"
+                >
+                  {t("nav_book")}
+                </button>
                 <button
                   onClick={() => scrollToSection("leistungen")}
                   className="flex items-center px-3 py-2.5 rounded-xl font-black text-base text-foreground hover:bg-white/5 transition-all text-left"
@@ -458,7 +469,7 @@ export function Layout({ children }: { children: ReactNode }) {
             <div>
               <h2 className="font-black text-white uppercase tracking-widest text-xs mb-6">{t("footer_legal")}</h2>
               <ul className="space-y-4 text-sm font-bold">
-                <li><Link href="/book/" className="text-muted-foreground hover:text-primary transition-colors">{t("nav_book")}</Link></li>
+                <li><button onClick={() => scrollToSection("anfrage")} className="text-muted-foreground hover:text-primary transition-colors text-left">{t("nav_book")}</button></li>
                 <li className="pt-2 border-t border-white/5"><Link href="/impressum/" className="text-muted-foreground hover:text-primary transition-colors">{t("footer_imprint")}</Link></li>
                 <li><Link href="/datenschutz/" className="text-muted-foreground hover:text-primary transition-colors">{t("footer_privacy")}</Link></li>
                 <li><Link href="/agb/" className="text-muted-foreground hover:text-primary transition-colors">{t("footer_terms")}</Link></li>

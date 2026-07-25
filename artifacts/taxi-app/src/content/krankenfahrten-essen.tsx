@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Für welche Fahrten kann der Service angefragt werden?",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Dialysefahrten</strong>: regelmäßig und nach festem Zeitplan</li>
-          <li><strong>Strahlen- und Chemotherapietermine</strong>: planbare Hin- und Rückfahrten</li>
-          <li><strong>Arzttermine und Fachkliniken</strong>: in Essen und der Region</li>
-          <li><strong>Reha und Physiotherapie</strong>: nach vorheriger Terminabstimmung</li>
-          <li><strong>Krankenhausaufnahme und Entlassung</strong>: mit vereinbartem Abholzeitpunkt</li>
+          <li><span className="font-bold">Dialysefahrten</span>: regelmäßig und nach festem Zeitplan</li>
+          <li><span className="font-bold">Strahlen- und Chemotherapietermine</span>: planbare Hin- und Rückfahrten</li>
+          <li><span className="font-bold">Arzttermine und Fachkliniken</span>: in Essen und der Region</li>
+          <li><span className="font-bold">Reha und Physiotherapie</span>: nach vorheriger Terminabstimmung</li>
+          <li><span className="font-bold">Krankenhausaufnahme und Entlassung</span>: mit vereinbartem Abholzeitpunkt</li>
         </ul>
       ),
     },
@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Krankenfahrt in Essen anfragen",
       body: (
         <>
-          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Halten Sie vorhandene Verordnungen, Genehmigungen, Terminzeiten und die vollständigen Abhol- und Zieladressen bereit.</p>
+          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/#anfrage" className="text-primary hover:underline">Online-Anfrage</a>. Halten Sie vorhandene Verordnungen, Genehmigungen, Terminzeiten und die vollständigen Abhol- und Zieladressen bereit.</p>
           <p>Für regelmäßige Fahrten kann nach Abstimmung ein wiederkehrender Fahrplan eingerichtet werden.</p>
         </>
       ),

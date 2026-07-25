@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Messe, Grugahalle und Grugapark",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Messe Essen</strong>: Abholung an einem vereinbarten Eingang oder Taxihaltepunkt</li>
-          <li><strong>Grugahalle</strong>: für Konzerte, Shows und Veranstaltungen</li>
-          <li><strong>Grugapark</strong>: Abholung an einem vorher genannten Eingang</li>
-          <li><strong>Museum Folkwang</strong>: Verbindung Richtung Südviertel und Innenstadt</li>
-          <li><strong>Essen Hauptbahnhof</strong>: Anschluss an Fern- und Regionalzüge</li>
+          <li><span className="font-bold">Messe Essen</span>: Abholung an einem vereinbarten Eingang oder Taxihaltepunkt</li>
+          <li><span className="font-bold">Grugahalle</span>: für Konzerte, Shows und Veranstaltungen</li>
+          <li><span className="font-bold">Grugapark</span>: Abholung an einem vorher genannten Eingang</li>
+          <li><span className="font-bold">Museum Folkwang</span>: Verbindung Richtung Südviertel und Innenstadt</li>
+          <li><span className="font-bold">Essen Hauptbahnhof</span>: Anschluss an Fern- und Regionalzüge</li>
         </ul>
       ),
     },
@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Taxi in Rüttenscheid anfragen",
       body: (
         <>
-          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Bei Veranstaltungen sollten Sie genügend Vorlauf einplanen.</p>
+          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/#anfrage" className="text-primary hover:underline">Online-Anfrage</a>. Bei Veranstaltungen sollten Sie genügend Vorlauf einplanen.</p>
         </>
       ),
     },

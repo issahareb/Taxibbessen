@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Ziele ab Essen Hauptbahnhof",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Hotels und Geschäftstermine</strong>: in der Innenstadt und den Stadtteilen</li>
-          <li><strong>Messe Essen</strong>: direkte Weiterfahrt nach Rüttenscheid</li>
-          <li><strong>Flughafen Düsseldorf</strong>: als vorbestellter Anschluss-Transfer</li>
-          <li><strong>Essener Stadtteile</strong>: unter anderem Rüttenscheid, Holsterhausen und Frohnhausen</li>
-          <li><strong>Kliniken und Arztpraxen</strong>: nach vollständiger Zielangabe</li>
+          <li><span className="font-bold">Hotels und Geschäftstermine</span>: in der Innenstadt und den Stadtteilen</li>
+          <li><span className="font-bold">Messe Essen</span>: direkte Weiterfahrt nach Rüttenscheid</li>
+          <li><span className="font-bold">Flughafen Düsseldorf</span>: als vorbestellter Anschluss-Transfer</li>
+          <li><span className="font-bold">Essener Stadtteile</span>: unter anderem Rüttenscheid, Holsterhausen und Frohnhausen</li>
+          <li><span className="font-bold">Kliniken und Arztpraxen</span>: nach vollständiger Zielangabe</li>
         </ul>
       ),
     },

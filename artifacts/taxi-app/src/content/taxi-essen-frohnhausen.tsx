@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Typische Ziele und Abholpunkte",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>S-Bahnhof Essen-Frohnhausen</strong>: Anschluss an den Nahverkehr</li>
-          <li><strong>Frohnhauser Markt</strong>: zentraler Treffpunkt im Stadtteil</li>
-          <li><strong>Gervinuspark</strong>: Abholung an einem vereinbarten Zugang</li>
-          <li><strong>Essen Hauptbahnhof</strong>: Weiterfahrt zu Fern- und Regionalzügen</li>
-          <li><strong>Holsterhausen und Universitätsklinikum</strong>: für Termine und Besuche</li>
+          <li><span className="font-bold">S-Bahnhof Essen-Frohnhausen</span>: Anschluss an den Nahverkehr</li>
+          <li><span className="font-bold">Frohnhauser Markt</span>: zentraler Treffpunkt im Stadtteil</li>
+          <li><span className="font-bold">Gervinuspark</span>: Abholung an einem vereinbarten Zugang</li>
+          <li><span className="font-bold">Essen Hauptbahnhof</span>: Weiterfahrt zu Fern- und Regionalzügen</li>
+          <li><span className="font-bold">Holsterhausen und Universitätsklinikum</span>: für Termine und Besuche</li>
         </ul>
       ),
     },
@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Taxi in Frohnhausen anfragen",
       body: (
         <>
-          <p>Rufen Sie unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Abholzeit, Fahrzeug und Preis werden anschließend bestätigt.</p>
+          <p>Rufen Sie unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/#anfrage" className="text-primary hover:underline">Online-Anfrage</a>. Abholzeit, Fahrzeug und Preis werden anschließend bestätigt.</p>
         </>
       ),
     },

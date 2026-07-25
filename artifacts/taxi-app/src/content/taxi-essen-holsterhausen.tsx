@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Häufig angefragte Ziele aus Holsterhausen",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Universitätsklinikum Essen</strong>: Abholung an einem vorher vereinbarten Eingang</li>
-          <li><strong>Gemarkenstraße und Stadtteilzentrum</strong>: für Einkäufe, Termine und Besuche</li>
-          <li><strong>Essen Hauptbahnhof</strong>: als Anschluss an Bahnreisen</li>
-          <li><strong>Messe Essen und Rüttenscheid</strong>: für Veranstaltungen und Geschäftstermine</li>
-          <li><strong>Flughafen Düsseldorf</strong>: nach Vorbestellung mit Gepäckangabe</li>
+          <li><span className="font-bold">Universitätsklinikum Essen</span>: Abholung an einem vorher vereinbarten Eingang</li>
+          <li><span className="font-bold">Gemarkenstraße und Stadtteilzentrum</span>: für Einkäufe, Termine und Besuche</li>
+          <li><span className="font-bold">Essen Hauptbahnhof</span>: als Anschluss an Bahnreisen</li>
+          <li><span className="font-bold">Messe Essen und Rüttenscheid</span>: für Veranstaltungen und Geschäftstermine</li>
+          <li><span className="font-bold">Flughafen Düsseldorf</span>: nach Vorbestellung mit Gepäckangabe</li>
         </ul>
       ),
     },
@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Taxi in Holsterhausen anfragen",
       body: (
         <>
-          <p>Rufen Sie unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Abholzeit und Verfügbarkeit werden anschließend bestätigt.</p>
+          <p>Rufen Sie unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/#anfrage" className="text-primary hover:underline">Online-Anfrage</a>. Abholzeit und Verfügbarkeit werden anschließend bestätigt.</p>
         </>
       ),
     },

@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Typische Einsatzbereiche",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Flughafentransfer für Gruppen</strong>: gemeinsame An- und Abreise</li>
-          <li><strong>Familienfahrten</strong>: mit vorab abgestimmtem Platzbedarf</li>
-          <li><strong>Firmenfahrten und Delegationen</strong>: planbare Abholzeiten</li>
-          <li><strong>Hochzeiten und Veranstaltungen</strong>: nach Vorbestellung</li>
-          <li><strong>Bahnhof, Hotel oder Konzert</strong>: eine Fahrt für die gesamte Gruppe</li>
+          <li><span className="font-bold">Flughafentransfer für Gruppen</span>: gemeinsame An- und Abreise</li>
+          <li><span className="font-bold">Familienfahrten</span>: mit vorab abgestimmtem Platzbedarf</li>
+          <li><span className="font-bold">Firmenfahrten und Delegationen</span>: planbare Abholzeiten</li>
+          <li><span className="font-bold">Hochzeiten und Veranstaltungen</span>: nach Vorbestellung</li>
+          <li><span className="font-bold">Bahnhof, Hotel oder Konzert</span>: eine Fahrt für die gesamte Gruppe</li>
         </ul>
       ),
     },
@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Großraumtaxi in Essen anfragen",
       body: (
         <>
-          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Personenzahl, Gepäck, Abholort, Ziel und gewünschte Zeit sollten vollständig angegeben werden.</p>
+          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/#anfrage" className="text-primary hover:underline">Online-Anfrage</a>. Personenzahl, Gepäck, Abholort, Ziel und gewünschte Zeit sollten vollständig angegeben werden.</p>
           <p>Fahrzeugverfügbarkeit und Preis werden vor der Fahrt bestätigt.</p>
         </>
       ),

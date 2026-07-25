@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Kultur, Veranstaltungen und Geschäftstermine",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Aalto-Theater</strong>: Abholung nach einer Vorstellung an einem vereinbarten Treffpunkt</li>
-          <li><strong>Philharmonie Essen und Saalbau</strong>: für Konzerte und Veranstaltungen</li>
-          <li><strong>Stadtgarten Essen</strong>: Treffpunkt an einem vorher genannten Zugang</li>
-          <li><strong>Huyssenallee</strong>: Hotels, Büros und Geschäftstermine</li>
-          <li><strong>Essen Hauptbahnhof</strong>: kurze Verbindung zu Fern- und Regionalzügen</li>
+          <li><span className="font-bold">Aalto-Theater</span>: Abholung nach einer Vorstellung an einem vereinbarten Treffpunkt</li>
+          <li><span className="font-bold">Philharmonie Essen und Saalbau</span>: für Konzerte und Veranstaltungen</li>
+          <li><span className="font-bold">Stadtgarten Essen</span>: Treffpunkt an einem vorher genannten Zugang</li>
+          <li><span className="font-bold">Huyssenallee</span>: Hotels, Büros und Geschäftstermine</li>
+          <li><span className="font-bold">Essen Hauptbahnhof</span>: kurze Verbindung zu Fern- und Regionalzügen</li>
         </ul>
       ),
     },
@@ -41,7 +41,7 @@ export const content: PageContent = {
       h2: "Taxi im Südviertel anfragen",
       body: (
         <>
-          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Bei Veranstaltungen empfiehlt sich eine frühzeitige Vorbestellung.</p>
+          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/#anfrage" className="text-primary hover:underline">Online-Anfrage</a>. Bei Veranstaltungen empfiehlt sich eine frühzeitige Vorbestellung.</p>
         </>
       ),
     },

@@ -38,7 +38,7 @@ export const content: PageContent = {
       h2: "Dialysefahrt anfragen",
       body: (
         <>
-          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/book/" className="text-primary hover:underline">Online-Anfrage</a>. Für die Planung benötigen wir Abholadresse, Dialysezentrum, Terminzeiten, Personendaten und Informationen zu vorhandenen Unterlagen.</p>
+          <p>Rufen Sie uns unter <strong>0201 707060</strong> an oder senden Sie eine <a href="/#anfrage" className="text-primary hover:underline">Online-Anfrage</a>. Für die Planung benötigen wir Abholadresse, Dialysezentrum, Terminzeiten, Personendaten und Informationen zu vorhandenen Unterlagen.</p>
         </>
       ),
     },
