@@ -42,7 +42,6 @@ const removedKeys = new Set([
   "priceRange",
   "offers",
   "priceSpecification",
-  "sameAs",
 ]);
 
 function normalizeLocalUrl(value) {
