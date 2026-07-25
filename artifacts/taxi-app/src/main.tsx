@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { setBaseUrl } from "@workspace/api-client-react";
 import "./ios-scroll-stability";
+import "./desktop-video-scroll";
 import App from "./App";
 import "./index.css";
 
