@@ -25,7 +25,7 @@ Taxi B&B GmbH ist ein Taxiunternehmen mit Sitz in Essen. Das Unternehmen bietet 
 
 ## Leistungen
 
-- Flughafentransfer Essen–Düsseldorf: https://www.taxibbessen.de/flughafentransfer-essen-duesseldorf/
+- Flughafentransfer Essen nach Düsseldorf: https://www.taxibbessen.de/flughafentransfer-essen-duesseldorf/
 - Krankenfahrten in Essen: https://www.taxibbessen.de/krankenfahrten-essen/
 - Großraumtaxi in Essen: https://www.taxibbessen.de/grossraumtaxi-essen/
 - Dialysefahrten in Essen: https://www.taxibbessen.de/dialysefahrten-essen/

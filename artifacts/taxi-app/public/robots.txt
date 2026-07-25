@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-# AI Search & Answer Engine Crawlers – explicitly allowed
+# AI Search & Answer Engine Crawlers: explicitly allowed
 User-agent: GPTBot
 Allow: /
 
@@ -43,5 +43,5 @@ Allow: /
 
 Sitemap: https://www.taxibbessen.de/sitemap.xml
 
-# Taxi B&B GmbH – Taxiservice Essen
+# Taxi B&B GmbH · Taxiservice Essen
 # Kontakt: 0201 707060 | taxibb@outlook.com
