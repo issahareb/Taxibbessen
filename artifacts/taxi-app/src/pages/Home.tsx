@@ -878,7 +878,7 @@ export default function Home() {
             </div>
 
             {/* ── Widget - über dem Taxischild ── */}
-            <div className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-20 flex justify-center mt-2 sm:mt-3">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-20 flex justify-center mt-10 sm:mt-12 lg:mt-8">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
