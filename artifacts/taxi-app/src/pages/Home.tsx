@@ -96,7 +96,7 @@ function ServicesRevealSection() {
 
   return (
     <div>
-      {/* ── Scroll-Reveal: alle 6 Leistungen — 1 Spalte ── */}
+      {/* ── Scroll-Reveal: alle 6 Leistungen - 1 Spalte ── */}
       <div className="grid grid-cols-1 gap-y-12 lg:gap-y-20">
         {SERVICE_ITEMS.map(({ src, titleKey, descKey, href }, i) => (
           <div
@@ -108,7 +108,7 @@ function ServicesRevealSection() {
               transition: "transform 0.5s cubic-bezier(0.34, 1.4, 0.64, 1)",
             }}
           >
-            {/* Glass tile — visible only when this item is nearest viewport center */}
+            {/* Glass tile - visible only when this item is nearest viewport center */}
             <div
               className="absolute inset-x-[-1rem] sm:inset-x-[-1.5rem] lg:inset-x-[-3rem] inset-y-0 rounded-2xl pointer-events-none"
               style={{
@@ -205,7 +205,7 @@ function AeoFaktenblock() {
               ["Unternehmen", "Taxi B&B GmbH"],
               ["Rechtsform", "GmbH (HRB 36284 Essen)"],
               ["Gegründet", "1992 in Essen"],
-              ["Standort", "Menzelstraße 8–10, 45147 Essen-Holsterhausen"],
+              ["Standort", "Menzelstraße 8-10, 45147 Essen-Holsterhausen"],
               ["Telefon", "0201 707060"],
               ["Website", "taxibbessen.de"],
               ["Erreichbarkeit", "24 Stunden, 7 Tage die Woche"],
@@ -247,7 +247,7 @@ function FAQSection() {
             className="font-display font-black uppercase tracking-tighter leading-none"
             style={{ fontSize: "clamp(2rem,5vw,3.5rem)" }}
           >
-            Ihre Fragen —<br />
+            Ihre Fragen,<br />
             <span className="text-white/70">unsere Antworten</span>
           </h2>
         </motion.div>
@@ -342,7 +342,7 @@ export default function Home() {
     requestAnimationFrame(tryScroll);
   }, []);
 
-  // Image-sequence scrubber — bulletproof on iOS Safari, no <video> black-frame issues
+  // Image-sequence scrubber - bulletproof on iOS Safari, no <video> black-frame issues
   const FRAME_COUNT = 97;
   const framePath = (n: number) =>
     `${import.meta.env.BASE_URL}hero-frames/frame_${String(n).padStart(3, "0")}.jpg`;
@@ -351,12 +351,12 @@ export default function Home() {
     const img = imgRef.current;
     const heroLayer = heroLayerRef.current;
     if (!img) return;
-    // Desktop uses the autoplay video — skip loading all 97 frames
+    // Desktop uses the autoplay video - skip loading all 97 frames
     if (!window.matchMedia('(max-width: 767px)').matches) return;
 
     let heroTargetOpacity = 1;
 
-    // Hero fades out on its OWN scroll progress — fully decoupled from the
+    // Hero fades out on its OWN scroll progress - fully decoupled from the
     // story effect so there is zero coupling / silver-bleed risk.
     const getHeroOpacity = () => {
       const servicesEl = servicesRef.current;
@@ -441,7 +441,7 @@ export default function Home() {
       heroTargetOpacity = getHeroOpacity();
     };
 
-    // Start the RAF loop immediately — frames load lazily on first scroll
+    // Start the RAF loop immediately - frames load lazily on first scroll
     targetProgress = getProgress();
     heroTargetOpacity = getHeroOpacity();
     currentProgress = targetProgress;
@@ -454,7 +454,7 @@ export default function Home() {
     };
   }, []);
 
-  // ─── Story-section scroll video — second image-sequence, fades in at the
+  // ─── Story-section scroll video - second image-sequence, fades in at the
   // story section and reaches its last frame at the CTA section ───
   const STORY_FRAME_COUNT = 122;
   const storyFramePath = (n: number) =>
@@ -463,7 +463,7 @@ export default function Home() {
   useEffect(() => {
     const img = storyImgRef.current;
     const layer = storyLayerRef.current;
-    // Observe the services section — the story animation begins while it's on screen,
+    // Observe the services section - the story animation begins while it's on screen,
     // so starting frame downloads then gives enough lead time before they're needed.
     const triggerEl = servicesRef.current;
     if (!img || !layer || !triggerEl) return;
@@ -503,7 +503,7 @@ export default function Home() {
       const vh = window.innerHeight;
       const servicesTop = servicesEl ? servicesEl.getBoundingClientRect().top + window.scrollY : 0;
       const storyTop = s ? s.getBoundingClientRect().top + window.scrollY : servicesTop + vh * 3;
-      // Hero fades out via its own decoupled opacity — story can now safely
+      // Hero fades out via its own decoupled opacity - story can now safely
       // rise AFTER servicesTop (heading area covered by the black band) without
       // any silver-taxi bleed risk.
       const opacity = clamp((window.scrollY - (servicesTop + vh * 0.55)) / (vh * 0.35), 0, 1);
@@ -524,7 +524,7 @@ export default function Home() {
 
     const rafLoop = () => {
       currentProgress += (targetProgress - currentProgress) * 0.12;
-      // Opacity is NOT lerped — the measure() ramp already gives a smooth
+      // Opacity is NOT lerped - the measure() ramp already gives a smooth
       // linear fade; lerping on top just adds lag that lets the silver hero
       // bleed through at fast scroll speeds.
       currentOpacity = targetOpacity;
@@ -558,7 +558,7 @@ export default function Home() {
       rafId = requestAnimationFrame(rafLoop);
     };
 
-    // Start the opacity animation immediately — but defer frame src assignment
+    // Start the opacity animation immediately - but defer frame src assignment
     // until the services section is visible (IntersectionObserver fires).
     startLoop();
 
@@ -583,7 +583,7 @@ export default function Home() {
     };
   }, []);
 
-  // ─── Third image-sequence — the "second video". Softly crossfades IN over
+  // ─── Third image-sequence - the "second video". Softly crossfades IN over
   // the story clip around the reviews section and scrubs through to the CTA,
   // where it holds its last frame. ───
   const CTA_FRAME_COUNT = 122;
@@ -636,12 +636,12 @@ export default function Home() {
       const faqTop = faqRect ? faqRect.top + window.scrollY : storyTop + vh * 4;
       // The last clip takes over right BELOW the story section's taxi-sign photo.
       // Start the fade early enough that it is fully opaque BEFORE the photo
-      // bottom — while the photo still covers the background — so the story clip
+      // bottom - while the photo still covers the background - so the story clip
       // is completely replaced; directly below the photo only this clip shows.
       const appear = storyTop + vh * 0.1;
       const finish = Math.max(faqTop + vh * 0.8, appear + vh);
       const progress = clamp((window.scrollY - appear) / Math.max(finish - appear, 1), 0, 1);
-      // Fade in slowly over half a viewport — prevents flicker when scrolling up fast.
+      // Fade in slowly over half a viewport - prevents flicker when scrolling up fast.
       const fadeIn = clamp((window.scrollY - appear) / (vh * 0.5), 0, 1);
       const fadeOut = clamp(1 - (window.scrollY - finish) / (vh * 0.5), 0, 1);
       const opacity = Math.min(fadeIn, fadeOut);
@@ -656,7 +656,7 @@ export default function Home() {
 
     const rafLoop = () => {
       currentProgress += (targetProgress - currentProgress) * 0.12;
-      // Opacity is NOT lerped — the measure() ramp is the smooth transition.
+      // Opacity is NOT lerped - the measure() ramp is the smooth transition.
       currentOpacity = targetOpacity;
       if (isMobile && img && frames.length > 0) {
         const idx = Math.min(
@@ -724,7 +724,7 @@ export default function Home() {
   return (
     <Layout>
       <div>
-        {/* ─── FIXED IMAGE-SEQUENCE BACKGROUND — spans Hero + Services ─── */}
+        {/* ─── FIXED IMAGE-SEQUENCE BACKGROUND - spans Hero + Services ─── */}
         <div ref={heroLayerRef} className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none" style={{ height: "100lvh", zIndex: 1, backgroundColor: "#0b0a08" }}>
           {/* Mobile: scroll-scrubbed image-sequence */}
           <img
@@ -738,7 +738,7 @@ export default function Home() {
             style={{ objectPosition: "center", opacity: 0.92, transform: "translateZ(0)", backfaceVisibility: "hidden" }}
           />
           {/* LCP-Bild auf Mobile: fetchpriority="high" stellt sicher, dass der Browser
-              es sofort mit höchster Priorität lädt — direkter Effekt auf LCP-Score */}
+              es sofort mit höchster Priorität lädt - direkter Effekt auf LCP-Score */}
           <img
             ref={sharpOverlayRef}
             src={`${import.meta.env.BASE_URL}hero-sharp.webp`}
@@ -771,7 +771,7 @@ export default function Home() {
           />
         </div>
 
-        {/* ─── STORY SCROLL-VIDEO BACKGROUND (übrig — kein Desktop-Ersatz) ─── */}
+        {/* ─── STORY SCROLL-VIDEO BACKGROUND (übrig - kein Desktop-Ersatz) ─── */}
         <div
           ref={storyLayerRef}
           className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none"
@@ -837,7 +837,7 @@ export default function Home() {
         {/* ─── HERO ─── */}
         {/* -mt-20 pulls this section up behind the fixed nav */}
         <div className="relative -mt-20" style={{ zIndex: 2 }}>
-          {/* Dark overlays for readability — exakt wie deployed */}
+          {/* Dark overlays for readability - exakt wie deployed */}
           <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0, background: "linear-gradient(to right, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.38) 40%, rgba(0,0,0,0.12) 70%, rgba(0,0,0,0.0) 100%)" }} />
           <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.20) 0%, transparent 30%, rgba(0,0,0,0.28) 100%)" }} />
           <div className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none" style={{ zIndex: 0, background: "linear-gradient(to bottom, transparent 0%, hsl(220,20%,4%) 75%, hsl(220,20%,4%) 100%)" }} />
@@ -852,7 +852,7 @@ export default function Home() {
                 transition={{ duration: 0.8 }}
                 className="text-center"
               >
-                <h1 className="text-center font-display font-black uppercase tracking-[0.22em] text-white/50 mb-2" style={{ fontSize: "clamp(0.45rem, 1.1vw, 0.7rem)" }}>24/7 Taxiservice in Essen – Krankenfahrten, Flughafentransfer und Großraumtaxi</h1>
+                <h1 className="text-center font-display font-black uppercase tracking-[0.22em] text-white/50 mb-2" style={{ fontSize: "clamp(0.45rem, 1.1vw, 0.7rem)" }}>24/7 Taxiservice in Essen: Krankenfahrten, Flughafentransfer und Großraumtaxi</h1>
                 <img
                   id="hero-logo"
                   src={`${import.meta.env.BASE_URL}bb-logo-v7-transparent.webp`}
@@ -877,7 +877,7 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* ── Widget — über dem Taxischild ── */}
+            {/* ── Widget - über dem Taxischild ── */}
             <div className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-20 flex justify-center mt-2 sm:mt-3">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -899,7 +899,7 @@ export default function Home() {
         {/* ─── SERVICES ─── */}
         {/* Fixed video (at last frame) shines through as background */}
         <section id="leistungen" ref={servicesRef} className="py-24 lg:py-32 relative" style={{ zIndex: 2 }}>
-          {/* Voll deckende Abdunklung — exakt wie deployed, dunkel→leicht→dunkel, kein schwebendes Band */}
+          {/* Voll deckende Abdunklung - exakt wie deployed, dunkel→leicht→dunkel, kein schwebendes Band */}
           <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to bottom, hsl(220,20%,4%) 0%, rgba(8,10,16,0.52) 20%, rgba(8,10,16,0.52) 80%, rgba(8,10,16,0.18) 100%)" }} />
           <div className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
 
@@ -915,8 +915,8 @@ export default function Home() {
                   Taxi B&amp;B GmbH ist seit 1992 Ihr zuverlässiger Taxiservice in Essen. Ob{" "}
                   <a href="#leistungen" className="text-primary/80 hover:text-primary underline underline-offset-2 transition-colors">
                     Krankenfahrten, Flughafentransfer oder Geschäftsfahrten
-                  </a>{" "}
-                  – wir sind 24 Stunden am Tag, 7 Tage die Woche für Sie erreichbar. Entdecken Sie{" "}
+                  </a>,{" "}
+                  wir sind 24 Stunden am Tag, 7 Tage die Woche für Sie erreichbar. Entdecken Sie{" "}
                   <Link href="/fahrzeuge/" className="text-primary/80 hover:text-primary underline underline-offset-2 transition-colors">
                     unsere modernen Mercedes-Fahrzeuge
                   </Link>{" "}
@@ -1007,7 +1007,7 @@ export default function Home() {
                 Zufrieden mit unserer Fahrt?
               </h2>
               <p className="text-white/60 text-sm sm:text-base leading-relaxed mb-7 max-w-sm mx-auto">
-                Helfen Sie anderen Fahrgästen und hinterlassen Sie uns eine Bewertung auf Google – es dauert nur eine Minute.
+                Helfen Sie anderen Fahrgästen und hinterlassen Sie uns eine Bewertung auf Google. Es dauert nur eine Minute.
               </p>
               <a
                 href="https://www.google.com/maps/search/Taxi+B%26B+GmbH+Essen"
@@ -1104,16 +1104,16 @@ export default function Home() {
             <h2 className="text-[11px] font-black text-primary uppercase tracking-[0.45em] mb-5 block">
               Anfrage &amp; Kontakt
             </h2>
-            {/* Visual reveal heading — decorative sub-headline */}
+            {/* Visual reveal heading - decorative sub-headline */}
             <p
               ref={ctaHeadingRef}
               className="font-display font-black uppercase tracking-tighter mb-6 leading-[1.05]"
               style={{ fontSize: "clamp(1.85rem, 6.8vw, 5rem)" }}
             >
-              {/* Lines 1 & 2 — static */}
+              {/* Lines 1 & 2 - static */}
               <span className="block text-white/90 whitespace-nowrap">Jetzt Ihre</span>
               <span className="block text-white/90 whitespace-nowrap">nächste Fahrt</span>
-              {/* Line 3 — animiert einblenden */}
+              {/* Line 3 - animiert einblenden */}
               <span className="block overflow-hidden pt-[0.08em] pb-[0.14em]">
                 <motion.span
                   className="inline-block text-primary"

@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Kultur, Veranstaltungen und Geschäftstermine",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Aalto-Theater</strong> – Abholung nach einer Vorstellung an einem vereinbarten Treffpunkt</li>
-          <li><strong>Philharmonie Essen und Saalbau</strong> – für Konzerte und Veranstaltungen</li>
-          <li><strong>Stadtgarten Essen</strong> – Treffpunkt an einem vorher genannten Zugang</li>
-          <li><strong>Huyssenallee</strong> – Hotels, Büros und Geschäftstermine</li>
-          <li><strong>Essen Hauptbahnhof</strong> – kurze Verbindung zu Fern- und Regionalzügen</li>
+          <li><strong>Aalto-Theater</strong>: Abholung nach einer Vorstellung an einem vereinbarten Treffpunkt</li>
+          <li><strong>Philharmonie Essen und Saalbau</strong>: für Konzerte und Veranstaltungen</li>
+          <li><strong>Stadtgarten Essen</strong>: Treffpunkt an einem vorher genannten Zugang</li>
+          <li><strong>Huyssenallee</strong>: Hotels, Büros und Geschäftstermine</li>
+          <li><strong>Essen Hauptbahnhof</strong>: kurze Verbindung zu Fern- und Regionalzügen</li>
         </ul>
       ),
     },

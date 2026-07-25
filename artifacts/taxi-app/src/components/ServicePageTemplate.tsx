@@ -199,7 +199,7 @@ export function ServicePageTemplate({
               <Reveal className="text-center mb-10">
                 <span className="text-[11px] font-black text-primary uppercase tracking-[0.4em] mb-3 block">Häufige Fragen</span>
                 <h2 className="font-display font-black uppercase tracking-tighter" style={{ fontSize: "clamp(1.8rem,4vw,3rem)" }}>
-                  Ihre Fragen — <span className="text-white/60">unsere Antworten</span>
+                  Ihre Fragen, <span className="text-white/60">unsere Antworten</span>
                 </h2>
               </Reveal>
               <FAQAccordion items={faq} />
@@ -217,7 +217,7 @@ export function ServicePageTemplate({
                   Jetzt Taxi bestellen
                 </h2>
                 <p className="text-white/60 mb-8 max-w-md mx-auto">
-                  Taxi B&B GmbH · Menzelstraße 8–10 · 45147 Essen · 24/7 erreichbar
+                  Taxi B&B GmbH · Menzelstraße 8-10 · 45147 Essen · 24/7 erreichbar
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
                   <a

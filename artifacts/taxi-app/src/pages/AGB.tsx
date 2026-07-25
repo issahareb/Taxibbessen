@@ -19,7 +19,7 @@ export default function AGB() {
           </Link>
 
           <h1 className="text-3xl sm:text-4xl font-display font-bold mb-2">Allgemeine Geschäftsbedingungen</h1>
-          <p className="text-muted-foreground mb-10">Taxi B&B GmbH – Essen</p>
+          <p className="text-muted-foreground mb-10">Taxi B&B GmbH · Essen</p>
 
           <div className="space-y-6">
 
@@ -46,7 +46,7 @@ export default function AGB() {
               </div>
               <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
                 <p>Eine Buchung über unser Portal stellt ein verbindliches Angebot des Nutzers auf Abschluss eines Beförderungsvertrages dar. Der Vertrag kommt erst zustande, wenn die Taxi B&B GmbH die Buchung schriftlich (per E-Mail oder SMS) bestätigt.</p>
-                <p>Für Vorbestellungen gilt: Eine Abholzeitgarantie wird nur für Buchungen übernommen, die mindestens 1 Stunde vor dem gewünschten Abholzeitpunkt zuzüglich der durchschnittlichen Fahrzeit vom Betriebssitz zur Abholadresse eingehen. Beispiel: Gewünschte Abholung am Flughafen Düsseldorf um 16:00 Uhr – Buchung muss spätestens bis 14:30 Uhr vorliegen.</p>
+                <p>Für Vorbestellungen gilt: Eine Abholzeitgarantie wird nur für Buchungen übernommen, die mindestens 1 Stunde vor dem gewünschten Abholzeitpunkt zuzüglich der durchschnittlichen Fahrzeit vom Betriebssitz zur Abholadresse eingehen. Beispiel: Gewünschte Abholung am Flughafen Düsseldorf um 16:00 Uhr. Die Buchung muss spätestens bis 14:30 Uhr vorliegen.</p>
                 <p>Bei kurzfristigen Buchungen (unter einer Stunde Vorlauf) wird die Bereitstellung nach Verfügbarkeit gewährt, ohne Abholzeitgarantie.</p>
                 <p>Handelt der Nutzer im Auftrag einer dritten Person, ist dies bei der Buchung ausdrücklich anzugeben. Der Auftraggeber haftet in diesem Fall gesamtschuldnerisch mit der zu befördernden Person für das vereinbarte Entgelt.</p>
               </div>

@@ -102,7 +102,7 @@ export function ContactForm() {
         <MessageSquare className="absolute left-3 top-3.5 w-4 h-4 text-white/30 pointer-events-none" />
         <textarea
           className={`${inputCls} pl-10 resize-none min-h-[100px]`}
-          placeholder="Ihre Nachricht – z. B. Abholort, Ziel, Uhrzeit …"
+          placeholder="Ihre Nachricht, z. B. Abholort, Ziel, Uhrzeit …"
           value={form.message}
           onChange={update("message")}
           rows={3}

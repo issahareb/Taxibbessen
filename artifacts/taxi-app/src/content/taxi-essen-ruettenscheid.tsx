@@ -3,7 +3,7 @@ import type { PageContent } from "./types";
 
 export const content: PageContent = {
   path: "/taxi-essen-ruettenscheid",
-  h1: "Taxi in Essen-Rüttenscheid – Messe und Grugahalle",
+  h1: "Taxi in Essen-Rüttenscheid zur Messe und Grugahalle",
   badge: "Rüttenscheider Straße · Messe · Grugahalle",
   intro: "Taxi in Essen-Rüttenscheid: Fahrten zu Restaurants, Hotels, Messe Essen, Grugahalle und weiteren Zielen. Treffpunkt und Abholzeit werden vorab abgestimmt.",
   sections: [
@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Messe, Grugahalle und Grugapark",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Messe Essen</strong> – Abholung an einem vereinbarten Eingang oder Taxihaltepunkt</li>
-          <li><strong>Grugahalle</strong> – für Konzerte, Shows und Veranstaltungen</li>
-          <li><strong>Grugapark</strong> – Abholung an einem vorher genannten Eingang</li>
-          <li><strong>Museum Folkwang</strong> – Verbindung Richtung Südviertel und Innenstadt</li>
-          <li><strong>Essen Hauptbahnhof</strong> – Anschluss an Fern- und Regionalzüge</li>
+          <li><strong>Messe Essen</strong>: Abholung an einem vereinbarten Eingang oder Taxihaltepunkt</li>
+          <li><strong>Grugahalle</strong>: für Konzerte, Shows und Veranstaltungen</li>
+          <li><strong>Grugapark</strong>: Abholung an einem vorher genannten Eingang</li>
+          <li><strong>Museum Folkwang</strong>: Verbindung Richtung Südviertel und Innenstadt</li>
+          <li><strong>Essen Hauptbahnhof</strong>: Anschluss an Fern- und Regionalzüge</li>
         </ul>
       ),
     },

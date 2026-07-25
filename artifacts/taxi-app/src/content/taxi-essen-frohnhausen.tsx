@@ -3,7 +3,7 @@ import type { PageContent } from "./types";
 
 export const content: PageContent = {
   path: "/taxi-essen-frohnhausen",
-  h1: "Taxi in Essen-Frohnhausen – S-Bahnhof und Wohnadressen",
+  h1: "Taxi in Essen-Frohnhausen zum S-Bahnhof und zu Wohnadressen",
   badge: "S-Bahnhof · Frohnhauser Markt · Wohnadressen",
   intro: "Taxifahrten in Essen-Frohnhausen mit Abholung an Wohnadressen, dem S-Bahnhof und vereinbarten Treffpunkten im Stadtteil.",
   sections: [
@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Typische Ziele und Abholpunkte",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>S-Bahnhof Essen-Frohnhausen</strong> – Anschluss an den Nahverkehr</li>
-          <li><strong>Frohnhauser Markt</strong> – zentraler Treffpunkt im Stadtteil</li>
-          <li><strong>Gervinuspark</strong> – Abholung an einem vereinbarten Zugang</li>
-          <li><strong>Essen Hauptbahnhof</strong> – Weiterfahrt zu Fern- und Regionalzügen</li>
-          <li><strong>Holsterhausen und Universitätsklinikum</strong> – für Termine und Besuche</li>
+          <li><strong>S-Bahnhof Essen-Frohnhausen</strong>: Anschluss an den Nahverkehr</li>
+          <li><strong>Frohnhauser Markt</strong>: zentraler Treffpunkt im Stadtteil</li>
+          <li><strong>Gervinuspark</strong>: Abholung an einem vereinbarten Zugang</li>
+          <li><strong>Essen Hauptbahnhof</strong>: Weiterfahrt zu Fern- und Regionalzügen</li>
+          <li><strong>Holsterhausen und Universitätsklinikum</strong>: für Termine und Besuche</li>
         </ul>
       ),
     },

@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Typische Einsatzbereiche",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Flughafentransfer für Gruppen</strong> – gemeinsame An- und Abreise</li>
-          <li><strong>Familienfahrten</strong> – mit vorab abgestimmtem Platzbedarf</li>
-          <li><strong>Firmenfahrten und Delegationen</strong> – planbare Abholzeiten</li>
-          <li><strong>Hochzeiten und Veranstaltungen</strong> – nach Vorbestellung</li>
-          <li><strong>Bahnhof, Hotel oder Konzert</strong> – eine Fahrt für die gesamte Gruppe</li>
+          <li><strong>Flughafentransfer für Gruppen</strong>: gemeinsame An- und Abreise</li>
+          <li><strong>Familienfahrten</strong>: mit vorab abgestimmtem Platzbedarf</li>
+          <li><strong>Firmenfahrten und Delegationen</strong>: planbare Abholzeiten</li>
+          <li><strong>Hochzeiten und Veranstaltungen</strong>: nach Vorbestellung</li>
+          <li><strong>Bahnhof, Hotel oder Konzert</strong>: eine Fahrt für die gesamte Gruppe</li>
         </ul>
       ),
     },

@@ -25,7 +25,7 @@ describe("calculateTaxiPrice", () => {
     expect(result!.totalPrice).toBe(4.40 + 2 * 2.80);
   });
 
-  it("applies 2.70 €/km rate for 2–4 km", () => {
+  it("applies 2.70 €/km rate for 2-4 km", () => {
     const result = calculateTaxiPrice(3);
     expect(result!.perKmRate).toBe(2.70);
   });

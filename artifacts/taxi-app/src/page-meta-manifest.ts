@@ -56,7 +56,7 @@ export const PAGE_META_MANIFEST: PageMetaEntry[] = [
   },
   {
     path: '/flughafentransfer-essen-duesseldorf',
-    title: 'Flughafentransfer Essen–Düsseldorf | Taxi B&B',
+    title: 'Flughafentransfer Essen nach Düsseldorf | Taxi B&B',
     description: 'Flughafentransfer von Essen nach Düsseldorf sowie zu weiteren Flughäfen. Fahrzeug, Abholzeit und Preis vorab bei Taxi B&B anfragen.',
   },
   {

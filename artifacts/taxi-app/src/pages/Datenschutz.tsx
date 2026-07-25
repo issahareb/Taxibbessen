@@ -19,7 +19,7 @@ export default function Datenschutz() {
           </Link>
 
           <h1 className="text-3xl sm:text-4xl font-display font-bold mb-2">Datenschutzerklärung der Taxi B&B GmbH</h1>
-          <p className="text-muted-foreground mb-10">Taxi B&B GmbH – Essen · Gemäß DSGVO & TDDDG</p>
+          <p className="text-muted-foreground mb-10">Taxi B&B GmbH · Essen · Gemäß DSGVO & TDDDG</p>
 
           <div className="space-y-6">
 
@@ -77,9 +77,9 @@ export default function Datenschutz() {
               <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
                 <p>Die Verarbeitung Ihrer Daten erfolgt auf folgenden Rechtsgrundlagen gemäß DSGVO:</p>
                 <ul className="list-disc list-inside space-y-2 ml-2">
-                  <li><span className="font-semibold text-foreground">Art. 6 Abs. 1 lit. b DSGVO</span> – Verarbeitung zur Vertragserfüllung (Buchungsabwicklung)</li>
-                  <li><span className="font-semibold text-foreground">Art. 6 Abs. 1 lit. c DSGVO</span> – Erfüllung rechtlicher Verpflichtungen (z. B. Buchführungspflichten)</li>
-                  <li><span className="font-semibold text-foreground">Art. 6 Abs. 1 lit. f DSGVO</span> – Berechtigte Interessen (z. B. Betrieb und Sicherheit der Website)</li>
+                  <li><span className="font-semibold text-foreground">Art. 6 Abs. 1 lit. b DSGVO</span>: Verarbeitung zur Vertragserfüllung (Buchungsabwicklung)</li>
+                  <li><span className="font-semibold text-foreground">Art. 6 Abs. 1 lit. c DSGVO</span>: Erfüllung rechtlicher Verpflichtungen (z. B. Buchführungspflichten)</li>
+                  <li><span className="font-semibold text-foreground">Art. 6 Abs. 1 lit. f DSGVO</span>: Berechtigte Interessen (z. B. Betrieb und Sicherheit der Website)</li>
                 </ul>
               </div>
             </section>
@@ -140,12 +140,12 @@ export default function Datenschutz() {
               <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
                 <p>Sie haben gemäß DSGVO folgende Rechte gegenüber uns:</p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li><span className="font-semibold text-foreground">Auskunft</span> (Art. 15 DSGVO) – Welche Daten wir über Sie gespeichert haben</li>
-                  <li><span className="font-semibold text-foreground">Berichtigung</span> (Art. 16 DSGVO) – Korrektur unrichtiger Daten</li>
-                  <li><span className="font-semibold text-foreground">Löschung</span> (Art. 17 DSGVO) – Löschung Ihrer Daten</li>
-                  <li><span className="font-semibold text-foreground">Einschränkung</span> (Art. 18 DSGVO) – Einschränkung der Verarbeitung</li>
-                  <li><span className="font-semibold text-foreground">Widerspruch</span> (Art. 21 DSGVO) – Widerspruch gegen die Verarbeitung</li>
-                  <li><span className="font-semibold text-foreground">Datenübertragbarkeit</span> (Art. 20 DSGVO) – Erhalt Ihrer Daten in maschinenlesbarem Format</li>
+                  <li><span className="font-semibold text-foreground">Auskunft</span> (Art. 15 DSGVO): Welche Daten wir über Sie gespeichert haben</li>
+                  <li><span className="font-semibold text-foreground">Berichtigung</span> (Art. 16 DSGVO): Korrektur unrichtiger Daten</li>
+                  <li><span className="font-semibold text-foreground">Löschung</span> (Art. 17 DSGVO): Löschung Ihrer Daten</li>
+                  <li><span className="font-semibold text-foreground">Einschränkung</span> (Art. 18 DSGVO): Einschränkung der Verarbeitung</li>
+                  <li><span className="font-semibold text-foreground">Widerspruch</span> (Art. 21 DSGVO): Widerspruch gegen die Verarbeitung</li>
+                  <li><span className="font-semibold text-foreground">Datenübertragbarkeit</span> (Art. 20 DSGVO): Erhalt Ihrer Daten in maschinenlesbarem Format</li>
                 </ul>
                 <p className="mt-2">Zur Ausübung Ihrer Rechte wenden Sie sich bitte an: <a href="mailto:taxibb@outlook.com" className="text-primary hover:underline font-semibold">taxibb@outlook.com</a></p>
               </div>

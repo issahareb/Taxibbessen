@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Welche Sendungen können angefragt werden?",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Vertragsdokumente und Akten</strong> – nach vorheriger Abstimmung</li>
-          <li><strong>Unternehmensunterlagen und Muster</strong> – direkte Zustellung</li>
-          <li><strong>Schlüssel, Ersatzteile und Kleinlieferungen</strong> – passend zum verfügbaren Fahrzeug</li>
-          <li><strong>Persönliche Gegenstände</strong> – mit vereinbartem Empfänger</li>
-          <li><strong>Wiederkehrende Fahrten</strong> – nach individueller Planung</li>
+          <li><strong>Vertragsdokumente und Akten</strong>: nach vorheriger Abstimmung</li>
+          <li><strong>Unternehmensunterlagen und Muster</strong>: direkte Zustellung</li>
+          <li><strong>Schlüssel, Ersatzteile und Kleinlieferungen</strong>: passend zum verfügbaren Fahrzeug</li>
+          <li><strong>Persönliche Gegenstände</strong>: mit vereinbartem Empfänger</li>
+          <li><strong>Wiederkehrende Fahrten</strong>: nach individueller Planung</li>
         </ul>
       ),
     },

@@ -118,7 +118,7 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
             ) : (
               <motion.form key="form" onSubmit={handleSubmit} className="space-y-3">
 
-                {/* Titel — immer sichtbar */}
+                {/* Titel - immer sichtbar */}
                 <div className="mb-4">
                   <h2 className="text-xl sm:text-2xl lg:text-3xl font-display font-bold text-white leading-snug">
                     Stellen Sie jetzt Ihre Anfrage
@@ -128,7 +128,7 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
                   </p>
                 </div>
 
-                {/* Eingabefelder — nur sichtbar wenn aufgeklappt */}
+                {/* Eingabefelder - nur sichtbar wenn aufgeklappt */}
                 <AnimatePresence>
                   {!collapsed && (
                     <motion.div
@@ -194,7 +194,7 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
                   )}
                 </AnimatePresence>
 
-                {/* Textarea — immer sichtbar */}
+                {/* Textarea - immer sichtbar */}
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
@@ -208,7 +208,7 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
                   className={textarea}
                 />
 
-                {/* Button — nur sichtbar wenn aufgeklappt */}
+                {/* Button - nur sichtbar wenn aufgeklappt */}
                 <AnimatePresence>
                   {!collapsed && (
                     <motion.div
@@ -222,7 +222,7 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
                       {error && (
                         <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-red-500/15 border border-red-500/20 text-red-400 text-xs mb-3">
                           <AlertCircle className="w-4 h-4 shrink-0" />
-                          <span>Fehler beim Senden – bitte rufen Sie uns direkt an.</span>
+                          <span>Fehler beim Senden. Bitte rufen Sie uns direkt an.</span>
                         </div>
                       )}
                       <Button

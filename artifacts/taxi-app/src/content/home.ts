@@ -9,7 +9,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Wie viel kostet ein Taxi zum Flughafen Düsseldorf aus Essen?",
-    a: "Der Preis hängt von Abholort, Abholzeit und Fahrzeug ab. Die Strecke Essen–Flughafen Düsseldorf beträgt je nach Startpunkt ungefähr 35–40 km. Rufen Sie für eine konkrete Auskunft an: 0201 707060.",
+    a: "Der Preis hängt von Abholort, Abholzeit und Fahrzeug ab. Die Strecke von Essen zum Flughafen Düsseldorf beträgt je nach Startpunkt ungefähr 35 bis 40 km. Rufen Sie für eine konkrete Auskunft an: 0201 707060.",
   },
   {
     q: "Gibt es Festpreise für meine Taxifahrt?",
@@ -17,7 +17,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Kann ich ein Großraumtaxi für 7 Personen buchen?",
-    a: "Ja! Unsere Mercedes V-Klasse bietet Platz für bis zu 7 Personen – ideal für Gruppen, Familien und Firmenausflüge. Kindersitze auf Anfrage. Jetzt buchen: 0201 707060.",
+    a: "Ja! Unsere Mercedes V-Klasse bietet Platz für bis zu 7 Personen und ist ideal für Gruppen, Familien und Firmenausflüge. Kindersitze auf Anfrage. Jetzt buchen: 0201 707060.",
   },
   {
     q: "Bieten Sie Krankenfahrten und Dialysefahrten an?",
@@ -45,11 +45,11 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Ist Taxi B&B GmbH wirklich 24 Stunden erreichbar?",
-    a: "Absolut – 24 Stunden, 7 Tage die Woche, 365 Tage im Jahr. Egal ob Nachtflug oder Frühschicht: Wir sind da. Rufen Sie einfach an: 0201 707060.",
+    a: "Absolut! 24 Stunden, 7 Tage die Woche, 365 Tage im Jahr. Egal ob Nachtflug oder Frühschicht: Wir sind da. Rufen Sie einfach an: 0201 707060.",
   },
   {
     q: "Fahren Sie auch ins Ausland oder bundesweit?",
-    a: "Ja! Wir fahren bundesweit und ins europäische Ausland. Amsterdam, Zürich, Wien – kein Problem. Festpreise auf Anfrage.",
+    a: "Ja! Wir fahren bundesweit und ins europäische Ausland. Amsterdam, Zürich und Wien sind kein Problem. Festpreise auf Anfrage.",
   },
   {
     q: "Welche Fahrzeuge hat Taxi B&B GmbH?",
@@ -61,7 +61,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Kann ich ein Taxi per WhatsApp buchen?",
-    a: "Ja! Sie können uns bequem per WhatsApp kontaktieren und Ihre Fahrt anfragen. Schreiben Sie uns einfach unter +49 171 1111535 – wir antworten schnell und bestätigen Ihre Buchung.",
+    a: "Ja! Sie können uns bequem per WhatsApp kontaktieren und Ihre Fahrt anfragen. Schreiben Sie uns einfach unter +49 171 1111535. Wir antworten schnell und bestätigen Ihre Buchung.",
   },
   {
     q: "Wie weit im Voraus muss ich eine Fahrt vorbestellen?",
@@ -89,7 +89,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "In welchen Stadtteilen in Essen fahren Sie?",
-    a: "Wir fahren in ganz Essen – von Holsterhausen und Rüttenscheid über den Hauptbahnhof, Südviertel, Frohnhausen, Altenessen, Steele bis nach Kettwig. Auch Essen-Kettwig, Werden und alle Randgebiete. Einfach anrufen: 0201 707060.",
+    a: "Wir fahren in ganz Essen: von Holsterhausen und Rüttenscheid über den Hauptbahnhof, Südviertel, Frohnhausen, Altenessen, Steele bis nach Kettwig. Auch Essen-Kettwig, Werden und alle Randgebiete. Einfach anrufen: 0201 707060.",
   },
   {
     q: "Wie schützen Sie meine persönlichen Daten?",
@@ -97,6 +97,6 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Wo hat Taxi B&B GmbH seinen Sitz?",
-    a: "Taxi B&B GmbH hat seinen Sitz in der Menzelstraße 8–10, 45147 Essen-Holsterhausen. Das Unternehmen wurde 1992 gegründet und ist im Handelsregister Essen unter HRB 36284 eingetragen. Telefon: 0201 707060.",
+    a: "Taxi B&B GmbH hat seinen Sitz in der Menzelstraße 8-10, 45147 Essen-Holsterhausen. Das Unternehmen wurde 1992 gegründet und ist im Handelsregister Essen unter HRB 36284 eingetragen. Telefon: 0201 707060.",
   },
 ];

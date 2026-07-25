@@ -4,7 +4,7 @@ import { createServiceSchema } from "@/seo/business";
 import { content } from "@/content/flughafentransfer-essen-duesseldorf";
 
 const schema = createServiceSchema({
-  name: "Flughafentransfer Essen–Düsseldorf",
+  name: "Flughafentransfer Essen Düsseldorf",
   path: "/flughafentransfer-essen-duesseldorf",
   description: "Flughafentransfer von Essen nach Düsseldorf sowie zu weiteren Flughäfen. Fahrzeug, Abholzeit und Preis werden vor der Fahrt abgestimmt.",
   areaServed: ["Essen", "Düsseldorf", "Köln/Bonn", "Dortmund", "Frankfurt"],

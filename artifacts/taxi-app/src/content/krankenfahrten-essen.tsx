@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Für welche Fahrten kann der Service angefragt werden?",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Dialysefahrten</strong> – regelmäßig und nach festem Zeitplan</li>
-          <li><strong>Strahlen- und Chemotherapietermine</strong> – planbare Hin- und Rückfahrten</li>
-          <li><strong>Arzttermine und Fachkliniken</strong> – in Essen und der Region</li>
-          <li><strong>Reha und Physiotherapie</strong> – nach vorheriger Terminabstimmung</li>
-          <li><strong>Krankenhausaufnahme und Entlassung</strong> – mit vereinbartem Abholzeitpunkt</li>
+          <li><strong>Dialysefahrten</strong>: regelmäßig und nach festem Zeitplan</li>
+          <li><strong>Strahlen- und Chemotherapietermine</strong>: planbare Hin- und Rückfahrten</li>
+          <li><strong>Arzttermine und Fachkliniken</strong>: in Essen und der Region</li>
+          <li><strong>Reha und Physiotherapie</strong>: nach vorheriger Terminabstimmung</li>
+          <li><strong>Krankenhausaufnahme und Entlassung</strong>: mit vereinbartem Abholzeitpunkt</li>
         </ul>
       ),
     },

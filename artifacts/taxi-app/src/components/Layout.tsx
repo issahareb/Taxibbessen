@@ -86,7 +86,7 @@ export function Layout({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("scroll", handle);
   }, []);
 
-  // Track hero logo visibility — header logo + blur only appear when hero logo scrolls away
+  // Track hero logo visibility - header logo + blur only appear when hero logo scrolls away
   useEffect(() => {
     setHeroLogoVisible(true); // reset on route change
     const attach = () => {
@@ -141,7 +141,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <header
         className="fixed top-0 left-0 right-0 z-[100] py-4"
       >
-        {/* Blur layer with gradient mask – fades in when hero logo leaves viewport */}
+        {/* Blur layer with gradient mask - fades in when hero logo leaves viewport */}
         <div
           className="absolute inset-x-0 top-0 bg-black/25 backdrop-blur-md pointer-events-none transition-opacity duration-500"
           style={{
@@ -373,7 +373,7 @@ export function Layout({ children }: { children: ReactNode }) {
         )}
       </AnimatePresence>
 
-      {/* Main — pt-20 to clear fixed nav on non-hero pages */}
+      {/* Main - pt-20 to clear fixed nav on non-hero pages */}
       <main className="flex-1 w-full relative pt-20">
         {children}
       </main>

@@ -3,7 +3,7 @@ import type { PageContent } from "./types";
 
 export const content: PageContent = {
   path: "/taxi-essen-holsterhausen",
-  h1: "Taxi in Essen-Holsterhausen – Abholung im Stadtteil",
+  h1: "Taxi in Essen-Holsterhausen mit Abholung im Stadtteil",
   badge: "Unternehmenssitz in Essen-Holsterhausen",
   intro: "Taxifahrten in Holsterhausen mit Abholung an Wohnadressen, Praxen, dem Universitätsklinikum und vereinbarten Treffpunkten im Stadtteil.",
   sections: [
@@ -20,11 +20,11 @@ export const content: PageContent = {
       h2: "Häufig angefragte Ziele aus Holsterhausen",
       body: (
         <ul className="list-disc list-inside space-y-2">
-          <li><strong>Universitätsklinikum Essen</strong> – Abholung an einem vorher vereinbarten Eingang</li>
-          <li><strong>Gemarkenstraße und Stadtteilzentrum</strong> – für Einkäufe, Termine und Besuche</li>
-          <li><strong>Essen Hauptbahnhof</strong> – als Anschluss an Bahnreisen</li>
-          <li><strong>Messe Essen und Rüttenscheid</strong> – für Veranstaltungen und Geschäftstermine</li>
-          <li><strong>Flughafen Düsseldorf</strong> – nach Vorbestellung mit Gepäckangabe</li>
+          <li><strong>Universitätsklinikum Essen</strong>: Abholung an einem vorher vereinbarten Eingang</li>
+          <li><strong>Gemarkenstraße und Stadtteilzentrum</strong>: für Einkäufe, Termine und Besuche</li>
+          <li><strong>Essen Hauptbahnhof</strong>: als Anschluss an Bahnreisen</li>
+          <li><strong>Messe Essen und Rüttenscheid</strong>: für Veranstaltungen und Geschäftstermine</li>
+          <li><strong>Flughafen Düsseldorf</strong>: nach Vorbestellung mit Gepäckangabe</li>
         </ul>
       ),
     },

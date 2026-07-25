@@ -149,7 +149,7 @@ async function validateDeep(block: SchemaBlock): Promise<ValidationError[]> {
       errors.push({
         file: block.file,
         index: block.index,
-        message: `Schema.org API returned HTTP ${res.status} – skipping deep check.`,
+        message: `Schema.org API returned HTTP ${res.status}, skipping deep check.`,
       });
       return errors;
     }
@@ -173,7 +173,7 @@ async function validateDeep(block: SchemaBlock): Promise<ValidationError[]> {
     errors.push({
       file: block.file,
       index: block.index,
-      message: `Schema.org API unreachable (${(e as Error).message}) – deep check skipped.`,
+      message: `Schema.org API unreachable (${(e as Error).message}), deep check skipped.`,
     });
   }
 
@@ -186,7 +186,7 @@ async function main() {
   try {
     htmlFiles = collectHtmlFiles(DIST);
   } catch {
-    console.error(`\n❌  dist/public not found – run the build first.\n`);
+    console.error(`\n❌  dist/public not found, run the build first.\n`);
     process.exit(1);
   }
 

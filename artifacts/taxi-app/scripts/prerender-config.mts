@@ -3,7 +3,7 @@ export const ORGANIZATION_ID = `${ORIGIN}/#organization`;
 export const WEBSITE_ID = `${ORIGIN}/#website`;
 
 export const serviceNames: Record<string, string> = {
-  "/flughafentransfer-essen-duesseldorf": "Flughafentransfer Essen–Düsseldorf",
+  "/flughafentransfer-essen-duesseldorf": "Flughafentransfer Essen Düsseldorf",
   "/krankenfahrten-essen": "Krankenfahrten in Essen",
   "/grossraumtaxi-essen": "Großraumtaxi in Essen",
   "/dialysefahrten-essen": "Dialysefahrten in Essen",

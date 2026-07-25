@@ -13,7 +13,7 @@ export default function NotFound() {
             Seite nicht gefunden
           </h1>
           <p className="text-muted-foreground mb-8 leading-relaxed">
-            Diese Seite existiert leider nicht. Vielleicht hilft Ihnen ein Anruf weiter –
+            Diese Seite existiert leider nicht. Vielleicht hilft Ihnen ein Anruf weiter:
             wir sind rund um die Uhr für Sie da.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
