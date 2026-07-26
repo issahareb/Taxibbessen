@@ -23,7 +23,7 @@ interface ServicePageTemplateProps {
   breadcrumbLabel: string;
 }
 
-const glassCard = "backdrop-blur-xl bg-white/[0.04] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]";
+const glassCard = "bg-white/[0.06] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]";
 const fadeUp = { hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0 } };
 
 function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -44,7 +44,7 @@ function Reveal({ children, delay = 0, className = "" }: { children: React.React
 function FAQAccordion({ items }: { items: FAQItem[] }) {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   return (
-    <div className="max-w-2xl mx-auto rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-md overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.28)] divide-y divide-white/[0.06]">
+    <div className="max-w-2xl mx-auto rounded-3xl border border-white/10 bg-white/[0.06] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.28)] divide-y divide-white/[0.06]">
       {items.map((item, idx) => (
         <div key={idx} className={`transition-colors ${openIdx === idx ? "bg-white/[0.045]" : "hover:bg-white/[0.025]"}`}>
           <button

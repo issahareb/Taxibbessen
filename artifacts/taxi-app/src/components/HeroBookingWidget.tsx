@@ -96,7 +96,7 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
       transition={{ duration: 0.5, delay: 0.3 }}
       className="w-full space-y-3"
     >
-      <div ref={widgetRef} className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-2xl shadow-2xl shadow-black/30 overflow-hidden">
+      <div ref={widgetRef} className="bg-white/[0.07] border border-white/[0.08] rounded-2xl shadow-2xl shadow-black/30 overflow-hidden">
         <div className="p-5 sm:p-6">
 
           <AnimatePresence mode="wait">

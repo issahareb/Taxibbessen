@@ -10,9 +10,10 @@ import { Button } from "@/components/ui";
 import { Phone, Shield, Sparkles, Navigation, ArrowRight, Mail, Globe, MessageCircle, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useLanguage } from "@/i18n/useLanguage";
+import { createFrameSequence, drawCover, isPhoneViewport } from "@/lib/frame-scrubber";
 import depotPoster from "@assets/IMG_1642_1780001838765.png";
 
-const glassCard = "backdrop-blur-2xl bg-white/[0.03] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.6)]";
+const glassCard = "bg-white/[0.06] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.6)]";
 
 const ctaGlowContainer = {
   hidden: {},
@@ -88,16 +89,24 @@ function ServicesRevealSection() {
       });
       setActiveIdx(bestDist < window.innerHeight * 0.26 ? bestIdx : -1);
     };
+    // Throttle to one measurement per frame: the raw scroll event fires far
+    // more often than that, and each run reads six element boxes.
+    let queued = false;
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; check(); });
+    };
     check();
-    window.addEventListener("scroll", check, { passive: true });
-    window.addEventListener("resize", check);
-    return () => { window.removeEventListener("scroll", check); window.removeEventListener("resize", check); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); };
   }, []);
 
   return (
     <div>
-      {/* ── Scroll-Reveal: alle 6 Leistungen - 1 Spalte ── */}
-      <div className="grid grid-cols-1 gap-y-12 lg:gap-y-20">
+      {/* ── Scroll-Reveal: 1 Spalte mobil, 2 Spalten ab Desktop ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-12 lg:gap-x-10 lg:gap-y-16">
         {SERVICE_ITEMS.map(({ src, titleKey, descKey, href }, i) => (
           <div
             key={src}
@@ -110,12 +119,11 @@ function ServicesRevealSection() {
           >
             {/* Glass tile - visible only when this item is nearest viewport center */}
             <div
-              className="absolute inset-x-[-1rem] sm:inset-x-[-1.5rem] lg:inset-x-[-3rem] inset-y-0 rounded-2xl pointer-events-none"
+              className="absolute inset-x-[-1rem] sm:inset-x-[-1.5rem] lg:inset-x-[-1.25rem] inset-y-0 rounded-2xl pointer-events-none"
               style={{
                 opacity: activeIdx === i ? 1 : 0,
                 border: "none",
                 background: "transparent",
-                backdropFilter: "blur(6px)",
                 boxShadow: [
                   "inset 0 4px 28px rgba(255,193,7,0.22)",
                   "inset 0 -4px 28px rgba(255,193,7,0.16)",
@@ -162,7 +170,7 @@ function ServicesRevealSection() {
                 {t(titleKey)}
               </h3>
 
-              <p className="font-medium leading-relaxed w-full text-left text-sm lg:text-base max-w-sm lg:max-w-md text-white/75">
+              <p className="font-medium leading-relaxed w-full text-left text-sm lg:text-base max-w-sm text-white/75">
                 {t(descKey)}
               </p>
               {href && (
@@ -195,7 +203,7 @@ function AeoFaktenblock() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm px-6 py-7 sm:px-10 sm:py-9"
+          className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-7 sm:px-10 sm:py-9"
         >
           <p className="text-[10px] font-black text-primary/70 uppercase tracking-[0.35em] mb-4">
             Offizielle Informationen · Taxi B&amp;B GmbH
@@ -252,7 +260,7 @@ function FAQSection() {
           </h2>
         </motion.div>
 
-        <div className="max-w-2xl mx-auto rounded-3xl border border-white/10 bg-white/[0.035] backdrop-blur-md overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.28)] divide-y divide-white/[0.06]">
+        <div className="max-w-2xl mx-auto rounded-3xl border border-white/10 bg-white/[0.06] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.28)] divide-y divide-white/[0.06]">
           {FAQ_ITEMS.map((item, idx) => (
             <motion.div
               key={idx}
@@ -305,17 +313,17 @@ function FAQSection() {
 
 export default function Home() {
   const { t } = useLanguage();
-  const imgRef = useRef<HTMLImageElement>(null);
+  const imgRef = useRef<HTMLCanvasElement>(null);
   const sharpOverlayRef = useRef<HTMLImageElement>(null);
   const servicesRef = useRef<HTMLElement>(null);
   const ctaHeadingRef = useRef<HTMLParagraphElement>(null);
   const ctaInView = useInView(ctaHeadingRef, { amount: 0.3, margin: "0px 0px 5% 0px" });
   const heroLayerRef = useRef<HTMLDivElement>(null);
-  const storyImgRef = useRef<HTMLImageElement>(null);
+  const storyImgRef = useRef<HTMLCanvasElement>(null);
   const storyLayerRef = useRef<HTMLDivElement>(null);
   const storySectionRef = useRef<HTMLElement>(null);
   const ctaSectionRef = useRef<HTMLElement>(null);
-  const ctaImgRef = useRef<HTMLImageElement>(null);
+  const ctaImgRef = useRef<HTMLCanvasElement>(null);
   const ctaLayerRef = useRef<HTMLDivElement>(null);
 
   const { title: _homeTitle, description: _homeDesc } = getPageMeta('/');
@@ -344,15 +352,18 @@ export default function Home() {
 
   // Image-sequence scrubber - bulletproof on iOS Safari, no <video> black-frame issues
   const FRAME_COUNT = 97;
-  const framePath = (n: number) =>
-    `${import.meta.env.BASE_URL}hero-frames/frame_${String(n).padStart(3, "0")}.jpg`;
+  // Phones get the portrait sequence, wider screens the 16:9 one cut from the
+  // same footage - a 600px portrait frame would be upscaled and hard-cropped
+  // on a desktop monitor.
+  const framePath = (n: number) => {
+    const dir = isPhoneViewport() ? "hero-frames" : "hero-frames-desktop";
+    return `${import.meta.env.BASE_URL}${dir}/frame_${String(n).padStart(3, "0")}.jpg`;
+  };
 
   useEffect(() => {
-    const img = imgRef.current;
+    const canvas = imgRef.current;
     const heroLayer = heroLayerRef.current;
-    if (!img) return;
-    // Desktop uses the autoplay video - skip loading all 97 frames
-    if (!window.matchMedia('(max-width: 767px)').matches) return;
+    if (!canvas) return;
 
     let heroTargetOpacity = 1;
 
@@ -367,21 +378,9 @@ export default function Home() {
       return Math.min(Math.max(1 - (window.scrollY - (servicesTop + vh * 0.15)) / (vh * 0.35), 0), 1);
     };
 
-    const frames: HTMLImageElement[] = [];
-    let framesLoaded = false;
-
-    // Defer all frame downloads until the user actually scrolls.
-    // Until then the hero-sharp.webp poster (opacity: 1) covers the sequence
-    // canvas entirely, so no frames are visible and none need to be in memory.
-    const loadFrames = () => {
-      if (framesLoaded) return;
-      framesLoaded = true;
-      for (let i = 1; i <= FRAME_COUNT; i++) {
-        const f = new Image();
-        f.src = framePath(i);
-        frames.push(f);
-      }
-    };
+    // Downloads stay deferred until the first scroll: until then the poster
+    // covers the canvas completely, so no frame is visible yet.
+    const sequence = createFrameSequence(FRAME_COUNT, framePath);
 
     let targetProgress = 0;
     let currentProgress = 0;
@@ -396,32 +395,19 @@ export default function Home() {
       return Math.min(Math.max(window.scrollY / Math.max(servicesTop, 1), 0), 1);
     };
 
-    const isReady = (f: HTMLImageElement) => f.complete && f.naturalWidth > 0;
-
-    // Find the closest already-loaded frame to the target index so we never
-    // "skip" to start/end when intermediate frames haven't downloaded yet.
-    const nearestReady = (target: number) => {
-      if (frames[target] && isReady(frames[target])) return target;
-      for (let d = 1; d < frames.length; d++) {
-        const lo = target - d;
-        const hi = target + d;
-        if (lo >= 0 && frames[lo] && isReady(frames[lo])) return lo;
-        if (hi < frames.length && frames[hi] && isReady(frames[hi])) return hi;
-      }
-      return -1;
-    };
-
     const rafLoop = () => {
       currentProgress += (targetProgress - currentProgress) * 0.12;
-      if (frames.length > 0) {
+      // Ist die Ebene ausgeblendet, kostet ein drawImage nur Füllrate ohne
+      // sichtbaren Effekt - dann wird der Frame erst beim Wiedereinblenden gesetzt.
+      if (heroTargetOpacity > 0.01) {
         const idx = Math.min(
           FRAME_COUNT - 1,
           Math.max(0, Math.round(currentProgress * (FRAME_COUNT - 1))),
         );
         if (idx !== lastFrame) {
-          const ready = nearestReady(idx);
-          if (ready >= 0) {
-            img.src = frames[ready].src;
+          const frame = sequence.nearest(idx);
+          if (frame) {
+            drawCover(canvas, frame);
             lastFrame = idx;
           }
         }
@@ -436,7 +422,7 @@ export default function Home() {
 
     const onScroll = () => {
       // Trigger frame loading on the very first scroll interaction
-      loadFrames();
+      sequence.start();
       targetProgress = getProgress();
       heroTargetOpacity = getHeroOpacity();
     };
@@ -451,6 +437,7 @@ export default function Home() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       if (rafId) cancelAnimationFrame(rafId);
+      sequence.destroy();
     };
   }, []);
 
@@ -461,19 +448,16 @@ export default function Home() {
     `${import.meta.env.BASE_URL}story-frames/frame_${String(n).padStart(3, "0")}.jpg`;
 
   useEffect(() => {
-    const img = storyImgRef.current;
+    const canvas = storyImgRef.current;
     const layer = storyLayerRef.current;
     // Observe the services section - the story animation begins while it's on screen,
     // so starting frame downloads then gives enough lead time before they're needed.
     const triggerEl = servicesRef.current;
-    if (!img || !layer || !triggerEl) return;
+    if (!canvas || !layer || !triggerEl) return;
 
-    const PRIORITY_COUNT = 16;
     const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b);
 
-    // Shared mutable state between the observer callback and the RAF loop.
-    // Frames array is populated lazily; nearestReady returns -1 until then.
-    const frames: HTMLImageElement[] = [];
+    const sequence = createFrameSequence(STORY_FRAME_COUNT, storyFramePath);
 
     let targetProgress = 0;
     let currentProgress = 0;
@@ -483,19 +467,6 @@ export default function Home() {
     let rafId: number;
     let started = false;
 
-    const isReady = (f: HTMLImageElement) => f.complete && f.naturalWidth > 0;
-    const nearestReady = (target: number) => {
-      if (!frames[target] || !isReady(frames[target])) {
-        for (let d = 1; d < frames.length; d++) {
-          const lo = target - d;
-          const hi = target + d;
-          if (lo >= 0 && frames[lo] && isReady(frames[lo])) return lo;
-          if (hi < frames.length && frames[hi] && isReady(frames[hi])) return hi;
-        }
-        return -1;
-      }
-      return target;
-    };
 
     const measure = () => {
       const servicesEl = servicesRef.current;
@@ -528,15 +499,15 @@ export default function Home() {
       // linear fade; lerping on top just adds lag that lets the silver hero
       // bleed through at fast scroll speeds.
       currentOpacity = targetOpacity;
-      if (frames.length > 0) {
+      if (currentOpacity > 0.01) {
         const idx = Math.min(
           STORY_FRAME_COUNT - 1,
           Math.max(0, Math.round(currentProgress * (STORY_FRAME_COUNT - 1))),
         );
         if (idx !== lastFrame) {
-          const ready = nearestReady(idx);
-          if (ready >= 0) {
-            img.src = frames[ready].src;
+          const frame = sequence.nearest(idx);
+          if (frame) {
+            drawCover(canvas, frame);
             lastFrame = idx;
           }
         }
@@ -565,13 +536,8 @@ export default function Home() {
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
       observer.disconnect();
-      for (let i = 1; i <= STORY_FRAME_COUNT; i++) {
-        const f = new Image();
-        if (i <= PRIORITY_COUNT) (f as HTMLImageElement & { fetchpriority: string }).fetchpriority = "high";
-        f.src = storyFramePath(i);
-        frames.push(f);
-      }
-    }, { rootMargin: '500% 0px' });
+      sequence.start();
+    }, { rootMargin: '100% 0px' });
 
     observer.observe(triggerEl);
 
@@ -580,6 +546,7 @@ export default function Home() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (rafId) cancelAnimationFrame(rafId);
+      sequence.destroy();
     };
   }, []);
 
@@ -587,23 +554,20 @@ export default function Home() {
   // the story clip around the reviews section and scrubs through to the CTA,
   // where it holds its last frame. ───
   const CTA_FRAME_COUNT = 122;
-  const ctaFramePath = (n: number) =>
-    `${import.meta.env.BASE_URL}cta-frames/frame_${String(n).padStart(3, "0")}.jpg`;
+  const ctaFramePath = (n: number) => {
+    const dir = isPhoneViewport() ? "cta-frames" : "cta-frames-desktop";
+    return `${import.meta.env.BASE_URL}${dir}/frame_${String(n).padStart(3, "0")}.jpg`;
+  };
 
   useEffect(() => {
-    const img = ctaImgRef.current;
+    const canvas = ctaImgRef.current;
     const layer = ctaLayerRef.current;
     const sectionEl = ctaSectionRef.current;
-    if (!layer || !sectionEl) return;
+    if (!canvas || !layer || !sectionEl) return;
 
-    // CTA frames are only shown on mobile (img has md:hidden); skip on desktop
-    const isMobile = window.matchMedia('(max-width: 767px)').matches;
-
-    const PRIORITY_COUNT = 16;
     const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b);
 
-    // Frames are populated lazily via IntersectionObserver on mobile only.
-    const frames: HTMLImageElement[] = [];
+    const sequence = createFrameSequence(CTA_FRAME_COUNT, ctaFramePath);
 
     let targetProgress = 0;
     let currentProgress = 0;
@@ -613,19 +577,6 @@ export default function Home() {
     let rafId: number;
     let started = false;
 
-    const isReady = (f: HTMLImageElement) => f.complete && f.naturalWidth > 0;
-    const nearestReady = (target: number) => {
-      if (!frames[target] || !isReady(frames[target])) {
-        for (let d = 1; d < frames.length; d++) {
-          const lo = target - d;
-          const hi = target + d;
-          if (lo >= 0 && frames[lo] && isReady(frames[lo])) return lo;
-          if (hi < frames.length && frames[hi] && isReady(frames[hi])) return hi;
-        }
-        return -1;
-      }
-      return target;
-    };
 
     const measure = () => {
       const s = storySectionRef.current;
@@ -658,15 +609,15 @@ export default function Home() {
       currentProgress += (targetProgress - currentProgress) * 0.12;
       // Opacity is NOT lerped - the measure() ramp is the smooth transition.
       currentOpacity = targetOpacity;
-      if (isMobile && img && frames.length > 0) {
+      if (currentOpacity > 0.01) {
         const idx = Math.min(
           CTA_FRAME_COUNT - 1,
           Math.max(0, Math.round(currentProgress * (CTA_FRAME_COUNT - 1))),
         );
         if (idx !== lastFrame) {
-          const ready = nearestReady(idx);
-          if (ready >= 0) {
-            img.src = frames[ready].src;
+          const frame = sequence.nearest(idx);
+          if (frame) {
+            drawCover(canvas, frame);
             lastFrame = idx;
           }
         }
@@ -688,36 +639,23 @@ export default function Home() {
       rafId = requestAnimationFrame(rafLoop);
     };
 
-    // Start opacity animation immediately (desktop video fade needs this).
-    // Only load frames on mobile, deferred until the CTA section is near viewport.
+    // Opacity animation starts right away; frame downloads wait until the CTA
+    // section comes within a few viewports.
     startLoop();
 
-    if (isMobile && img) {
-      const observer = new IntersectionObserver(([entry]) => {
-        if (!entry.isIntersecting) return;
-        observer.disconnect();
-        for (let i = 1; i <= CTA_FRAME_COUNT; i++) {
-          const f = new Image();
-          if (i <= PRIORITY_COUNT) (f as HTMLImageElement & { fetchpriority: string }).fetchpriority = "high";
-          f.src = ctaFramePath(i);
-          frames.push(f);
-        }
-      }, { rootMargin: '300% 0px' });
-      observer.observe(sectionEl);
-
-      return () => {
-        observer.disconnect();
-        window.removeEventListener("scroll", onScroll);
-        window.removeEventListener("resize", onResize);
-        if (rafId) cancelAnimationFrame(rafId);
-      };
-
-    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
+      sequence.start();
+    }, { rootMargin: '300% 0px' });
+    observer.observe(sectionEl);
 
     return () => {
+      observer.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (rafId) cancelAnimationFrame(rafId);
+      sequence.destroy();
     };
   }, []);
 
@@ -726,47 +664,32 @@ export default function Home() {
       <div>
         {/* ─── FIXED IMAGE-SEQUENCE BACKGROUND - spans Hero + Services ─── */}
         <div ref={heroLayerRef} className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none" style={{ height: "100lvh", zIndex: 1, backgroundColor: "#0b0a08" }}>
-          {/* Mobile: scroll-scrubbed image-sequence */}
-          <img
+          {/* Scroll-gesteuerte Bildsequenz, auf Canvas gezeichnet */}
+          <canvas
             ref={imgRef}
-            src={framePath(1)}
-            alt="Fahrzeugflotte von Taxi B&amp;B auf dem Betriebshof in Essen-Holsterhausen"
             aria-hidden
-            width="1080"
-            height="1920"
-            className="md:hidden w-full h-full object-cover"
-            style={{ objectPosition: "center", opacity: 0.92, transform: "translateZ(0)", backfaceVisibility: "hidden" }}
+            className="block w-full h-full"
+            style={{ opacity: 0.92 }}
           />
           {/* LCP-Bild auf Mobile: fetchpriority="high" stellt sicher, dass der Browser
               es sofort mit höchster Priorität lädt - direkter Effekt auf LCP-Score */}
-          <img
-            ref={sharpOverlayRef}
-            src={`${import.meta.env.BASE_URL}hero-sharp.webp`}
-            srcSet={`${import.meta.env.BASE_URL}hero-sharp-540w.webp 540w, ${import.meta.env.BASE_URL}hero-sharp.webp 1080w`}
-            sizes="100vw"
-            alt="Mercedes-Taxis von Taxi B&amp;B vor der Zentrale in Essen-Holsterhausen"
-            aria-hidden
-            width="1080"
-            height="1920"
-            fetchPriority="high"
-            decoding="sync"
-            className="md:hidden absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: "center", opacity: 1 }}
-          />
-          {/* Desktop: looping autoplay video (16:9) */}
-          <video
-            className="hidden md:block absolute inset-0 w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            style={{ objectPosition: "center" }}
-          >
-            <source src={`${import.meta.env.BASE_URL}hero-desktop.mp4`} type="video/mp4" />
-          </video>
-          {/* Cover AI-generated video watermark bottom-right */}
+          <picture>
+            <source media="(min-width: 768px)" srcSet={`${import.meta.env.BASE_URL}hero-sharp-desktop.webp`} />
+            <source media="(max-width: 767px)" srcSet={`${import.meta.env.BASE_URL}hero-sharp-540w.webp 540w, ${import.meta.env.BASE_URL}hero-sharp.webp 1080w`} sizes="100vw" />
+            <img
+              ref={sharpOverlayRef}
+              src={`${import.meta.env.BASE_URL}hero-sharp.webp`}
+              alt="Mercedes-Taxis von Taxi B&amp;B vor der Zentrale in Essen-Holsterhausen"
+              aria-hidden
+              fetchPriority="high"
+              decoding="sync"
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ objectPosition: "center", opacity: 1 }}
+            />
+          </picture>
+          {/* Wasserzeichen der KI-Quelle unten rechts abdecken */}
           <div
-            className="hidden md:block absolute bottom-0 right-0 pointer-events-none"
+            className="absolute bottom-0 right-0 pointer-events-none"
             style={{ width: 160, height: 48, background: "linear-gradient(to top left, #0b0a08 30%, transparent 100%)" }}
           />
         </div>
@@ -777,17 +700,10 @@ export default function Home() {
           className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none"
           style={{ height: "100lvh", zIndex: 1, opacity: 0, backgroundColor: "#100f12" }}
         >
-          <img
+          <canvas
             ref={storyImgRef}
-            src={storyFramePath(1)}
-            alt="Taxi auf dem Weg zur Haustür als Sinnbild für den Haus-zu-Haus-Service"
             aria-hidden
-            width="1080"
-            height="1920"
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover"
-            style={{ objectPosition: "center", opacity: 1, transform: "translateZ(0)", backfaceVisibility: "hidden" }}
+            className="block w-full h-full"
           />
           <div
             className="absolute inset-0"
@@ -801,33 +717,15 @@ export default function Home() {
           className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none"
           style={{ height: "100lvh", zIndex: 1, opacity: 0, backgroundColor: "#100a0a" }}
         >
-          {/* Mobile: scroll-scrubbed image-sequence */}
-          <img
+          <canvas
             ref={ctaImgRef}
-            src={ctaFramePath(1)}
-            alt="Taxi vor einem Flughafenterminal als Sinnbild für den Flughafentransfer"
             aria-hidden
-            width="1080"
-            height="1920"
-            decoding="async"
-            className="md:hidden w-full h-full object-cover"
-            style={{ objectPosition: "center", opacity: 1, transform: "translateZ(0)", backfaceVisibility: "hidden" }}
+            className="block w-full h-full"
           />
           <div
-            className="md:hidden absolute inset-0"
+            className="absolute inset-0"
             style={{ background: "linear-gradient(to bottom, rgba(8,10,16,0.22) 0%, rgba(8,10,16,0.08) 45%, rgba(8,10,16,0.25) 100%)" }}
           />
-          {/* Desktop: looping autoplay airport video (16:9) */}
-          <video
-            className="hidden md:block absolute inset-0 w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            style={{ objectPosition: "center" }}
-          >
-            <source src={`${import.meta.env.BASE_URL}airport-desktop.mp4`} type="video/mp4" />
-          </video>
           <div
             className="absolute inset-0"
             style={{ background: "linear-gradient(to bottom, rgba(8,10,16,0.22) 0%, rgba(8,10,16,0.08) 45%, rgba(8,10,16,0.25) 100%)" }}
@@ -982,7 +880,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, margin: "-60px" }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="max-w-2xl mx-auto rounded-[32px] border border-primary/25 bg-white/[0.04] backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.45)] p-8 sm:p-10 text-center"
+              className="max-w-2xl mx-auto rounded-[32px] border border-primary/25 bg-white/[0.07] shadow-[0_8px_40px_rgba(0,0,0,0.45)] p-8 sm:p-10 text-center"
             >
               {/* Sterne */}
               <div className="flex items-center justify-center gap-1.5 mb-4">
@@ -1055,8 +953,6 @@ export default function Home() {
                 <div className="absolute -bottom-8 -right-6 lg:-right-10 w-44 h-44 rounded-[28px] p-6 flex flex-col justify-end shadow-2xl"
                   style={{
                     background: "rgba(255,255,255,0.08)",
-                    backdropFilter: "blur(24px) saturate(180%)",
-                    WebkitBackdropFilter: "blur(24px) saturate(180%)",
                     border: "1px solid rgba(255,255,255,0.18)",
                     boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15)",
                   }}
@@ -1072,7 +968,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: false }}
                 transition={{ duration: 0.8 }}
-                className="rounded-[32px] border border-white/[0.1] bg-white/[0.05] backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-8 lg:p-12"
+                className="rounded-[32px] border border-white/[0.1] bg-white/[0.07] shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-8 lg:p-12"
               >
                 <span className="text-[11px] font-black text-primary uppercase tracking-[0.45em] mb-6 block">
                   {t("story_pre")}
@@ -1099,7 +995,7 @@ export default function Home() {
             <div className="w-full h-full" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,193,7,0.4) 1px, transparent 0)", backgroundSize: "32px 32px" }} />
           </div>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="inline-block rounded-[32px] border border-white/[0.1] bg-white/[0.05] backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-8 lg:p-12 mb-10 max-w-full">
+            <div className="inline-block rounded-[32px] border border-white/[0.1] bg-white/[0.07] shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-8 lg:p-12 mb-10 max-w-full">
             {/* Semantic section heading */}
             <h2 className="text-[11px] font-black text-primary uppercase tracking-[0.45em] mb-5 block">
               Anfrage &amp; Kontakt

@@ -77,67 +77,14 @@ export function mediaPerformancePlugin() {
           '{ src: "hauszuhaus.webp",        titleKey: "hero_service6_title", descKey: "hero_service6_desc", href: "/book" }',
         );
 
-      output = replaceWithin(
-        output,
-        "  // ─── Third image-sequence",
-        "  return (\n    <Layout>",
-        [
-          [
-            "    // CTA frames are only shown on mobile (img has md:hidden); skip on desktop\n    const isMobile = window.matchMedia('(max-width: 767px)').matches;",
-            "    // Use one deterministic scroll-controlled frame sequence on every viewport.",
-          ],
-          ["if (isMobile && img && frames.length > 0)", "if (img && frames.length > 0)"],
-          ["            lastFrame = idx;", "            lastFrame = ready;"],
-          ["    if (isMobile && img) {", "    if (img) {"],
-          ["      observer.observe(sectionEl);", "      observer.observe(storySectionRef.current ?? sectionEl);"],
-        ],
-      );
-
-      output = replaceWithin(
-        output,
-        "        {/* ─── CTA/AIRPORT BACKGROUND ─── */}",
-        "        {/* ─── HERO ─── */}",
-        [
-          ['className="md:hidden w-full h-full object-cover"', 'className="w-full h-full object-cover"'],
-          ['className="md:hidden absolute inset-0"', 'className="absolute inset-0"'],
-          ['decoding="async"', 'decoding="sync"'],
-          [
-            'style={{ height: "100lvh", zIndex: 1, opacity: 0, backgroundColor: "#100a0a" }}',
-            'style={{ height: "100lvh", zIndex: 1, opacity: 0, backgroundColor: "#100a0a", willChange: "opacity", transform: "translateZ(0)" }}',
-          ],
-        ],
-      );
-
-      output = removeBetween(
-        output,
-        "          {/* Desktop: looping autoplay airport video (16:9) */}",
-        '          <div\n            className="absolute inset-0"',
-      );
-
-      output = output.replace(
-        "const loadFrames = () => {\n      if (framesLoaded) return;",
-        `const shouldReduceMedia =
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      (navigator).connection?.saveData === true;
-
-    const loadFrames = () => {
-      if (framesLoaded || shouldReduceMedia) return;`,
-      );
-
-      output = output.replaceAll(
-        "      observer.disconnect();\n      for (let i = 1; i <=",
-        `      observer.disconnect();
-      const shouldReduceMedia =
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-        (navigator).connection?.saveData === true;
-      if (shouldReduceMedia) return;
-      for (let i = 1; i <=`,
-      );
-
-      output = output.replace(
-        "{ rootMargin: '500% 0px' }",
-        "{ rootMargin: '100% 0px' }",
-      );
+      // Die früheren Patches an den Bildsequenzen sind entfallen: Scroll-
+      // Steuerung auf allen Viewports, das Entfernen der Autoplay-Videos,
+      // die Rücksicht auf prefers-reduced-motion/saveData und der
+      // IntersectionObserver-Vorlauf stehen jetzt direkt in
+      // src/pages/Home.tsx bzw. src/lib/frame-scrubber.ts. Ein Patch, der ins
+      // Leere greift, fällt still aus und hinterlässt keinen Hinweis - der
+      // vorherige lastFrame-Patch verwies nach einem Refactor auf eine
+      // gelöschte Variable und ließ die Startseite zur Laufzeit abbrechen.
 
       return { code: output, map: null };
     },
