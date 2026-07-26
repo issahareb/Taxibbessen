@@ -10,7 +10,7 @@ import { Button } from "@/components/ui";
 import { Phone, Shield, Sparkles, Navigation, ArrowRight, Mail, Globe, MessageCircle, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useLanguage } from "@/i18n/useLanguage";
-import { createFrameSequence, drawCover, isPhoneViewport } from "@/lib/frame-scrubber";
+import { createFrameSequence, drawCover } from "@/lib/frame-scrubber";
 import depotPoster from "@assets/IMG_1642_1780001838765.png";
 
 const glassCard = "bg-white/[0.06] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.6)]";
@@ -352,13 +352,8 @@ export default function Home() {
 
   // Image-sequence scrubber - bulletproof on iOS Safari, no <video> black-frame issues
   const FRAME_COUNT = 97;
-  // Phones get the portrait sequence, wider screens the 16:9 one cut from the
-  // same footage - a 600px portrait frame would be upscaled and hard-cropped
-  // on a desktop monitor.
-  const framePath = (n: number) => {
-    const dir = isPhoneViewport() ? "hero-frames" : "hero-frames-desktop";
-    return `${import.meta.env.BASE_URL}${dir}/frame_${String(n).padStart(3, "0")}.jpg`;
-  };
+  const framePath = (n: number) =>
+    `${import.meta.env.BASE_URL}hero-frames/frame_${String(n).padStart(3, "0")}.jpg`;
 
   useEffect(() => {
     const canvas = imgRef.current;
@@ -554,10 +549,8 @@ export default function Home() {
   // the story clip around the reviews section and scrubs through to the CTA,
   // where it holds its last frame. ───
   const CTA_FRAME_COUNT = 122;
-  const ctaFramePath = (n: number) => {
-    const dir = isPhoneViewport() ? "cta-frames" : "cta-frames-desktop";
-    return `${import.meta.env.BASE_URL}${dir}/frame_${String(n).padStart(3, "0")}.jpg`;
-  };
+  const ctaFramePath = (n: number) =>
+    `${import.meta.env.BASE_URL}cta-frames/frame_${String(n).padStart(3, "0")}.jpg`;
 
   useEffect(() => {
     const canvas = ctaImgRef.current;
@@ -664,29 +657,39 @@ export default function Home() {
       <div>
         {/* ─── FIXED IMAGE-SEQUENCE BACKGROUND - spans Hero + Services ─── */}
         <div ref={heroLayerRef} className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none" style={{ height: "100lvh", zIndex: 1, backgroundColor: "#0b0a08" }}>
-          {/* Scroll-gesteuerte Bildsequenz, auf Canvas gezeichnet */}
+          {/* Mobil: scroll-gesteuerte Bildsequenz auf Canvas */}
           <canvas
             ref={imgRef}
             aria-hidden
-            className="block w-full h-full"
+            className="md:hidden block w-full h-full"
             style={{ opacity: 0.92 }}
           />
           {/* LCP-Bild auf Mobile: fetchpriority="high" stellt sicher, dass der Browser
               es sofort mit höchster Priorität lädt - direkter Effekt auf LCP-Score */}
-          <picture>
-            <source media="(min-width: 768px)" srcSet={`${import.meta.env.BASE_URL}hero-sharp-desktop.webp`} />
-            <source media="(max-width: 767px)" srcSet={`${import.meta.env.BASE_URL}hero-sharp-540w.webp 540w, ${import.meta.env.BASE_URL}hero-sharp.webp 1080w`} sizes="100vw" />
-            <img
-              ref={sharpOverlayRef}
-              src={`${import.meta.env.BASE_URL}hero-sharp.webp`}
-              alt="Mercedes-Taxis von Taxi B&amp;B vor der Zentrale in Essen-Holsterhausen"
-              aria-hidden
-              fetchPriority="high"
-              decoding="sync"
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ objectPosition: "center", opacity: 1 }}
-            />
-          </picture>
+          <img
+            ref={sharpOverlayRef}
+            src={`${import.meta.env.BASE_URL}hero-sharp.webp`}
+            srcSet={`${import.meta.env.BASE_URL}hero-sharp-540w.webp 540w, ${import.meta.env.BASE_URL}hero-sharp.webp 1080w`}
+            sizes="100vw"
+            alt="Mercedes-Taxis von Taxi B&amp;B vor der Zentrale in Essen-Holsterhausen"
+            aria-hidden
+            width="1080"
+            height="1920"
+            fetchPriority="high"
+            decoding="sync"
+            className="md:hidden absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: "center", opacity: 1 }}
+          />
+          {/* Ab Tablet: Video, per Scroll gesteuert (src/desktop-video-scroll.ts) */}
+          <video
+            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+            muted
+            playsInline
+            preload="auto"
+            style={{ objectPosition: "center" }}
+          >
+            <source src={`${import.meta.env.BASE_URL}hero-desktop.mp4`} type="video/mp4" />
+          </video>
           {/* Wasserzeichen der KI-Quelle unten rechts abdecken */}
           <div
             className="absolute bottom-0 right-0 pointer-events-none"
@@ -720,8 +723,18 @@ export default function Home() {
           <canvas
             ref={ctaImgRef}
             aria-hidden
-            className="block w-full h-full"
+            className="md:hidden block w-full h-full"
           />
+          {/* Ab Tablet: Video, per Scroll gesteuert */}
+          <video
+            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+            muted
+            playsInline
+            preload="auto"
+            style={{ objectPosition: "center" }}
+          >
+            <source src={`${import.meta.env.BASE_URL}airport-desktop.mp4`} type="video/mp4" />
+          </video>
           <div
             className="absolute inset-0"
             style={{ background: "linear-gradient(to bottom, rgba(8,10,16,0.22) 0%, rgba(8,10,16,0.08) 45%, rgba(8,10,16,0.25) 100%)" }}
