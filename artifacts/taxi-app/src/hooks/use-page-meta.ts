@@ -9,8 +9,9 @@ interface PageMeta {
 }
 
 const DEFAULT_META = {
-  title: "Taxi B&B Essen | Taxiservice seit 1992",
-  description: "Taxi B&B GmbH in Essen: klassische Taxifahrten, Flughafentransfer, Krankenfahrten, Großraumtaxi und Kurierdienst. Rund um die Uhr erreichbar: 0201 707060.",
+  title: "Taxi Essen bestellen | 24h Taxi B&B seit 1992",
+  description:
+    "Taxi in Essen rund um die Uhr bestellen: Taxifahrten, Flughafentransfer, Krankenfahrten, Großraumtaxi und Kurierdienst. Jetzt anrufen: 0201 707060.",
 };
 
 function setMetaContent(selector: string, createAttrs: [string, string], content: string) {
@@ -45,6 +46,7 @@ export function usePageMeta({ title, description, schemaOrg, noindex }: PageMeta
     const url = canonicalUrl(window.location.pathname);
 
     document.title = title;
+    setMetaContent('meta[name="title"]', ["name", "title"], title);
     setMetaContent('meta[name="description"]', ["name", "description"], description);
     setMetaContent(
       'meta[name="robots"]',
@@ -61,6 +63,7 @@ export function usePageMeta({ title, description, schemaOrg, noindex }: PageMeta
 
       return () => {
         document.title = DEFAULT_META.title;
+        setMetaContent('meta[name="title"]', ["name", "title"], DEFAULT_META.title);
         setMetaContent('meta[name="description"]', ["name", "description"], DEFAULT_META.description);
         setMetaContent('meta[name="robots"]', ["name", "robots"], "index, follow");
       };
@@ -112,6 +115,7 @@ export function usePageMeta({ title, description, schemaOrg, noindex }: PageMeta
 
     return () => {
       document.title = DEFAULT_META.title;
+      setMetaContent('meta[name="title"]', ["name", "title"], DEFAULT_META.title);
       setMetaContent('meta[name="description"]', ["name", "description"], DEFAULT_META.description);
       setMetaContent('meta[name="robots"]', ["name", "robots"], "index, follow");
       setMetaContent('meta[property="og:title"]', ["property", "og:title"], DEFAULT_META.title);
