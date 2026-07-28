@@ -8,8 +8,8 @@ export type PageMetaEntry = {
 export const PAGE_META_MANIFEST: PageMetaEntry[] = [
   {
     path: '/',
-    title: 'Taxi B&B Essen | Taxiservice seit 1992',
-    description: 'Taxi B&B GmbH in Essen: klassische Taxifahrten, Flughafentransfer, Krankenfahrten, Großraumtaxi und Kurierdienst. Rund um die Uhr erreichbar: 0201 707060.',
+    title: 'Taxi Essen bestellen | 24h Taxi B&B seit 1992',
+    description: 'Taxi in Essen rund um die Uhr bestellen: Taxifahrten, Flughafentransfer, Krankenfahrten, Großraumtaxi und Kurierdienst. Jetzt anrufen: 0201 707060.',
   },
   {
     path: '/fahrzeuge',
