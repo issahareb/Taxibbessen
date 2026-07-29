@@ -12,6 +12,7 @@ export const routeConfigs: RouteConfig[] = [
   { path: "/krankenfahrten-essen",               indexable: true,  priority: 0.9, changefreq: "monthly" },
   { path: "/grossraumtaxi-essen",                indexable: true,  priority: 0.9, changefreq: "monthly" },
   { path: "/dialysefahrten-essen",               indexable: true,  priority: 0.9, changefreq: "monthly" },
+  { path: "/eco-taxi",                           indexable: true,  priority: 0.8, changefreq: "monthly" },
   { path: "/kurierdienst-essen",                 indexable: true,  priority: 0.8, changefreq: "monthly" },
   { path: "/taxi-essen-hbf",                     indexable: true,  priority: 0.8, changefreq: "monthly" },
   { path: "/fahrzeuge",                          indexable: true,  priority: 0.8, changefreq: "monthly" },
