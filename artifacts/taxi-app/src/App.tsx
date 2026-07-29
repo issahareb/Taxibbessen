@@ -15,6 +15,7 @@ import AGB from "@/pages/AGB";
 import Datenschutz from "@/pages/Datenschutz";
 import Fahrzeuge from "@/pages/Fahrzeuge";
 import UeberUns from "@/pages/UeberUns";
+import EcoTaxi from "@/pages/EcoTaxi";
 import FlughafentransferEssen from "@/pages/FlughafentransferEssen";
 import KrankenfahrtenEssen from "@/pages/KrankenfahrtenEssen";
 import GrossraumtaxiEssen from "@/pages/GrossraumtaxiEssen";
@@ -44,6 +45,7 @@ const routeComponents: Record<string, ComponentType> = {
   "/datenschutz":                         Datenschutz,
   "/fahrzeuge":                           Fahrzeuge,
   "/ueber-uns":                           UeberUns,
+  "/eco-taxi":                            EcoTaxi,
   "/flughafentransfer-essen-duesseldorf": FlughafentransferEssen,
   "/krankenfahrten-essen":               KrankenfahrtenEssen,
   "/grossraumtaxi-essen":                GrossraumtaxiEssen,
