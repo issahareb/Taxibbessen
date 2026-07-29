@@ -22,6 +22,11 @@ export const PAGE_META_MANIFEST: PageMetaEntry[] = [
     description: 'Taxi B&B GmbH ist seit 1992 in Essen tätig. Erfahren Sie mehr über das Unternehmen, die Leistungen und die Kontaktmöglichkeiten.',
   },
   {
+    path: '/eco-taxi',
+    title: 'Eco Taxi Essen ist jetzt Taxi B&B',
+    description: 'Eco Taxi wird unter dem Namen Taxi B&B Essen weitergeführt. Der vertraute Service für Taxifahrten, Flughafentransfers und Krankenfahrten bleibt bestehen.',
+  },
+  {
     path: '/book',
     title: 'Taxi anfragen | Taxi B&B Essen',
     description: 'Taxifahrt in Essen online anfragen oder Taxi B&B telefonisch unter 0201 707060 erreichen.',
