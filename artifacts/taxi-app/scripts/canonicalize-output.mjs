@@ -13,6 +13,7 @@ const files = [
   "krankenfahrten-essen/index.html",
   "grossraumtaxi-essen/index.html",
   "dialysefahrten-essen/index.html",
+  "eco-taxi/index.html",
   "kurierdienst-essen/index.html",
   "taxi-essen-hbf/index.html",
   "fahrzeuge/index.html",
