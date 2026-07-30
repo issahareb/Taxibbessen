@@ -25,6 +25,7 @@ export const content: PageContent = {
           <li><span className="font-bold">Arzttermine und Fachkliniken</span>: in Essen und der Region</li>
           <li><span className="font-bold">Reha und Physiotherapie</span>: nach vorheriger Terminabstimmung</li>
           <li><span className="font-bold">Krankenhausaufnahme und Entlassung</span>: mit vereinbartem Abholzeitpunkt</li>
+          <li><span className="font-bold">Rollstuhlfahrten</span>: nach vorheriger Prüfung der Fahrzeugverfügbarkeit</li>
         </ul>
       ),
     },
@@ -32,7 +33,7 @@ export const content: PageContent = {
       h2: "Planbare Abholung und persönliche Unterstützung",
       body: (
         <>
-          <p>Unsere Fahrer kennen viele Kliniken, Dialysezentren und Arztpraxen in Essen und der Region. Bei der Buchung können Sie mitteilen, ob Hilfe beim Ein- und Aussteigen oder eine Begleitung bis zum Eingang benötigt wird.</p>
+          <p>Unsere Fahrer kennen viele Kliniken, Dialysezentren und Arztpraxen in Essen und der Region. Bei der Buchung können Sie mitteilen, ob Hilfe beim Ein- und Aussteigen, eine Begleitung bis zum Eingang oder ein rollstuhlgeeignetes Fahrzeug benötigt wird.</p>
           <p>Medizinische Betreuung oder qualifizierter Krankentransport gehören nicht zu einer normalen Taxifahrt. Bei medizinischem Überwachungsbedarf wenden Sie sich bitte an einen geeigneten Krankentransportdienst.</p>
         </>
       ),
@@ -63,6 +64,10 @@ export const content: PageContent = {
     {
       q: "Können regelmäßige Fahrten eingerichtet werden?",
       a: "Ja, für wiederkehrende Termine wie Dialyse oder Therapie kann nach Abstimmung ein fester Fahrplan eingerichtet werden. Änderungen sollten möglichst früh telefonisch mitgeteilt werden.",
+    },
+    {
+      q: "Bieten Sie Rollstuhlfahrten an?",
+      a: "Bitte teilen Sie uns bei der Anfrage mit, ob ein rollstuhlgeeignetes Fahrzeug benötigt wird. Wir prüfen anschließend, ob ein passendes Fahrzeug verfügbar ist.",
     },
   ],
 };
