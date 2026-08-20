@@ -55,6 +55,9 @@
           "inLanguage": "de-DE",
           "publisher": {
             "@id": "https://www.taxibbessen.de/#organization"
+          },
+          "creator": {
+            "@id": "https://issahareb.me/#issa-hareb"
           }
         },
         {
@@ -110,6 +113,24 @@
             "https://www.taxi.de/unternehmen/taxi-bb-gmbh-essen/",
             "https://firmeneintrag.creditreform.de/45147/5110516554/TAXI_B_B_GMBH"
           ]
+        },
+        {
+          "@type": "Person",
+          "@id": "https://issahareb.me/#issa-hareb",
+          "name": "Issa Hareb",
+          "url": "https://issahareb.me/",
+          "worksFor": {
+            "@id": "https://issahareb.me/#hareb-digital"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://issahareb.me/#hareb-digital",
+          "name": "Hareb Digital",
+          "url": "https://issahareb.me/",
+          "founder": {
+            "@id": "https://issahareb.me/#issa-hareb"
+          }
         }
       ]
     }
@@ -117,6 +138,9 @@
   </head>
   <body>
     <div id="root"></div>
+    <p id="site-creator-credit" style="margin:0;padding:0 12px 10px;background:#07090d;text-align:center;font:400 9px/1.4 Arial,sans-serif;color:rgba(255,255,255,.28);letter-spacing:.01em;">
+      Website designed &amp; developed by <a href="https://issahareb.me/" rel="author external" style="color:inherit;text-decoration:none;">Issa Hareb · Hareb Digital</a>
+    </p>
     <script type="module" src="/src/main.tsx"></script>
     <!-- PRERENDER_NOSCRIPT_PLACEHOLDER -->
   </body>
