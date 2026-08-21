@@ -3,9 +3,21 @@
  *
  * Why not <img src={...}> per scroll frame: assigning `src` on a visible image
  * makes the browser re-attach, decode and repaint the element on the main
- * thread. At scroll speed that stutters badly. Here every frame is decoded
+ * thread. At scroll speed that stutters badly. Here each frame is decoded
  * once into an ImageBitmap (off the main thread) and painted with a single
  * drawImage call, which costs almost nothing per frame.
+ *
+ * Only a window of frames around the current playback position stays
+ * decoded. Unlike a plain <img>, an ImageBitmap is not something the browser
+ * can quietly discard and redecode under memory pressure - it stays fully
+ * resident until explicitly closed. A 600x1067 frame decodes to roughly
+ * 2.5MB of pixel data, so keeping all ~120 frames of three sequences
+ * resident at once approaches a gigabyte and reliably crashes the tab on
+ * iOS Safari ("A Problem Repeatedly Occurred"). Bounding the window to a
+ * couple dozen frames per sequence keeps memory in the tens of megabytes
+ * while scrubbing stays just as smooth near the playhead; frames that
+ * scroll back into range are cheap to redecode because the browser's HTTP
+ * cache still has them.
  */
 
 export interface FrameSequence {
@@ -19,80 +31,136 @@ export interface FrameSequence {
 interface Options {
   /** Parallel downloads. Kept low so a sequence never floods the connection. */
   concurrency?: number;
+  /** Frames kept decoded on each side of the current playback position. */
+  windowRadius?: number;
+}
+
+type Frame = ImageBitmap | HTMLImageElement;
+
+function closeFrame(frame: Frame): void {
+  if ("close" in frame) frame.close();
 }
 
 export function createFrameSequence(
   count: number,
   pathFor: (frame: number) => string,
-  { concurrency = 6 }: Options = {},
+  { concurrency = 4, windowRadius = 12 }: Options = {},
 ): FrameSequence {
-  const decoded: (ImageBitmap | HTMLImageElement | null)[] = new Array(count).fill(null);
-  let started = false;
+  const decoded = new Map<number, Frame>();
+  const pending = new Set<number>();
+  const queue: number[] = [];
   let disposed = false;
-  let next = 0;
+  let started = false;
   let active = 0;
 
   const canUseBitmap = typeof createImageBitmap === "function";
 
-  async function decode(index: number): Promise<void> {
+  async function decodeOne(index: number): Promise<void> {
+    pending.add(index);
     const url = pathFor(index + 1);
     try {
+      let frame: Frame;
       if (canUseBitmap) {
         const response = await fetch(url);
         const blob = await response.blob();
         if (disposed) return;
-        decoded[index] = await createImageBitmap(blob);
+        frame = await createImageBitmap(blob);
+      } else {
+        frame = await new Promise<HTMLImageElement>((resolve, reject) => {
+          const img = new Image();
+          img.decoding = "async";
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error(`failed to load ${url}`));
+          img.src = url;
+        });
+      }
+      if (disposed) {
+        closeFrame(frame);
         return;
       }
+      decoded.set(index, frame);
     } catch {
-      // fall through to the <img> path below
+      // Left undecoded; the next reconcile re-queues it if still in window.
+    } finally {
+      pending.delete(index);
     }
-    await new Promise<void>((resolve) => {
-      const img = new Image();
-      img.decoding = "async";
-      img.onload = () => {
-        if (!disposed) decoded[index] = img;
-        resolve();
-      };
-      img.onerror = () => resolve();
-      img.src = url;
-    });
   }
 
   function pump(): void {
-    while (!disposed && active < concurrency && next < count) {
-      const index = next++;
+    while (!disposed && active < concurrency && queue.length > 0) {
+      const index = queue.shift() as number;
+      if (decoded.has(index) || pending.has(index)) continue;
       active++;
-      void decode(index).finally(() => {
+      void decodeOne(index).finally(() => {
         active--;
         pump();
       });
     }
   }
 
+  // Re-centers the decoded window on `center`: evicts frames that fell
+  // outside it (closing their ImageBitmap) and queues the missing frames
+  // inside it, nearest first so the playhead fills in before the edges. A
+  // hard cap on top of the distance check is what actually bounds memory:
+  // a burst of in-flight decodes can finish after the playhead has already
+  // moved on, and without the cap those stragglers would sit resident until
+  // the next reconcile happens to notice them individually.
+  const hardCap = windowRadius * 2;
+
+  function reconcile(center: number): void {
+    const clamped = Math.min(count - 1, Math.max(0, center));
+
+    for (const [index, frame] of decoded) {
+      if (Math.abs(index - clamped) > windowRadius) {
+        closeFrame(frame);
+        decoded.delete(index);
+      }
+    }
+
+    if (decoded.size > hardCap) {
+      const byDistance = [...decoded.keys()].sort(
+        (a, b) => Math.abs(a - clamped) - Math.abs(b - clamped),
+      );
+      for (const index of byDistance.slice(hardCap)) {
+        closeFrame(decoded.get(index) as Frame);
+        decoded.delete(index);
+      }
+    }
+
+    queue.length = 0;
+    for (let d = 0; d <= windowRadius; d++) {
+      const low = clamped - d;
+      const high = clamped + d;
+      if (low >= 0 && !decoded.has(low) && !pending.has(low)) queue.push(low);
+      if (d > 0 && high < count && !decoded.has(high) && !pending.has(high)) queue.push(high);
+    }
+    pump();
+  }
+
   return {
     start() {
       if (started || prefersLessMedia()) return;
       started = true;
-      pump();
+      reconcile(0);
     },
     nearest(index) {
+      if (disposed) return null;
+      reconcile(index);
       const clamped = Math.min(count - 1, Math.max(0, index));
-      if (decoded[clamped]) return decoded[clamped];
-      for (let distance = 1; distance < count; distance++) {
-        const low = clamped - distance;
-        if (low >= 0 && decoded[low]) return decoded[low];
-        const high = clamped + distance;
-        if (high < count && decoded[high]) return decoded[high];
+      if (decoded.has(clamped)) return decoded.get(clamped) as Frame;
+      for (let d = 1; d <= windowRadius; d++) {
+        const low = decoded.get(clamped - d);
+        if (low) return low;
+        const high = decoded.get(clamped + d);
+        if (high) return high;
       }
       return null;
     },
     destroy() {
       disposed = true;
-      for (const frame of decoded) {
-        if (frame && "close" in frame) frame.close();
-      }
-      decoded.fill(null);
+      queue.length = 0;
+      for (const frame of decoded.values()) closeFrame(frame);
+      decoded.clear();
     },
   };
 }
