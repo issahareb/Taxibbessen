@@ -9,6 +9,8 @@ import { content as taxiEssenFrohnhausen } from "./taxi-essen-frohnhausen";
 import { content as taxiEssenHolsterhausen } from "./taxi-essen-holsterhausen";
 import { content as taxiEssenRuettenscheid } from "./taxi-essen-ruettenscheid";
 import { content as taxiEssenSuedviertel } from "./taxi-essen-suedviertel";
+import { content as ueberUns } from "./ueber-uns";
+import { content as fahrzeuge } from "./fahrzeuge";
 
 const allContent: PageContent[] = [
   dialysefahrtenEssen,
@@ -21,6 +23,8 @@ const allContent: PageContent[] = [
   taxiEssenHolsterhausen,
   taxiEssenRuettenscheid,
   taxiEssenSuedviertel,
+  ueberUns,
+  fahrzeuge,
 ];
 
 export const PRERENDER_CONTENT: Record<string, PageContent> = Object.fromEntries(
