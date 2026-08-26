@@ -763,7 +763,7 @@ export default function Home() {
                 transition={{ duration: 0.8 }}
                 className="text-center"
               >
-                <h1 className="text-center font-display font-black uppercase tracking-[0.22em] text-white/50 mb-2" style={{ fontSize: "clamp(0.45rem, 1.1vw, 0.7rem)" }}>24/7 Taxiservice in Essen: Krankenfahrten, Flughafentransfer und Großraumtaxi</h1>
+                <h1 className="text-center font-display font-black uppercase tracking-[0.22em] text-white/50 mb-2" style={{ fontSize: "clamp(0.7rem, 1.4vw, 0.85rem)" }}>24/7 Taxiservice in Essen: Krankenfahrten, Flughafentransfer und Großraumtaxi</h1>
                 <img
                   id="hero-logo"
                   src={`${import.meta.env.BASE_URL}bb-logo-v7-transparent.webp`}
