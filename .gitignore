@@ -47,3 +47,12 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Generated analysis output (graphify)
+graphify-out/
+
+# Replit chat-upload scratch files. Only assets actually imported by the app
+# (via the @assets Vite alias) are tracked; everything else here is disposable.
+attached_assets/*
+!attached_assets/IMG_1642_1780001838765.png
+!attached_assets/brush-stroke.png
