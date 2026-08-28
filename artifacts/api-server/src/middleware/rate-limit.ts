@@ -88,3 +88,14 @@ export const contactSubmissionRateLimiter = createRateLimiter({
   windowMs: positiveInteger(process.env.CONTACT_RATE_LIMIT_WINDOW_MS, FIFTEEN_MINUTES),
   max: positiveInteger(process.env.CONTACT_RATE_LIMIT_MAX, 5),
 });
+
+// /api/distance is unauthenticated by design (the booking form calls it
+// before a customer submits anything) but proxies to a billed Google Maps
+// API using the server's own key, so it needs its own tighter cap on top of
+// the generic apiRateLimiter - otherwise one IP could drive up the Google
+// Maps bill just by hammering this single route.
+export const distanceRateLimiter = createRateLimiter({
+  name: "distance",
+  windowMs: positiveInteger(process.env.DISTANCE_RATE_LIMIT_WINDOW_MS, FIFTEEN_MINUTES),
+  max: positiveInteger(process.env.DISTANCE_RATE_LIMIT_MAX, 30),
+});

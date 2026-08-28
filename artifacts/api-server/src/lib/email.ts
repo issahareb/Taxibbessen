@@ -2,6 +2,26 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Booking/contact fields are free-text values a site visitor controls. They
+// are embedded into an HTML email below, so they must be escaped the same
+// way any other untrusted string would be before landing in markup - an
+// unescaped value could inject arbitrary HTML into the notification the
+// admin inbox renders.
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+// Email subjects are a distinct API field, not raw SMTP text, but stripping
+// control characters keeps them from doing anything unexpected in a client.
+function sanitizeSubjectPart(value: string): string {
+  return value.replace(/[\r\n]+/g, " ").trim();
+}
+
 export interface BookingEmailData {
   id: number;
   pickupLocation: string;
@@ -22,7 +42,8 @@ export interface BookingEmailData {
 }
 
 export async function sendBookingNotification(booking: BookingEmailData): Promise<void> {
-  const subject = `Neue Anfrage #${booking.id} – ${booking.customerName} ${booking.customerLastName}`;
+  const safeName = sanitizeSubjectPart(`${booking.customerName} ${booking.customerLastName}`);
+  const subject = `Neue Anfrage #${booking.id} – ${safeName}`;
 
   const foundViaLabels: Record<string, string> = {
     google: "Google-Suche",
@@ -52,8 +73,8 @@ export async function sendBookingNotification(booking: BookingEmailData): Promis
   const tableRows = rows
     .map(([label, value]) => `
       <tr>
-        <td style="padding:8px 12px;font-weight:600;color:#555;white-space:nowrap;border-bottom:1px solid #f0f0f0;">${label}</td>
-        <td style="padding:8px 12px;color:#111;border-bottom:1px solid #f0f0f0;">${value}</td>
+        <td style="padding:8px 12px;font-weight:600;color:#555;white-space:nowrap;border-bottom:1px solid #f0f0f0;">${escapeHtml(label)}</td>
+        <td style="padding:8px 12px;color:#111;border-bottom:1px solid #f0f0f0;">${escapeHtml(value)}</td>
       </tr>`)
     .join("");
 
@@ -93,7 +114,7 @@ export async function sendBookingNotification(booking: BookingEmailData): Promis
         <!-- CTA -->
         <tr>
           <td style="padding:8px 32px 32px;text-align:center;">
-            <a href="tel:${booking.customerPhone}" style="display:inline-block;background:#FFC107;color:#1a1a1a;font-weight:800;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;letter-spacing:0.5px;">
+            <a href="tel:${escapeHtml(booking.customerPhone)}" style="display:inline-block;background:#FFC107;color:#1a1a1a;font-weight:800;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;letter-spacing:0.5px;">
               📞 Jetzt zurückrufen
             </a>
           </td>
@@ -136,7 +157,8 @@ export interface ContactEmailData {
 }
 
 export async function sendContactNotification(data: ContactEmailData): Promise<void> {
-  const subject = `Neue Anfrage – ${data.firstName} ${data.lastName}`;
+  const safeName = sanitizeSubjectPart(`${data.firstName} ${data.lastName}`);
+  const subject = `Neue Anfrage – ${safeName}`;
 
   const rows = [
     ["Name", `${data.firstName} ${data.lastName}`],
@@ -148,8 +170,8 @@ export async function sendContactNotification(data: ContactEmailData): Promise<v
   const tableRows = rows
     .map(([label, value]) => `
       <tr>
-        <td style="padding:8px 12px;font-weight:600;color:#555;white-space:nowrap;border-bottom:1px solid #f0f0f0;">${label}</td>
-        <td style="padding:8px 12px;color:#111;border-bottom:1px solid #f0f0f0;">${value}</td>
+        <td style="padding:8px 12px;font-weight:600;color:#555;white-space:nowrap;border-bottom:1px solid #f0f0f0;">${escapeHtml(label)}</td>
+        <td style="padding:8px 12px;color:#111;border-bottom:1px solid #f0f0f0;">${escapeHtml(value)}</td>
       </tr>`)
     .join("");
 
@@ -169,7 +191,7 @@ export async function sendContactNotification(data: ContactEmailData): Promise<v
         </tr>
         <tr>
           <td style="background:#FFC107;padding:12px 32px;">
-            <div style="font-size:15px;font-weight:700;color:#1a1a1a;">📋 Anfrage von ${data.firstName} ${data.lastName}</div>
+            <div style="font-size:15px;font-weight:700;color:#1a1a1a;">📋 Anfrage von ${escapeHtml(data.firstName)} ${escapeHtml(data.lastName)}</div>
           </td>
         </tr>
         <tr>
@@ -181,7 +203,7 @@ export async function sendContactNotification(data: ContactEmailData): Promise<v
         </tr>
         <tr>
           <td style="padding:8px 32px 32px;text-align:center;">
-            <a href="tel:${data.phone}" style="display:inline-block;background:#FFC107;color:#1a1a1a;font-weight:800;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;letter-spacing:0.5px;">
+            <a href="tel:${escapeHtml(data.phone)}" style="display:inline-block;background:#FFC107;color:#1a1a1a;font-weight:800;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;letter-spacing:0.5px;">
               📞 Jetzt zurückrufen
             </a>
           </td>

@@ -16,6 +16,7 @@ import {
   apiRateLimiter,
   bookingSubmissionRateLimiter,
   contactSubmissionRateLimiter,
+  distanceRateLimiter,
 } from "./middleware/rate-limit";
 import { validateBody, validateParams } from "./middleware/validate-request";
 
@@ -75,6 +76,13 @@ app.use((req, res, next): void => {
   next();
 });
 
+app.use((req, res, next): void => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  next();
+});
+
 app.use(cookieParser());
 app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: true, limit: "100kb" }));
@@ -82,6 +90,7 @@ app.use(express.urlencoded({ extended: true, limit: "100kb" }));
 app.use("/api", apiRateLimiter);
 app.post("/api/bookings", bookingSubmissionRateLimiter, validateBody(BookingRequestSchema));
 app.post("/api/contact", contactSubmissionRateLimiter, validateBody(ContactRequestSchema));
+app.get("/api/distance", distanceRateLimiter);
 app.post("/api/admin/setup", validateBody(AdminSetupRequestSchema));
 app.post("/api/admin/login", validateBody(AdminLoginRequestSchema));
 app.get("/api/bookings/:id", validateParams(BookingIdParamsSchema));
