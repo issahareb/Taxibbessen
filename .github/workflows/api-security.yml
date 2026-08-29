@@ -17,11 +17,19 @@ jobs:
           version: 9.15.9
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
-      - run: pnpm install --no-frozen-lockfile --reporter=silent
+      - run: pnpm install --frozen-lockfile --reporter=silent
       - run: pnpm --filter @workspace/api-spec run codegen
       - run: git diff --exit-code -- lib/api-client-react/src/generated lib/api-zod/src/generated
       - run: pnpm --filter @workspace/api-server run typecheck
       - run: pnpm --filter @workspace/taxi-app run typecheck
       - run: pnpm --filter @workspace/api-server run test:security
+      # Mirrors the two services' actual railway.toml buildCommand, so a
+      # build that would fail in production fails here too. Deliberately
+      # scoped to these two packages (not the recursive root build) since
+      # they are the only ones with a railway.toml - other workspace
+      # packages (e.g. the design sandbox) are dev-only and need env vars
+      # that don't apply to production CI.
+      - run: pnpm --filter @workspace/api-server run build
+      - run: pnpm --filter @workspace/taxi-app run build

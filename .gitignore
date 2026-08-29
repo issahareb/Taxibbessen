@@ -51,6 +51,10 @@ Thumbs.db
 # Generated analysis output (graphify)
 graphify-out/
 
+# Stray source-tree archives/backups, not used by any build or deploy step
+*.tar.gz
+*.tgz
+
 # Replit chat-upload scratch files. Only assets actually imported by the app
 # (via the @assets Vite alias) are tracked; everything else here is disposable.
 attached_assets/*
