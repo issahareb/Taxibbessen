@@ -3,6 +3,6 @@ builder = "nixpacks"
 buildCommand = "NODE_ENV=development pnpm install --no-frozen-lockfile && pnpm --filter @workspace/taxi-app run build"
 
 [deploy]
-startCommand = "node artifacts/taxi-app/railway-start.mjs"
+startCommand = "node artifacts/taxi-app/serve.mjs"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3

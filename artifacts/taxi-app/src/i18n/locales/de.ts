@@ -20,7 +20,7 @@ const de = {
   hero_service3_sub: "Wir transferieren bequem zu und auch von jedem Flughafen!",
   hero_service3_extras: "Dokumenttransport, Kurierdienst, Rundum von Haus zu Haus",
   hero_service1_desc: "Ob Geschäftsreise, privater Ausflug oder Langstrecke, wir fahren Sie bequem und pünktlich ans Ziel. Unser Service gilt in Essen, im gesamten Bundesgebiet und auf Anfrage auch ins europäische Ausland. Festpreise, klimatisierte Mercedes-Fahrzeuge und eine diskrete Fahrweise sind für uns selbstverständlich.",
-  hero_service2_desc: "Wir übernehmen alle gesetzlich genehmigten Krankenfahrten, Dialysefahrten und Fahrten zur Strahlentherapie. Die Abrechnung erfolgt direkt mit Ihrer Krankenkasse, kein bürokratischer Aufwand für Sie. Unsere Fahrer sind einfühlsam, pünktlich und kennen die Kliniken und Praxen in Essen und Umgebung.",
+  hero_service2_desc: "Wir übernehmen Krankenfahrten, Dialysefahrten und Fahrten zur Strahlentherapie. Bei entsprechend genehmigten Fahrten kann eine direkte Abrechnung mit Ihrer Krankenkasse vereinbart werden. Unsere Fahrer sind einfühlsam, pünktlich und kennen die Kliniken und Praxen in Essen und Umgebung.",
   hero_service3_desc: "Wir bringen Sie komfortabel zu allen großen Flughäfen: Düsseldorf, Köln/Bonn, Frankfurt und Dortmund. Dank Echtzeit-Flugverfolgung warten wir auch bei Verspätungen kostenlos auf Sie. Festpreis ohne Taktung, ausreichend Kofferraumplatz und klimatisierte Fahrzeuge sind garantiert.",
   hero_service4_title: "Dokumenttransport",
   hero_service4_sub: "Sicher & diskret",

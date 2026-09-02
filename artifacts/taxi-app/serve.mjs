@@ -37,6 +37,13 @@ const longCacheExtensions = new Set([
 
 app.use(compression({ level: 6 }));
 
+app.use((_req, res, next) => {
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  next();
+});
+
 app.use((req, res, next) => {
   const host = (req.get("host") || "").split(":")[0].toLowerCase();
   const forwardedProto = (req.get("x-forwarded-proto") || req.protocol)
@@ -114,5 +121,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Taxi B&B static server on :${PORT} (canonical redirects + cache headers enabled)`);
+  console.log(`Taxi B&B static server on :${PORT} (canonical redirects + HSTS + cache headers enabled)`);
 });

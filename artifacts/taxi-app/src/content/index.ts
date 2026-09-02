@@ -11,8 +11,11 @@ import { content as taxiEssenRuettenscheid } from "./taxi-essen-ruettenscheid";
 import { content as taxiEssenSuedviertel } from "./taxi-essen-suedviertel";
 import { content as ueberUns } from "./ueber-uns";
 import { content as fahrzeuge } from "./fahrzeuge";
+import { content as ecoTaxi } from "./eco-taxi";
+import { content as homePage } from "./home-page";
 
 const allContent: PageContent[] = [
+  homePage,
   dialysefahrtenEssen,
   flughafentransferEssenDuesseldorf,
   grossraumtaxiEssen,
@@ -25,6 +28,7 @@ const allContent: PageContent[] = [
   taxiEssenSuedviertel,
   ueberUns,
   fahrzeuge,
+  ecoTaxi,
 ];
 
 export const PRERENDER_CONTENT: Record<string, PageContent> = Object.fromEntries(

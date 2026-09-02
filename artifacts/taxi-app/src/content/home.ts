@@ -21,7 +21,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Bieten Sie Krankenfahrten und Dialysefahrten an?",
-    a: "Ja, wir führen Krankenfahrten, Dialysefahrten und Therapiefahrten in Essen und Umgebung durch. Wir arbeiten mit Krankenkassen zusammen und holen Sie pünktlich ab.",
+    a: "Ja, wir führen Krankenfahrten, Dialysefahrten und Therapiefahrten in Essen und Umgebung durch. Bei entsprechend genehmigten Fahrten kann eine direkte Abrechnung mit Ihrer Krankenkasse vereinbart werden. Wir holen Sie pünktlich ab.",
   },
   {
     q: "Fahren Sie auch Rollstuhlfahrer oder mobilitätseingeschränkte Personen?",
@@ -53,7 +53,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Welche Fahrzeuge hat Taxi B&B GmbH?",
-    a: "Unsere Flotte umfasst den Mercedes E-Klasse Kombi, den Mercedes E 300 e Hybrid (elektrisch) und die Mercedes V-Klasse für Gruppen. Alle Fahrzeuge sind klimatisiert und regelmäßig gewartet.",
+    a: "Unsere Flotte umfasst den Mercedes E-Klasse Kombi, den Mercedes E 300 e (Plug-in-Hybrid) und die Mercedes V-Klasse für Gruppen. Alle Fahrzeuge sind klimatisiert und regelmäßig gewartet.",
   },
   {
     q: "Wie schnell kommt das Taxi nach meiner Bestellung?",
@@ -93,7 +93,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Wie schützen Sie meine persönlichen Daten?",
-    a: "Ihre Daten werden ausschließlich zur Fahrtdurchführung verwendet und nicht an Dritte weitergegeben. Wir arbeiten DSGVO-konform. Weitere Informationen finden Sie in unserer Datenschutzerklärung auf dieser Website.",
+    a: "Ihre Daten werden ausschließlich zur Abwicklung Ihrer Fahrt verwendet. Eine Weitergabe an Dritte erfolgt nur, soweit dies zur Fahrtdurchführung nötig ist (etwa an den ausführenden Fahrer oder bei Krankenfahrten an die Krankenkasse) oder gesetzlich vorgeschrieben ist. Wir arbeiten DSGVO-konform. Details finden Sie in unserer Datenschutzerklärung auf dieser Website.",
   },
   {
     q: "Wo hat Taxi B&B GmbH seinen Sitz?",
