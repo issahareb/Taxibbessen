@@ -197,6 +197,46 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
           a scroll-scrubbed video, and re-blurring it every frame is costly on
           phones. */}
       <div ref={widgetRef} className="bg-black/45 border border-white/20 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden">
+
+        {/* Registerreiter im Stil einer Akte: der aktive Reiter steht vorn und
+            geht nach unten in die Karte über, der inaktive sitzt tiefer und
+            dunkler dahinter. Markiert wird nur über die Linie, die per
+            layoutId beim Umschalten zum anderen Reiter wandert. */}
+        {!submitted && (
+          <div role="tablist" aria-label="Art der Anfrage" className="flex items-end gap-1 px-4 pt-4">
+            {([
+              ["text", "Text"],
+              ["auswahl", "Auswahl"],
+            ] as const).map(([key, label]) => {
+              const active = mode === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => selectMode(key)}
+                  className={`relative px-5 rounded-t-xl text-xs font-black uppercase tracking-widest transition-colors duration-200 ${
+                    active
+                      ? "z-20 h-10 text-white"
+                      : "z-0 h-8 border-t border-white/10 bg-black/55 text-white/35 hover:text-white/65"
+                  }`}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="anfrage-tab-line"
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 rounded-t-xl border-t border-l border-r border-primary/55 shadow-[0_0_10px_rgba(255,193,7,0.28)]"
+                      transition={{ type: "spring", stiffness: 340, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative z-10">{label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         <div className="p-5 sm:p-6">
 
           <AnimatePresence mode="wait">
@@ -217,29 +257,6 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
               </motion.div>
             ) : (
               <motion.form key="form" onSubmit={handleSubmit} className="space-y-3">
-
-                {/* Umschaltung zwischen freier Nachricht und geführter Auswahl */}
-                <div role="tablist" aria-label="Art der Anfrage" className="flex gap-1.5 p-1 rounded-xl bg-black/35 border border-white/10 mb-4">
-                  {([
-                    ["text", "Text"],
-                    ["auswahl", "Auswahl"],
-                  ] as const).map(([key, label]) => (
-                    <button
-                      key={key}
-                      type="button"
-                      role="tab"
-                      aria-selected={mode === key}
-                      onClick={() => selectMode(key)}
-                      className={`flex-1 h-9 rounded-lg text-xs font-black uppercase tracking-widest transition-colors ${
-                        mode === key
-                          ? "bg-primary text-black"
-                          : "text-white/60 hover:text-white hover:bg-white/[0.06]"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
 
                 {/* Titel - immer sichtbar */}
                 <div className="mb-4">
