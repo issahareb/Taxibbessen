@@ -1107,8 +1107,11 @@ export default function Home() {
             </motion.div>
 
             {/* ── Buchungsformular ── */}
-            <div id="anfrage" className="mt-12 max-w-md mx-auto scroll-mt-24">
-              <p className="text-white/40 text-[11px] uppercase font-black tracking-[0.4em] mb-6 text-center">Online anfragen</p>
+            {/* Framed like the other content blocks in this section so the
+                form reads as its own block instead of floating bare on the
+                page background. */}
+            <div id="anfrage" className="mt-12 max-w-md mx-auto scroll-mt-24 rounded-[28px] border border-white/[0.14] bg-white/[0.05] shadow-[0_8px_32px_rgba(0,0,0,0.4)] p-6 sm:p-8">
+              <p className="text-white/70 text-[11px] uppercase font-black tracking-[0.4em] mb-6 text-center">Online anfragen</p>
               <ContactForm />
             </div>
           </div>

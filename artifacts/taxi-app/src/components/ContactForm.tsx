@@ -9,7 +9,7 @@ const WaIcon = () => (
 
 const BASE = (import.meta.env.VITE_API_URL ?? import.meta.env.BASE_URL).replace(/\/$/, "");
 
-const inputCls = "w-full bg-white/8 border border-white/25 rounded-xl px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:border-primary focus:bg-white/10 transition-colors text-sm";
+const inputCls = "w-full bg-white/[0.11] border border-white/30 rounded-xl px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-primary focus:bg-white/[0.15] transition-colors text-sm";
 
 export function ContactForm() {
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "", message: "" });
@@ -53,7 +53,7 @@ export function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="relative">
-          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/55 pointer-events-none" />
           <input
             className={`${inputCls} pl-10`}
             placeholder="Vorname"
@@ -74,7 +74,7 @@ export function ContactForm() {
       </div>
 
       <div className="relative">
-        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/55 pointer-events-none" />
         <input
           className={`${inputCls} pl-10`}
           placeholder="Telefonnummer *"
@@ -87,7 +87,7 @@ export function ContactForm() {
       </div>
 
       <div className="relative">
-        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/55 pointer-events-none" />
         <input
           className={`${inputCls} pl-10`}
           placeholder="E-Mail (optional)"
@@ -99,7 +99,7 @@ export function ContactForm() {
       </div>
 
       <div className="relative">
-        <MessageSquare className="absolute left-3 top-3.5 w-4 h-4 text-white/30 pointer-events-none" />
+        <MessageSquare className="absolute left-3 top-3.5 w-4 h-4 text-white/55 pointer-events-none" />
         <textarea
           className={`${inputCls} pl-10 resize-none min-h-[100px]`}
           placeholder="Ihre Nachricht, z. B. Abholort, Ziel, Uhrzeit …"

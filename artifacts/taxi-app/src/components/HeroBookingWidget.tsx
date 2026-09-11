@@ -85,9 +85,9 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
   };
 
   const fieldIcon =
-    "w-full h-12 pl-11 pr-4 rounded-xl bg-white/10 border border-white/15 text-white placeholder:text-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/40 transition-all";
+    "w-full h-12 pl-11 pr-4 rounded-xl bg-black/30 border border-white/25 text-white placeholder:text-white/60 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/40 transition-all";
   const textarea =
-    "w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/15 text-white placeholder:text-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/40 transition-all resize-none leading-relaxed";
+    "w-full px-4 py-3.5 rounded-xl bg-black/30 border border-white/25 text-white placeholder:text-white/60 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/40 transition-all resize-none leading-relaxed";
 
   return (
     <motion.div
@@ -96,7 +96,12 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
       transition={{ duration: 0.5, delay: 0.3 }}
       className="w-full space-y-3"
     >
-      <div ref={widgetRef} className="bg-white/[0.07] border border-white/[0.08] rounded-2xl shadow-2xl shadow-black/30 overflow-hidden">
+      {/* Dark, slightly opaque card: the hero photo behind it is bright and
+          busy, so a white glass panel left the white text and placeholders
+          hard to read. Deliberately no backdrop-blur - the background here is
+          a scroll-scrubbed video, and re-blurring it every frame is costly on
+          phones. */}
+      <div ref={widgetRef} className="bg-black/45 border border-white/20 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden">
         <div className="p-5 sm:p-6">
 
           <AnimatePresence mode="wait">
@@ -142,7 +147,7 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
                       {/* Vorname / Nachname */}
                       <div className="grid grid-cols-2 gap-2.5 mb-3">
                         <div className="relative">
-                          <User className="absolute left-3.5 top-3.5 h-4 w-4 text-white/35 pointer-events-none" />
+                          <User className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
                           <input
                             type="text"
                             value={firstName}
@@ -153,7 +158,7 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
                           />
                         </div>
                         <div className="relative">
-                          <User className="absolute left-3.5 top-3.5 h-4 w-4 text-white/35 pointer-events-none" />
+                          <User className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
                           <input
                             type="text"
                             value={lastName}
@@ -168,7 +173,7 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
                       {/* Telefon / E-Mail */}
                       <div className="grid grid-cols-2 gap-2.5 mb-3">
                         <div className="relative">
-                          <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-white/35 pointer-events-none" />
+                          <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
                           <input
                             type="tel"
                             value={phone}
@@ -179,7 +184,7 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
                           />
                         </div>
                         <div className="relative">
-                          <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-white/35 pointer-events-none" />
+                          <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
                           <input
                             type="email"
                             value={email}
