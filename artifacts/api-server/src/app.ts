@@ -19,6 +19,7 @@ import {
   contactSubmissionRateLimiter,
   distanceRateLimiter,
   trackRateLimiter,
+  placesRateLimiter,
 } from "./middleware/rate-limit";
 import { validateBody, validateParams } from "./middleware/validate-request";
 
@@ -94,6 +95,7 @@ app.post("/api/bookings", bookingSubmissionRateLimiter, validateBody(BookingRequ
 app.post("/api/contact", contactSubmissionRateLimiter, validateBody(ContactRequestSchema));
 app.get("/api/distance", distanceRateLimiter);
 app.post("/api/track", trackRateLimiter, validateBody(TrackEventsRequestSchema));
+app.get("/api/places/autocomplete", placesRateLimiter);
 app.post("/api/admin/setup", validateBody(AdminSetupRequestSchema));
 app.post("/api/admin/login", validateBody(AdminLoginRequestSchema));
 app.get("/api/bookings/:id", validateParams(BookingIdParamsSchema));

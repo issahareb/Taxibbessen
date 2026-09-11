@@ -9,6 +9,7 @@ export const bookingsTable = pgTable("bookings", {
   customerName: text("customer_name").notNull(),
   customerLastName: text("customer_last_name").notNull(),
   customerPhone: text("customer_phone").notNull(),
+  customerEmail: text("customer_email"),
   scheduledTime: timestamp("scheduled_time"),
   estimatedDistance: real("estimated_distance"),
   estimatedDuration: real("estimated_duration"),

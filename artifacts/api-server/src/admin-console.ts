@@ -195,7 +195,12 @@ function bookingCard(booking) {
   route.append(pickup, destination);
   const meta = document.createElement("div");
   meta.className = "meta";
-  ["Tel: " + text(booking.customerPhone), "Personen: " + text(booking.passengerCount), booking.notes ? "Nachricht: " + booking.notes : null]
+  [
+    "Tel: " + text(booking.customerPhone),
+    booking.customerEmail ? "E-Mail: " + booking.customerEmail : null,
+    "Personen: " + text(booking.passengerCount),
+    booking.notes ? "Nachricht: " + booking.notes : null,
+  ]
     .filter(Boolean)
     .forEach((v) => {
       const el = document.createElement("span");

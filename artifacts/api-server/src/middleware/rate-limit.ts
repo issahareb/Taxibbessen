@@ -109,3 +109,12 @@ export const trackRateLimiter = createRateLimiter({
   windowMs: positiveInteger(process.env.TRACK_RATE_LIMIT_WINDOW_MS, FIFTEEN_MINUTES),
   max: positiveInteger(process.env.TRACK_RATE_LIMIT_MAX, 120),
 });
+
+// Address suggestions fire while someone types, so the cap has to allow a
+// few dozen keystrokes per booking, but it is still bounded: this endpoint
+// spends money on the Google Places API with every call.
+export const placesRateLimiter = createRateLimiter({
+  name: "places",
+  windowMs: positiveInteger(process.env.PLACES_RATE_LIMIT_WINDOW_MS, FIFTEEN_MINUTES),
+  max: positiveInteger(process.env.PLACES_RATE_LIMIT_MAX, 80),
+});

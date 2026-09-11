@@ -13,6 +13,8 @@ export interface BookingInput {
   customerLastName: string;
   customerPhone: string;
   /** @nullable */
+  customerEmail?: string | null;
+  /** @nullable */
   scheduledTime?: string | null;
   /** @nullable */
   estimatedDistance?: number | null;

@@ -29,6 +29,7 @@ export interface BookingEmailData {
   customerName: string;
   customerLastName: string;
   customerPhone: string;
+  customerEmail?: string | null;
   scheduledTime?: string | null;
   estimatedDistance?: number | null;
   estimatedDuration?: number | null;
@@ -58,6 +59,7 @@ export async function sendBookingNotification(booking: BookingEmailData): Promis
     ["Buchungs-Nr.", `#${booking.id}`],
     ["Name", `${booking.customerName} ${booking.customerLastName}`],
     ["Telefon", booking.customerPhone],
+    booking.customerEmail ? ["E-Mail", booking.customerEmail] : null,
     ["Abholort", booking.pickupLocation],
     ["Ziel", booking.destination],
     booking.scheduledTime ? ["Wunschzeit", new Date(booking.scheduledTime).toLocaleString("de-DE")] : null,

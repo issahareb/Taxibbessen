@@ -33,6 +33,8 @@ export interface Booking {
   customerLastName: string;
   customerPhone: string;
   /** @nullable */
+  customerEmail?: string | null;
+  /** @nullable */
   scheduledTime?: string | null;
   /** @nullable */
   estimatedDistance?: number | null;
@@ -65,6 +67,8 @@ export interface BookingInput {
   customerName: string;
   customerLastName: string;
   customerPhone: string;
+  /** @nullable */
+  customerEmail?: string | null;
   /** @nullable */
   scheduledTime?: string | null;
   /** @nullable */

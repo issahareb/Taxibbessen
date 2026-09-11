@@ -1,40 +1,101 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui";
-import { Phone, Mail, CheckCircle2, AlertCircle, User } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  CheckCircle2,
+  AlertCircle,
+  User,
+  MapPin,
+  Flag,
+  Clock,
+  Users,
+  MessageSquare,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCreateBooking } from "@/hooks/use-bookings";
+import { AddressField } from "@/components/AddressField";
 
 interface Props {
   onExpand?: () => void;
   onCollapse?: () => void;
 }
 
+type Mode = "text" | "auswahl";
+
+/** Placeholder for the free-text tab, which has no address fields of its own. */
+const NOT_SPECIFIED = "Nicht angegeben";
+
+/**
+ * Pickup times offered in the guided tab: "as soon as possible" plus
+ * quarter-hour slots covering the next 24 hours. One simple rule instead of
+ * mixed granularities, and a native select renders it as a scroll picker on
+ * phones.
+ */
+function buildTimeSlots(): { value: string; label: string }[] {
+  const now = new Date();
+  const start = new Date(now);
+  start.setSeconds(0, 0);
+  const remainder = start.getMinutes() % 15;
+  start.setMinutes(start.getMinutes() + (15 - remainder));
+
+  const today = now.toDateString();
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000).toDateString();
+
+  return Array.from({ length: 96 }, (_, index) => {
+    const slot = new Date(start.getTime() + index * 15 * 60 * 1000);
+    const day = slot.toDateString();
+    const dayLabel =
+      day === today
+        ? "Heute"
+        : day === tomorrow
+          ? "Morgen"
+          : slot.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" });
+    const time = slot.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    return { value: slot.toISOString(), label: `${dayLabel} ${time}` };
+  });
+}
+
 export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
   const createBooking = useCreateBooking();
 
+  const [mode, setMode] = useState<Mode>("text");
   const [collapsed, setCollapsed] = useState(() => window.innerWidth < 1024);
+
+  // Contact details are shared across both tabs, so switching does not throw
+  // away what someone already typed.
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName]   = useState("");
   const [phone, setPhone]         = useState("");
   const [email, setEmail]         = useState("");
   const [message, setMessage]     = useState("");
+
+  // Guided tab only.
+  const [pickup, setPickup]           = useState("");
+  const [destination, setDestination] = useState("");
+  const [timeSlot, setTimeSlot]       = useState("");
+  const [passengers, setPassengers]   = useState("1");
+
   const [submitted, setSubmitted] = useState(false);
   const [error, setError]         = useState(false);
 
   const widgetRef = useRef<HTMLDivElement>(null);
+  const timeSlots = useMemo(buildTimeSlots, []);
 
   const isEmpty =
     firstName.trim() === "" &&
     lastName.trim() === "" &&
     phone.trim() === "" &&
     email.trim() === "" &&
-    message.trim() === "";
+    message.trim() === "" &&
+    pickup.trim() === "" &&
+    destination.trim() === "";
 
   useEffect(() => {
     if (collapsed) return;
     function handleOutside(e: MouseEvent | TouchEvent) {
       if (widgetRef.current && !widgetRef.current.contains(e.target as Node)) {
-        if (isEmpty) {
+        if (isEmpty && mode === "text") {
           setCollapsed(true);
           onCollapse?.();
         }
@@ -46,12 +107,17 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
       document.removeEventListener("mousedown", handleOutside);
       document.removeEventListener("touchstart", handleOutside);
     };
-  }, [collapsed, isEmpty]);
+  }, [collapsed, isEmpty, mode]);
 
-  const valid =
+  const contactValid =
     firstName.trim().length >= 2 &&
     lastName.trim().length >= 2 &&
     phone.trim().length >= 6;
+
+  const valid =
+    mode === "text"
+      ? contactValid
+      : contactValid && pickup.trim().length >= 2 && destination.trim().length >= 2;
 
   function handleExpand() {
     if (collapsed) {
@@ -60,24 +126,49 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
     }
   }
 
+  function selectMode(next: Mode) {
+    setMode(next);
+    // The guided form is a multi-field flow; collapsing it would hide most of
+    // what the visitor just asked to see.
+    if (next === "auswahl") handleExpand();
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!valid) return;
     setError(false);
+
+    const shared = {
+      customerName:     firstName.trim(),
+      customerLastName: lastName.trim(),
+      customerPhone:    phone.trim(),
+      customerEmail:    email.trim() || null,
+      estimatedDistance: null,
+      estimatedDuration: null,
+      foundVia:          null,
+    };
+
+    const payload =
+      mode === "text"
+        ? {
+            ...shared,
+            pickupLocation: NOT_SPECIFIED,
+            destination:    NOT_SPECIFIED,
+            scheduledTime:  null,
+            passengerCount: null,
+            notes:          message.trim() || null,
+          }
+        : {
+            ...shared,
+            pickupLocation: pickup.trim(),
+            destination:    destination.trim(),
+            scheduledTime:  timeSlot || null,
+            passengerCount: Number(passengers),
+            notes:          message.trim() || null,
+          };
+
     try {
-      await createBooking.mutateAsync({
-        data: {
-          customerName:      firstName.trim(),
-          customerLastName:  lastName.trim(),
-          customerPhone:     phone.trim(),
-          destination:       message.trim() || "–",
-          pickupLocation:    email.trim()   || "–",
-          scheduledTime:     null,
-          estimatedDistance: null,
-          estimatedDuration: null,
-          foundVia:          null,
-        } as Parameters<typeof createBooking.mutateAsync>[0]["data"],
-      });
+      await createBooking.mutateAsync({ data: payload });
       setSubmitted(true);
     } catch {
       setError(true);
@@ -88,6 +179,10 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
     "w-full h-12 pl-11 pr-4 rounded-xl bg-black/30 border border-white/25 text-white placeholder:text-white/60 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/40 transition-all";
   const textarea =
     "w-full px-4 py-3.5 rounded-xl bg-black/30 border border-white/25 text-white placeholder:text-white/60 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/40 transition-all resize-none leading-relaxed";
+  const select =
+    "w-full h-12 pl-11 pr-9 rounded-xl bg-black/30 border border-white/25 text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/40 transition-all";
+  const sectionLabel =
+    "text-[10px] font-black uppercase tracking-[0.28em] text-white/45 mb-2.5";
 
   return (
     <motion.div
@@ -123,6 +218,29 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
             ) : (
               <motion.form key="form" onSubmit={handleSubmit} className="space-y-3">
 
+                {/* Umschaltung zwischen freier Nachricht und geführter Auswahl */}
+                <div role="tablist" aria-label="Art der Anfrage" className="flex gap-1.5 p-1 rounded-xl bg-black/35 border border-white/10 mb-4">
+                  {([
+                    ["text", "Text"],
+                    ["auswahl", "Auswahl"],
+                  ] as const).map(([key, label]) => (
+                    <button
+                      key={key}
+                      type="button"
+                      role="tab"
+                      aria-selected={mode === key}
+                      onClick={() => selectMode(key)}
+                      className={`flex-1 h-9 rounded-lg text-xs font-black uppercase tracking-widest transition-colors ${
+                        mode === key
+                          ? "bg-primary text-black"
+                          : "text-white/60 hover:text-white hover:bg-white/[0.06]"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+
                 {/* Titel - immer sichtbar */}
                 <div className="mb-4">
                   <h2 className="text-xl sm:text-2xl lg:text-3xl font-display font-bold text-white leading-snug">
@@ -133,45 +251,193 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
                   </p>
                 </div>
 
-                {/* Eingabefelder - nur sichtbar wenn aufgeklappt */}
-                <AnimatePresence>
-                  {!collapsed && (
-                    <motion.div
-                      key="fields"
-                      initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                      animate={{ opacity: 1, height: "auto", marginBottom: 0 }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.38, ease: [0.25, 0.46, 0.45, 0.94] }}
-                      className="overflow-hidden"
-                    >
-                      {/* Vorname / Nachname */}
-                      <div className="grid grid-cols-2 gap-2.5 mb-3">
-                        <div className="relative">
-                          <User className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
-                          <input
-                            type="text"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            placeholder="Vorname"
-                            autoComplete="given-name"
-                            className={fieldIcon}
-                          />
-                        </div>
-                        <div className="relative">
-                          <User className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
-                          <input
-                            type="text"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            placeholder="Nachname"
-                            autoComplete="family-name"
-                            className={fieldIcon}
-                          />
+                {mode === "text" ? (
+                  <>
+                    {/* Eingabefelder - nur sichtbar wenn aufgeklappt */}
+                    <AnimatePresence>
+                      {!collapsed && (
+                        <motion.div
+                          key="fields"
+                          initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                          animate={{ opacity: 1, height: "auto", marginBottom: 0 }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.38, ease: [0.25, 0.46, 0.45, 0.94] }}
+                          className="overflow-hidden"
+                        >
+                          <div className="grid grid-cols-2 gap-2.5 mb-3">
+                            <div className="relative">
+                              <User className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
+                              <input
+                                type="text"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                placeholder="Vorname"
+                                autoComplete="given-name"
+                                className={fieldIcon}
+                              />
+                            </div>
+                            <div className="relative">
+                              <User className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
+                              <input
+                                type="text"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                placeholder="Nachname"
+                                autoComplete="family-name"
+                                className={fieldIcon}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2.5 mb-3">
+                            <div className="relative">
+                              <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
+                              <input
+                                type="tel"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                placeholder="Telefonnummer"
+                                autoComplete="tel"
+                                className={fieldIcon}
+                              />
+                            </div>
+                            <div className="relative">
+                              <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
+                              <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="E-Mail (optional)"
+                                autoComplete="email"
+                                className={fieldIcon}
+                              />
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onFocus={handleExpand}
+                      rows={collapsed ? 2 : 3}
+                      placeholder={
+                        collapsed
+                          ? "Schreiben Sie eine kurze Nachricht und wir melden uns bei Ihnen!"
+                          : "Ihre Nachricht…"
+                      }
+                      className={textarea}
+                    />
+                  </>
+                ) : (
+                  <motion.div
+                    key="auswahl"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-5"
+                  >
+                    {/* ── Fahrt ── */}
+                    <div>
+                      <p className={sectionLabel}>Fahrt</p>
+                      <div className="space-y-2.5">
+                        <AddressField
+                          value={pickup}
+                          onChange={setPickup}
+                          placeholder="Abholort"
+                          icon={MapPin}
+                          inputClassName={fieldIcon}
+                        />
+                        <AddressField
+                          value={destination}
+                          onChange={setDestination}
+                          placeholder="Zielort"
+                          icon={Flag}
+                          inputClassName={fieldIcon}
+                        />
+                        <div className="grid grid-cols-2 gap-2.5">
+                          <div className="relative">
+                            <Clock className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none z-10" />
+                            <select
+                              value={timeSlot}
+                              onChange={(e) => setTimeSlot(e.target.value)}
+                              aria-label="Abholzeit"
+                              className={select}
+                            >
+                              <option value="">Sofort</option>
+                              {timeSlots.map((slot) => (
+                                <option key={slot.value} value={slot.value}>
+                                  {slot.label}
+                                </option>
+                              ))}
+                            </select>
+                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-white/50 text-[10px]">▼</span>
+                          </div>
+                          <div className="relative">
+                            <Users className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none z-10" />
+                            <select
+                              value={passengers}
+                              onChange={(e) => setPassengers(e.target.value)}
+                              aria-label="Personenanzahl"
+                              className={select}
+                            >
+                              {[1, 2, 3, 4, 5, 6, 7].map((count) => (
+                                <option key={count} value={String(count)}>
+                                  {count} {count === 1 ? "Person" : "Personen"}
+                                </option>
+                              ))}
+                              <option value="8">8 oder mehr</option>
+                            </select>
+                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-white/50 text-[10px]">▼</span>
+                          </div>
                         </div>
                       </div>
+                    </div>
 
-                      {/* Telefon / E-Mail */}
-                      <div className="grid grid-cols-2 gap-2.5 mb-3">
+                    {/* ── Anmerkungen ── */}
+                    <div>
+                      <p className={sectionLabel}>Besondere Anmerkungen</p>
+                      <div className="relative">
+                        <MessageSquare className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
+                        <textarea
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          rows={2}
+                          placeholder="z. B. Kindersitz, Rollator, viel Gepäck (optional)"
+                          className={`${textarea} pl-11`}
+                        />
+                      </div>
+                    </div>
+
+                    {/* ── Kontakt ── */}
+                    <div>
+                      <p className={sectionLabel}>Kontakt</p>
+                      <div className="space-y-2.5">
+                        <div className="grid grid-cols-2 gap-2.5">
+                          <div className="relative">
+                            <User className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
+                            <input
+                              type="text"
+                              value={firstName}
+                              onChange={(e) => setFirstName(e.target.value)}
+                              placeholder="Vorname"
+                              autoComplete="given-name"
+                              className={fieldIcon}
+                            />
+                          </div>
+                          <div className="relative">
+                            <User className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
+                            <input
+                              type="text"
+                              value={lastName}
+                              onChange={(e) => setLastName(e.target.value)}
+                              placeholder="Nachname"
+                              autoComplete="family-name"
+                              className={fieldIcon}
+                            />
+                          </div>
+                        </div>
                         <div className="relative">
                           <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-white/55 pointer-events-none" />
                           <input
@@ -195,27 +461,13 @@ export function HeroBookingWidget({ onExpand, onCollapse }: Props) {
                           />
                         </div>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    </div>
+                  </motion.div>
+                )}
 
-                {/* Textarea - immer sichtbar */}
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onFocus={handleExpand}
-                  rows={collapsed ? 2 : 3}
-                  placeholder={
-                    collapsed
-                      ? "Schreiben Sie eine kurze Nachricht und wir melden uns bei Ihnen!"
-                      : "Ihre Nachricht…"
-                  }
-                  className={textarea}
-                />
-
-                {/* Button - nur sichtbar wenn aufgeklappt */}
+                {/* Button - im Textmodus nur sichtbar wenn aufgeklappt */}
                 <AnimatePresence>
-                  {!collapsed && (
+                  {(mode === "auswahl" || !collapsed) && (
                     <motion.div
                       key="btn"
                       initial={{ opacity: 0, height: 0 }}

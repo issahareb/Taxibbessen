@@ -47,6 +47,7 @@ export const BookingRequestSchema = z
     customerName: requiredText("Vorname", 1, 80),
     customerLastName: requiredText("Nachname", 1, 80),
     customerPhone: phoneNumber,
+    customerEmail: optionalEmail,
     scheduledTime: optionalDateTime,
     estimatedDistance: z.number().finite().min(0).max(2_000).nullable().optional().default(null),
     estimatedDuration: z.number().int().min(0).max(1_440).nullable().optional().default(null),
