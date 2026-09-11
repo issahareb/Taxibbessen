@@ -5,6 +5,7 @@ import bookingsRouter from "./bookings";
 import statsRouter from "./stats";
 import contactRouter from "./contact";
 import distanceRouter from "./distance";
+import analyticsRouter from "./analytics";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(bookingsRouter);
 router.use(statsRouter);
 router.use(contactRouter);
 router.use(distanceRouter);
+router.use(analyticsRouter);
 
 export default router;

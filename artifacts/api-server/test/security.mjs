@@ -51,6 +51,8 @@ try {
   await expectBlocked("/api/bookings?adminKey=legacy-url-key");
   await expectBlocked("/api/bookings/1");
   await expectBlocked("/api/stats");
+  await expectBlocked("/api/analytics/overview");
+  await expectBlocked("/api/analytics/overview?days=7");
   await expectBlocked("/api/bookings/1/status", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },

@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { trackFormSubmit } from "@/lib/analytics";
 import {
   useListBookings,
   useCreateBooking as useApiCreateBooking,
@@ -58,6 +59,7 @@ export function useCreateBooking() {
     mutateAsync: async (data: Parameters<typeof mutation.mutateAsync>[0]) => {
       try {
         const result = await mutation.mutateAsync(data);
+        trackFormSubmit();
         await queryClient.invalidateQueries({ queryKey: getListBookingsQueryKey() });
         return result;
       } catch (err) {

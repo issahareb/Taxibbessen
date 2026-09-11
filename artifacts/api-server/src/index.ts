@@ -4,6 +4,7 @@ import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { db } from "@workspace/db";
 import app from "./app";
 import { logger } from "./lib/logger";
+import { deleteExpiredAnalyticsEvents } from "./routes/analytics";
 
 const rawPort = process.env["PORT"];
 
@@ -55,4 +56,15 @@ app.listen(port, (error) => {
   if (process.env.SKIP_DB_MIGRATIONS !== "true") {
     void runMigrations();
   }
+
+  // Analytics events are kept for a bounded window only. Pruning runs daily
+  // and on startup; failures are logged but never take the server down.
+  const pruneAnalytics = () => {
+    void deleteExpiredAnalyticsEvents().catch((error) => {
+      logger.warn({ err: error }, "Pruning analytics events failed");
+    });
+  };
+
+  const analyticsPruneTimer = setInterval(pruneAnalytics, 24 * 60 * 60 * 1000);
+  analyticsPruneTimer.unref();
 });

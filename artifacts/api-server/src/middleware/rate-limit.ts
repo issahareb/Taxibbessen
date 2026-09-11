@@ -99,3 +99,13 @@ export const distanceRateLimiter = createRateLimiter({
   windowMs: positiveInteger(process.env.DISTANCE_RATE_LIMIT_WINDOW_MS, FIFTEEN_MINUTES),
   max: positiveInteger(process.env.DISTANCE_RATE_LIMIT_MAX, 30),
 });
+
+// Reach measurement is chattier than a form submission: one visitor browsing
+// a few pages sends a pageview, scroll milestones and an engagement ping per
+// page. The cap is therefore generous, but still bounded so the endpoint
+// cannot be used to flood the events table.
+export const trackRateLimiter = createRateLimiter({
+  name: "track",
+  windowMs: positiveInteger(process.env.TRACK_RATE_LIMIT_WINDOW_MS, FIFTEEN_MINUTES),
+  max: positiveInteger(process.env.TRACK_RATE_LIMIT_MAX, 120),
+});

@@ -102,3 +102,38 @@ export const AdminLoginRequestSchema = z
     password: z.string().min(1, "Password is required").max(256),
   })
   .strict();
+
+const analyticsText = (max: number) =>
+  z
+    .union([z.string().trim().max(max), z.null()])
+    .optional()
+    .transform((value) => value || null);
+
+const AnalyticsEventSchema = z
+  .object({
+    sessionId: z.string().trim().min(8).max(64),
+    eventType: z.enum(["pageview", "engagement", "scroll", "click", "form_start", "form_submit"]),
+    path: z.string().trim().min(1).max(200),
+    referrerHost: analyticsText(120),
+    sourceCategory: z.union([z.enum(["direct", "search", "social", "referral"]), z.null()]).optional().transform((value) => value ?? null),
+    deviceType: z.union([z.enum(["mobile", "tablet", "desktop"]), z.null()]).optional().transform((value) => value ?? null),
+    browser: analyticsText(40),
+    language: analyticsText(12),
+    viewportWidth: z.number().int().min(0).max(20_000).nullable().optional().default(null),
+    target: analyticsText(60),
+    scrollDepth: z.number().int().min(0).max(100).nullable().optional().default(null),
+    activeMs: z.number().int().min(0).max(86_400_000).nullable().optional().default(null),
+  })
+  .strict();
+
+export const TrackEventsRequestSchema = z
+  .object({
+    events: z.array(AnalyticsEventSchema).min(1).max(20),
+  })
+  .strict();
+
+export const AnalyticsRangeQuerySchema = z
+  .object({
+    days: z.coerce.number().int().min(1).max(365).optional().default(30),
+  })
+  .strict();

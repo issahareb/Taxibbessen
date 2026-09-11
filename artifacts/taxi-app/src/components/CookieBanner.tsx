@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Cookie, X, CheckCircle } from "lucide-react";
+import { startAnalyticsIfAllowed, stopAnalytics } from "@/lib/analytics";
 
 const STORAGE_KEY = "taxi-bb-cookie-consent";
 
@@ -19,11 +20,16 @@ export function CookieBanner() {
   const accept = () => {
     localStorage.setItem(STORAGE_KEY, "accepted");
     setVisible(false);
+    // Consent only takes effect from here on, so the current page has to be
+    // registered explicitly: the pageview for this visit was skipped while
+    // the decision was still open.
+    startAnalyticsIfAllowed(window.location.pathname || "/");
   };
 
   const decline = () => {
     localStorage.setItem(STORAGE_KEY, "declined");
     setVisible(false);
+    stopAnalytics();
   };
 
   return (
@@ -55,7 +61,7 @@ export function CookieBanner() {
               <div>
                 <p className="text-sm font-bold text-white mb-1">Cookies & Datenschutz</p>
                 <p className="text-xs text-white/50 leading-relaxed">
-                  Wir verwenden ausschließlich technisch notwendige Cookies, um die Website korrekt darzustellen. Es findet kein Tracking oder Profiling statt. Mehr dazu in unserer{" "}
+                  Technisch notwendige Speicherung nutzen wir, um die Website korrekt darzustellen. Mit Ihrer Zustimmung messen wir zusätzlich anonym, welche Seiten aufgerufen werden. Das läuft ausschließlich auf unserem eigenen Server, ohne Weitergabe an Dritte, ohne Werbeprofile und ohne Wiedererkennung bei einem späteren Besuch. Mehr dazu in unserer{" "}
                   <a href="/datenschutz/" className="text-yellow-400/80 hover:text-yellow-400 underline underline-offset-2 transition-colors">
                     Datenschutzerklärung
                   </a>.

@@ -102,9 +102,25 @@ export default function Datenschutz() {
             <section className="bg-card border border-border rounded-2xl p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <Database className="w-5 h-5 text-primary" />
+                </div>
+                <h2 className="text-lg font-bold">5. Reichweitenmessung (eigene, anonyme Statistik)</h2>
+              </div>
+              <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
+                <p>Wenn Sie im Cookie-Hinweis zustimmen, erfassen wir anonyme Nutzungsstatistiken, um zu verstehen, welche Inhalte unserer Website gebraucht werden. Ohne Ihre Zustimmung findet diese Messung nicht statt; ein Klick auf "Ablehnen" oder das Schließen des Hinweises unterbindet sie vollständig. Signalisiert Ihr Browser "Do Not Track", messen wir ebenfalls nicht.</p>
+                <p>Die Messung läuft ausschließlich auf unserem eigenen Server. Es werden keine Daten an Dritte übermittelt, es gibt keine Werbenetzwerke und keine Profilbildung.</p>
+                <p>Erfasst werden: aufgerufene Seite, ungefähre Verweildauer, Scrolltiefe, Klicks auf Kontaktmöglichkeiten (Telefon, WhatsApp, E-Mail), Gerätekategorie (Mobil, Tablet, Desktop), Browserfamilie, Spracheinstellung, Fensterbreite sowie der Host einer verweisenden Seite. Ausdrücklich <span className="font-semibold">nicht</span> erfasst oder gespeichert werden Ihre IP-Adresse, Ihr vollständiger Browser-Kennstring und die vollständige Adresse der verweisenden Seite.</p>
+                <p>Zur Unterscheidung von Seitenaufrufen innerhalb eines Besuchs verwenden wir eine Zufallskennung, die ausschließlich im Sitzungsspeicher Ihres Browsers liegt und beim Schließen des Tabs verfällt. Eine Wiedererkennung bei einem späteren Besuch ist damit technisch nicht möglich. Die Statistikdaten werden nach 180 Tagen automatisch gelöscht.</p>
+                <p>Rechtsgrundlage ist Ihre Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO in Verbindung mit § 25 Abs. 1 TDDDG. Sie können Ihre Einwilligung jederzeit widerrufen, indem Sie die Website-Daten dieser Seite in Ihrem Browser löschen; der Hinweis erscheint dann erneut zur neuen Entscheidung.</p>
+              </div>
+            </section>
+
+            <section className="bg-card border border-border rounded-2xl p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <Eye className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-lg font-bold">5. Weitergabe an Dritte</h2>
+                <h2 className="text-lg font-bold">6. Weitergabe an Dritte</h2>
               </div>
               <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
                 <p>Eine Weitergabe Ihrer personenbezogenen Daten an Dritte erfolgt grundsätzlich nicht, außer:</p>
@@ -122,7 +138,7 @@ export default function Datenschutz() {
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <Database className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-lg font-bold">6. Speicherdauer</h2>
+                <h2 className="text-lg font-bold">7. Speicherdauer</h2>
               </div>
               <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
                 <p>Buchungsdaten werden nach Abschluss des Auftrags gelöscht, sobald keine gesetzlichen Aufbewahrungspflichten mehr bestehen. Steuerrelevante Unterlagen werden gemäß § 147 AO bis zu 10 Jahre aufbewahrt.</p>
@@ -135,7 +151,7 @@ export default function Datenschutz() {
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <UserCheck className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-lg font-bold">7. Ihre Rechte</h2>
+                <h2 className="text-lg font-bold">8. Ihre Rechte</h2>
               </div>
               <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
                 <p>Sie haben gemäß DSGVO folgende Rechte gegenüber uns:</p>
@@ -156,7 +172,7 @@ export default function Datenschutz() {
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <Trash2 className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-lg font-bold">8. Beschwerderecht</h2>
+                <h2 className="text-lg font-bold">9. Beschwerderecht</h2>
               </div>
               <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
                 <p>Sie haben das Recht, sich bei einer Datenschutzaufsichtsbehörde zu beschweren. Die zuständige Behörde für NRW ist:</p>

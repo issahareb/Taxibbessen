@@ -30,6 +30,7 @@ import { routeConfigs } from "@/routes";
 
 import { useLenis } from "@/hooks/useLenis";
 import { getLenis } from "@/lib/lenis";
+import { initAnalytics, trackPageview } from "@/lib/analytics";
 
 const queryClient = new QueryClient();
 
@@ -71,10 +72,30 @@ function ScrollToTop() {
   return null;
 }
 
+/**
+ * Records a pageview per route change. The internal admin page is left out
+ * on purpose: it is staff traffic, not reach.
+ */
+function AnalyticsTracker() {
+  const [location] = useLocation();
+
+  useEffect(() => {
+    initAnalytics();
+  }, []);
+
+  useEffect(() => {
+    if (location.startsWith("/admin")) return;
+    trackPageview(location || "/");
+  }, [location]);
+
+  return null;
+}
+
 function Router() {
   return (
     <>
       <ScrollToTop />
+      <AnalyticsTracker />
       <Switch>
         {routeConfigs.map(({ path }) => {
           const Component = routeComponents[path];
