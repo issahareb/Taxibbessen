@@ -64,9 +64,9 @@ export interface Booking {
 export interface BookingInput {
   pickupLocation: string;
   destination: string;
-  customerName: string;
-  customerLastName: string;
-  customerPhone: string;
+  customerName?: string;
+  customerLastName?: string;
+  customerPhone?: string;
   /** @nullable */
   customerEmail?: string | null;
   /** @nullable */

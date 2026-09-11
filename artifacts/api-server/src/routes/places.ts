@@ -37,12 +37,12 @@ router.get("/places/autocomplete", async (req, res) => {
   const query = typeof req.query.q === "string" ? req.query.q.trim() : "";
 
   if (query.length < MIN_QUERY_LENGTH || query.length > 200) {
-    return res.json({ suggestions: [] });
+    return res.json({ suggestions: [], reason: "query_too_short" });
   }
 
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
-    return res.json({ suggestions: [] });
+    return res.json({ suggestions: [], reason: "missing_api_key" });
   }
 
   try {
@@ -66,8 +66,17 @@ router.get("/places/autocomplete", async (req, res) => {
     });
 
     if (!response.ok) {
-      console.warn("[PLACES] upstream responded", response.status);
-      return res.json({ suggestions: [] });
+      // Der häufigste Fall: "Places API (New)" ist für den Schlüssel nicht
+      // aktiviert. Googles Fehlertext wird mitgegeben, damit sich das über
+      // einen direkten Aufruf des Endpunkts diagnostizieren lässt.
+      const detail = await response.text().catch(() => "");
+      console.warn("[PLACES] upstream responded", response.status, detail.slice(0, 500));
+      return res.json({
+        suggestions: [],
+        reason: "upstream_error",
+        status: response.status,
+        detail: detail.slice(0, 300),
+      });
     }
 
     const data = (await response.json()) as AutocompleteResponse;

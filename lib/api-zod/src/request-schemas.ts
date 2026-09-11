@@ -44,9 +44,15 @@ export const BookingRequestSchema = z
   .object({
     pickupLocation: requiredText("Abholort", 2, 200),
     destination: requiredText("Ziel", 2, 200),
-    customerName: requiredText("Vorname", 1, 80),
-    customerLastName: requiredText("Nachname", 1, 80),
-    customerPhone: phoneNumber,
+    // Name und Telefon sind optional, weil der Text-Tab des Hero-Formulars
+    // bewusst nur ein Nachrichtenfeld anbietet. Wird etwas mitgeschickt,
+    // gelten Länge und Format weiterhin unverändert.
+    customerName: optionalText(80),
+    customerLastName: optionalText(80),
+    customerPhone: z
+      .union([phoneNumber, z.literal(""), z.null()])
+      .optional()
+      .transform((value) => value || null),
     customerEmail: optionalEmail,
     scheduledTime: optionalDateTime,
     estimatedDistance: z.number().finite().min(0).max(2_000).nullable().optional().default(null),

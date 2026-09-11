@@ -51,9 +51,9 @@ export const ListBookingsResponse = zod.array(ListBookingsResponseItem)
 export const CreateBookingBody = zod.object({
   "pickupLocation": zod.string(),
   "destination": zod.string(),
-  "customerName": zod.string(),
-  "customerLastName": zod.string(),
-  "customerPhone": zod.string(),
+  "customerName": zod.string().optional(),
+  "customerLastName": zod.string().optional(),
+  "customerPhone": zod.string().optional(),
   "customerEmail": zod.string().nullish(),
   "scheduledTime": zod.string().nullish(),
   "estimatedDistance": zod.number().nullish(),

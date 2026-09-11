@@ -203,9 +203,6 @@ components:
       required:
         - pickupLocation
         - destination
-        - customerName
-        - customerLastName
-        - customerPhone
       properties:
         pickupLocation:
           type: string

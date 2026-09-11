@@ -11,14 +11,19 @@ router.get("/bookings", requireAdmin, async (_req, res) => {
   res.json(bookings);
 });
 
+// Der Text-Tab des Hero-Formulars schickt bewusst nur eine Nachricht, daher
+// können Name und Telefon fehlen. Die Spalten sind NOT NULL, deshalb hier ein
+// sprechender Platzhalter statt eines leeren Strings.
+const NOT_PROVIDED = "Nicht angegeben";
+
 router.post("/bookings", async (req, res) => {
   const body = req.body;
   const [booking] = await db.insert(bookingsTable).values({
     pickupLocation: body.pickupLocation,
     destination: body.destination,
-    customerName: body.customerName,
-    customerLastName: body.customerLastName,
-    customerPhone: body.customerPhone,
+    customerName: body.customerName ?? NOT_PROVIDED,
+    customerLastName: body.customerLastName ?? NOT_PROVIDED,
+    customerPhone: body.customerPhone ?? NOT_PROVIDED,
     customerEmail: body.customerEmail ?? null,
     scheduledTime: body.scheduledTime ? new Date(body.scheduledTime) : null,
     estimatedDistance: body.estimatedDistance ?? null,
