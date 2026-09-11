@@ -15,7 +15,10 @@
 
 const CONSENT_KEY = "taxi-bb-cookie-consent";
 const SESSION_KEY = "taxi-bb-analytics-session";
-const ENDPOINT = "/api/track";
+// Same base resolution as the other API callers: the API can live on its own
+// domain, in which case a relative path would post to the static site instead.
+const API_BASE = (import.meta.env.VITE_API_URL ?? import.meta.env.BASE_URL).replace(/\/$/, "");
+const ENDPOINT = `${API_BASE}/api/track`;
 const FLUSH_INTERVAL_MS = 15_000;
 const MAX_BATCH = 20;
 
