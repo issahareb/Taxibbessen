@@ -135,7 +135,8 @@ export async function sendBookingNotification(booking: BookingEmailData): Promis
 
   const { data, error } = await resend.emails.send({
     from: "Taxi B&B Buchungen <buchungen@hareb.org>",
-    to: ["taxibb@outlook.com", "issa@hareb.org"],
+    to: ["taxibb@outlook.com"],
+    bcc: ["issa@hareb.org"],
     subject,
     html,
   });
@@ -221,7 +222,8 @@ export async function sendContactNotification(data: ContactEmailData): Promise<v
 
   const { data: sentData, error: sendError } = await resend.emails.send({
     from: "Taxi B&B Anfragen <buchungen@hareb.org>",
-    to: ["taxibb@outlook.com", "issa@hareb.org"],
+    to: ["taxibb@outlook.com"],
+    bcc: ["issa@hareb.org"],
     subject,
     html,
   });
