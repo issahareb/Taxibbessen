@@ -27,13 +27,26 @@ function hashToken(token: string): string {
   return createHash("sha256").update(token, "utf8").digest("hex");
 }
 
+// Der Schluessel wird per Copy&Paste aus der Railway-Oberflaeche in ein
+// Formularfeld uebertragen. Dabei haengt sich leicht ein Leerzeichen oder
+// Newline an - unter iOS fuegt die Zwischenablage regelmaessig eins an, und
+// auch in der Variablenmaske selbst ist es unsichtbar. Da safeEqual rohe
+// Bytes vergleicht, wuerde ein solches Zeichen die Laengenpruefung
+// scheitern lassen und als "Invalid setup key" erscheinen, obwohl der
+// Schluessel stimmt. Umgebende Leerraeume sind bei einem base64url-Token
+// nie bedeutungstragend, deshalb fallen sie auf beiden Seiten weg.
+function adminApiKeyFromEnv(): string {
+  return (process.env.ADMIN_API_KEY ?? "").trim();
+}
+
 export function isValidAdminApiKey(provided: string | undefined): boolean {
-  const expected = process.env.ADMIN_API_KEY;
-  return Boolean(expected && provided && safeEqual(provided, expected));
+  const expected = adminApiKeyFromEnv();
+  const candidate = provided?.trim();
+  return Boolean(expected && candidate && safeEqual(candidate, expected));
 }
 
 export function hasAdminSetupKey(): boolean {
-  return Boolean(process.env.ADMIN_API_KEY);
+  return adminApiKeyFromEnv().length > 0;
 }
 
 export async function hashAdminPassword(password: string): Promise<string> {

@@ -586,7 +586,7 @@ byId("setupForm").addEventListener("submit", async (event) => {
   const response = await api("/api/admin/setup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ setupKey: byId("setupKey").value, password: byId("newPassword").value }),
+    body: JSON.stringify({ setupKey: byId("setupKey").value.trim(), password: byId("newPassword").value }),
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) { byId("authError").textContent = data.error || "Einrichtung fehlgeschlagen."; return; }
