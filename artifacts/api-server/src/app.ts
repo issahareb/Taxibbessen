@@ -9,6 +9,7 @@ import {
   BookingStatusRequestSchema,
   ContactRequestSchema,
   TrackEventsRequestSchema,
+  PageviewFlushRequestSchema,
 } from "@workspace/api-zod";
 import { serveAdminConsole } from "./admin-console";
 import router from "./routes";
@@ -20,6 +21,7 @@ import {
   distanceRateLimiter,
   trackRateLimiter,
   placesRateLimiter,
+  pageviewSinkRateLimiter,
 } from "./middleware/rate-limit";
 import { validateBody, validateParams } from "./middleware/validate-request";
 
@@ -96,6 +98,7 @@ app.post("/api/contact", contactSubmissionRateLimiter, validateBody(ContactReque
 app.get("/api/distance", distanceRateLimiter);
 app.post("/api/track", trackRateLimiter, validateBody(TrackEventsRequestSchema));
 app.get("/api/places/autocomplete", placesRateLimiter);
+app.post("/api/pageviews", pageviewSinkRateLimiter, validateBody(PageviewFlushRequestSchema));
 app.post("/api/admin/setup", validateBody(AdminSetupRequestSchema));
 app.post("/api/admin/login", validateBody(AdminLoginRequestSchema));
 app.get("/api/bookings/:id", validateParams(BookingIdParamsSchema));

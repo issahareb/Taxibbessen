@@ -144,3 +144,23 @@ export const AnalyticsRangeQuerySchema = z
     days: z.coerce.number().int().min(1).max(365).optional().default(30),
   })
   .strict();
+
+// Der statische Server sammelt Aufrufe im Speicher und schickt Zuwaechse.
+// Eine Zeile ist damit ein Zaehlerstand, kein Ereignis pro Besucher: kein
+// Identifikator, keine IP, kein User-Agent. Die Obergrenzen halten den
+// Endpunkt beschraenkt, auch wenn das Token je einmal abhanden kaeme.
+const PageviewCounterSchema = z
+  .object({
+    bucketHour: z.string().datetime({ offset: true }),
+    path: z.string().trim().min(1).max(200),
+    referrerHost: z.string().trim().max(120).default(""),
+    isBot: z.boolean(),
+    views: z.number().int().min(1).max(1_000_000),
+  })
+  .strict();
+
+export const PageviewFlushRequestSchema = z
+  .object({
+    counters: z.array(PageviewCounterSchema).min(1).max(500),
+  })
+  .strict();

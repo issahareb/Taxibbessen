@@ -42,6 +42,8 @@ select{padding:10px 14px;font-size:14px;width:auto}
 .booking[aria-busy="true"]{opacity:.5}
 .booking[aria-busy="true"] .actions{cursor:progress}
 .note{font-size:13px;color:rgba(255,255,255,.5)}
+.toggle{display:inline-flex;align-items:center;gap:9px;margin:16px 0 22px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.62);user-select:none}
+.toggle input{flex:none;width:16px;height:16px;accent-color:#ffc107;margin:0;cursor:pointer}
 .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
 .tab{border:1px solid rgba(255,193,7,.25);background:#1b1813;color:#cfc7ba;border-radius:999px;padding:9px 18px;font-weight:800;font-size:13px;cursor:pointer}
 .tab.active{background:#ffc107;color:#16120a;border-color:#ffc107}
@@ -112,6 +114,21 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
       <button id="refreshAnalytics" class="button secondary" type="button">Aktualisieren</button>
     </div>
     <p id="analyticsError" class="error"></p>
+
+    <div class="card panel">
+      <h2>Gesamtaufrufe, serverseitig gezählt</h2>
+      <p class="note" id="serverViewsNote"></p>
+      <div id="serverKpis" class="kpis"></div>
+      <label class="toggle" for="includeBots">
+        <input type="checkbox" id="includeBots"><span>Crawler in den Zahlen mitrechnen</span>
+      </label>
+      <h2>Seiten</h2>
+      <div id="serverPages"></div>
+      <h2 style="margin-top:18px">Verweisende Seiten</h2>
+      <div id="serverReferrers"></div>
+    </div>
+
+    <h2 style="margin:22px 0 10px">Detailauswertung der zustimmenden Besucher</h2>
     <div id="kpis" class="kpis"></div>
     <div class="card panel">
       <h2>Verlauf</h2>
@@ -370,16 +387,10 @@ function renderShareList(container, rows, labelKey, emptyLabel) {
   });
 }
 
-function renderKpis(summary) {
-  const container = byId("kpis");
+// Alle Werte gehen ueber textContent in die Karte, niemals ueber innerHTML.
+function renderKpiCards(container, items) {
   container.textContent = "";
-  [
-    [summary.sessions, "Besuche"],
-    [summary.pageviews, "Seitenaufrufe"],
-    [summary.pageviewsPerSession, "Seiten pro Besuch"],
-    [summary.avgActiveSecondsPerSession + " s", "Verweildauer pro Besuch"],
-    [summary.avgScrollDepth + " %", "Mittlere Scrolltiefe"],
-  ].forEach(([value, label]) => {
+  items.forEach(({ value, label }) => {
     const card = document.createElement("div");
     card.className = "kpi";
     const v = document.createElement("div");
@@ -391,6 +402,16 @@ function renderKpis(summary) {
     card.append(v, l);
     container.appendChild(card);
   });
+}
+
+function renderKpis(summary) {
+  renderKpiCards(byId("kpis"), [
+    { value: summary.sessions, label: "Besuche" },
+    { value: summary.pageviews, label: "Seitenaufrufe" },
+    { value: summary.pageviewsPerSession, label: "Seiten pro Besuch" },
+    { value: summary.avgActiveSecondsPerSession + " s", label: "Verweildauer pro Besuch" },
+    { value: summary.avgScrollDepth + " %", label: "Mittlere Scrolltiefe" },
+  ]);
 }
 
 /* Hand-rolled SVG chart: no external chart library is loaded, which keeps the
@@ -541,9 +562,77 @@ function renderFunnel(funnel) {
   container.appendChild(note);
 }
 
+// Die serverseitige Zaehlung ist eine eigene Quelle mit eigener Reichweite:
+// sie kennt jeden ausgelieferten Seitenaufruf, aber keine Besucher, keine
+// Sitzungen und keine Verweildauer. Deshalb wird sie getrennt dargestellt
+// und nicht mit den zustimmungsbasierten Zahlen vermischt - eine Summe aus
+// beiden waere schlicht falsch.
+async function loadServerViews() {
+  const days = byId("range").value;
+  const includeBots = byId("includeBots").checked;
+  const query = "?days=" + encodeURIComponent(days) + (includeBots ? "&bots=include" : "");
+  const response = await api("/api/pageviews/overview" + query);
+
+  if (response.status === 401) { csrfToken = ""; showAuth(false); return; }
+
+  const note = byId("serverViewsNote");
+  if (!response.ok) {
+    note.textContent = "Serverseitige Zählung nicht verfügbar. Prüfen Sie PAGEVIEW_SINK_URL und PAGEVIEW_SINK_TOKEN.";
+    byId("serverKpis").textContent = "";
+    byId("serverPages").textContent = "";
+    byId("serverReferrers").textContent = "";
+    return;
+  }
+
+  const data = await response.json();
+  const since = data.measuringSince ? new Date(data.measuringSince) : null;
+
+  note.textContent = since
+    ? "Zählt jeden ausgelieferten Seitenaufruf, unabhängig vom Cookie-Banner. Keine Besucher, keine Sitzungen, keine Verweildauer - nur Aufrufe. Messung seit " +
+      since.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }) + "."
+    : "Noch keine serverseitig gezählten Aufrufe. Die Zählung beginnt mit dem nächsten Deploy des Frontends.";
+
+  // humanViews und botViews sind immer der ungefilterte Gesamtsplit, views
+  // folgt dagegen dem Filter. Ein "davon" waere bei aktivem Filter falsch:
+  // die Crawler-Aufrufe stecken dann gar nicht in der Summe.
+  renderKpiCards(byId("serverKpis"), includeBots
+    ? [
+        { value: data.summary.views, label: "Aufrufe insgesamt" },
+        { value: data.summary.humanViews, label: "davon echte Besucher" },
+        { value: data.summary.botViews, label: "davon Crawler" },
+        { value: data.summary.paths, label: "Seiten aufgerufen" },
+      ]
+    : [
+        { value: data.summary.views, label: "Aufrufe ohne Crawler" },
+        { value: data.summary.botViews, label: "Crawler-Aufrufe zusätzlich" },
+        { value: data.summary.paths, label: "Seiten aufgerufen" },
+      ]);
+
+  renderTable(
+    byId("serverPages"),
+    [
+      { label: "Seite", value: (row) => row.path },
+      { label: "Aufrufe", numeric: true, value: (row) => String(row.views) },
+    ],
+    data.pages,
+    "Noch keine Aufrufe im Zeitraum.",
+  );
+
+  renderTable(
+    byId("serverReferrers"),
+    [
+      { label: "Herkunft", value: (row) => row.host },
+      { label: "Aufrufe", numeric: true, value: (row) => String(row.views) },
+    ],
+    data.referrers,
+    "Noch keine Verweise im Zeitraum.",
+  );
+}
+
 async function loadAnalytics() {
   const days = byId("range").value;
   byId("analyticsError").textContent = "";
+  void loadServerViews();
   const response = await api("/api/analytics/overview?days=" + encodeURIComponent(days));
   if (response.status === 401) { csrfToken = ""; showAuth(false); return; }
   if (!response.ok) { byId("analyticsError").textContent = "Statistiken konnten nicht geladen werden."; return; }
@@ -610,6 +699,7 @@ function selectTab(name) {
 
 byId("tabBookingsBtn").addEventListener("click", () => selectTab("bookings"));
 byId("tabAnalyticsBtn").addEventListener("click", () => selectTab("analytics"));
+byId("includeBots").addEventListener("change", () => { void loadServerViews(); });
 byId("refreshAnalytics").addEventListener("click", () => loadAnalytics());
 byId("range").addEventListener("change", () => loadAnalytics());
 

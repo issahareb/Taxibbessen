@@ -7,6 +7,7 @@ import contactRouter from "./contact";
 import distanceRouter from "./distance";
 import analyticsRouter from "./analytics";
 import placesRouter from "./places";
+import pageviewsRouter from "./pageviews";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(contactRouter);
 router.use(distanceRouter);
 router.use(analyticsRouter);
 router.use(placesRouter);
+router.use(pageviewsRouter);
 
 export default router;

@@ -118,3 +118,13 @@ export const placesRateLimiter = createRateLimiter({
   windowMs: positiveInteger(process.env.PLACES_RATE_LIMIT_WINDOW_MS, FIFTEEN_MINUTES),
   max: positiveInteger(process.env.PLACES_RATE_LIMIT_MAX, 80),
 });
+
+// Der statische Server buendelt Aufrufe und schickt sie einmal pro Minute,
+// bei mehreren Instanzen entsprechend oefter. Das Limit ist deshalb niedrig:
+// mehr als ein Stapel pro Instanz und Minute gibt es im Normalbetrieb nicht,
+// und der Endpunkt schreibt in die Datenbank.
+export const pageviewSinkRateLimiter = createRateLimiter({
+  name: "pageview-sink",
+  windowMs: positiveInteger(process.env.PAGEVIEW_SINK_RATE_LIMIT_WINDOW_MS, FIFTEEN_MINUTES),
+  max: positiveInteger(process.env.PAGEVIEW_SINK_RATE_LIMIT_MAX, 120),
+});
