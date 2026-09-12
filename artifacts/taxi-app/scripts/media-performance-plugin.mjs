@@ -39,8 +39,7 @@ export function mediaPerformancePlugin() {
       let output = code;
 
       output = output
-        .replace('import { ReviewCarousel } from "@/components/ReviewCarousel";\n', "")
-        .replace('import brushStroke from "@assets/brush-stroke.png";\n', "");
+        .replace('import { ReviewCarousel } from "@/components/ReviewCarousel";\n', "");
 
       output = removeBetween(
         output,

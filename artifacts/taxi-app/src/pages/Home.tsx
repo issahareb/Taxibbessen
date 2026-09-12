@@ -11,7 +11,6 @@ import { Phone, Shield, Sparkles, Navigation, ArrowRight, Mail, Globe, MessageCi
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useLanguage } from "@/i18n/useLanguage";
 import { createFrameSequence, drawCover } from "@/lib/frame-scrubber";
-import depotPoster from "@assets/IMG_1642_1780001838765.png";
 
 const glassCard = "bg-white/[0.06] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.6)]";
 
