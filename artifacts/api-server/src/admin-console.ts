@@ -38,7 +38,10 @@ select{padding:10px 14px;font-size:14px;width:auto}
 .route strong{font-size:17px}
 .meta{display:flex;gap:8px;flex-wrap:wrap}
 .pill{background:#28231a;border:1px solid rgba(255,193,7,.25);padding:5px 9px;border-radius:999px;font-size:12px}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.booking[aria-busy="true"]{opacity:.5}
+.booking[aria-busy="true"] .actions{cursor:progress}
+.note{font-size:13px;color:rgba(255,255,255,.5)}
 .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
 .tab{border:1px solid rgba(255,193,7,.25);background:#1b1813;color:#cfc7ba;border-radius:999px;padding:9px 18px;font-weight:800;font-size:13px;cursor:pointer}
 .tab.active{background:#ffc107;color:#16120a;border-color:#ffc107}
@@ -174,6 +177,21 @@ const text = (value) => (value == null || value === "" ? "-" : String(value));
 
 /* ---------- Buchungen ---------- */
 
+// Aus jedem Status sind nur bestimmte Folgeschritte sinnvoll. Vorher wurden
+// stets alle drei Schaltflaechen gerendert und lediglich die zum aktuellen
+// Status passende deaktiviert. Dadurch bot eine abgelehnte Anfrage weiter
+// "Abschließen" an, eine abgeschlossene weiter "Annehmen", und auf dem
+// Telefon rutschte "Ablehnen" hinter "Abschließen" in die zweite Zeile - es
+// sah aus, als muesse man erst abschliessen, um ablehnen zu koennen.
+// Die positive Aktion steht jeweils zuerst, die destruktive zuletzt. Ein
+// versehentliches Ablehnen laesst sich ueber "Doch annehmen" zuruecknehmen.
+const TRANSITIONS = {
+  new: [["accepted", "Annehmen", "button"], ["rejected", "Ablehnen", "button danger"]],
+  accepted: [["completed", "Abschließen", "button"], ["rejected", "Ablehnen", "button danger"]],
+  rejected: [["accepted", "Doch annehmen", "button secondary"]],
+  completed: [],
+};
+
 function bookingCard(booking) {
   const card = document.createElement("article");
   card.className = "card booking";
@@ -211,15 +229,22 @@ function bookingCard(booking) {
   info.append(head, route, meta);
   const actions = document.createElement("div");
   actions.className = "actions";
-  [["accepted", "Annehmen", "button"], ["completed", "Abschließen", "button secondary"], ["rejected", "Ablehnen", "button danger"]]
-    .forEach(([status, label, cls]) => {
-      const button = document.createElement("button");
-      button.className = cls;
-      button.textContent = label;
-      button.disabled = booking.status === status;
-      button.onclick = () => setStatus(booking.id, status);
-      actions.appendChild(button);
-    });
+  const next = TRANSITIONS[booking.status] || [];
+  if (!next.length) {
+    const note = document.createElement("span");
+    note.className = "note";
+    note.textContent = booking.status === "completed"
+      ? "Abgeschlossen. Keine weitere Aktion möglich."
+      : "Keine weitere Aktion möglich.";
+    actions.appendChild(note);
+  }
+  next.forEach(([status, label, cls]) => {
+    const button = document.createElement("button");
+    button.className = cls;
+    button.textContent = label;
+    button.onclick = () => setStatus(booking, status, card);
+    actions.appendChild(button);
+  });
   card.append(info, actions);
   return card;
 }
@@ -236,15 +261,42 @@ async function loadBookings() {
   rows.slice().reverse().forEach((row) => container.appendChild(bookingCard(row)));
 }
 
-async function setStatus(id, status) {
-  const response = await api("/api/bookings/" + id + "/status", {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ status }),
-  });
+// Der Statuswechsel tauscht nur die betroffene Karte aus. Vorher rief er
+// loadBookings() auf, das den Container leerte, "Lade Buchungen..." schrieb
+// und anschliessend alle Karten neu aufbaute - die ganze Liste blinkte und
+// die Scrollposition sprang. Die PATCH-Antwort enthaelt die aktualisierte
+// Buchung, ein zweiter Abruf ist also gar nicht noetig.
+async function setStatus(booking, status, card) {
+  byId("dashboardError").textContent = "";
+  card.setAttribute("aria-busy", "true");
+  card.querySelectorAll("button").forEach((button) => { button.disabled = true; });
+
+  // Bricht die Verbindung mitten im Tap weg - im Mobilfunk der Normalfall -
+  // dann wirft fetch. Ohne dieses catch blieb die Karte dauerhaft gesperrt
+  // und ausgegraut zurueck, ohne Hinweis und ohne Weg zurueck.
+  let response;
+  try {
+    response = await api("/api/bookings/" + booking.id + "/status", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+  } catch {
+    byId("dashboardError").textContent = "Keine Verbindung. Bitte erneut versuchen.";
+    card.replaceWith(bookingCard(booking));
+    return;
+  }
+
   if (response.status === 401 || response.status === 403) { csrfToken = ""; showAuth(false); return; }
-  if (!response.ok) { byId("dashboardError").textContent = "Status konnte nicht geändert werden."; return; }
-  await loadBookings();
+
+  const updated = response.ok ? await response.json().catch(() => null) : null;
+  if (!updated || typeof updated.id === "undefined") {
+    byId("dashboardError").textContent = "Status konnte nicht geändert werden.";
+    card.replaceWith(bookingCard(booking));
+    return;
+  }
+
+  card.replaceWith(bookingCard(updated));
 }
 
 /* ---------- Statistiken ---------- */
