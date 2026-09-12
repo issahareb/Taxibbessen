@@ -55,8 +55,19 @@ graphify-out/
 *.tar.gz
 *.tgz
 
-# Replit chat-upload scratch files. Only assets actually imported by the app
-# (via the @assets Vite alias) are tracked; everything else here is disposable.
-attached_assets/*
-!attached_assets/IMG_1642_1780001838765.png
-!attached_assets/brush-stroke.png
+# Replit chat-upload scratch files. Der Ordner ist restlos entfernt, beide
+# fruehere Ausnahmen waren toter Code und sind mit dem @assets-Alias
+# entfallen. Der Eintrag bleibt, damit Replit-Uploads nicht erneut
+# unbemerkt in die Historie wandern.
+attached_assets/
+
+# Zugangsdaten und Umgebungsvariablen. Das Admin-Passwort und alle
+# Schluessel gehoeren ausschliesslich in die Railway-Variablen bzw. in die
+# Datenbank, nie in eine Datei im Repo. Ohne diese Regel wuerde eine lokal
+# angelegte .env beim naechsten "git add -A" mitcommittet.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+!**/pnpm-lock.yaml
