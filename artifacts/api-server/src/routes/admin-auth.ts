@@ -9,6 +9,7 @@ import {
   getAdminSession,
   hasAdminSetupKey,
   isValidCsrfToken,
+  resetAdminPassword,
   verifyAdminPassword,
 } from "../lib/admin-auth";
 
@@ -114,6 +115,38 @@ router.post("/admin/setup", async (req, res) => {
       return res.status(401).json({ error: "Invalid setup key" });
     }
     return res.status(503).json({ error: "Admin setup failed" });
+  }
+});
+
+router.post("/admin/reset-password", async (req, res) => {
+  const key = clientKey(req);
+  const retryAfter = retryAfterSeconds(key);
+  res.setHeader("Cache-Control", "no-store");
+  if (retryAfter > 0) {
+    res.setHeader("Retry-After", String(retryAfter));
+    return res.status(429).json({ error: "Too many failed attempts" });
+  }
+
+  if (!hasAdminSetupKey()) {
+    return res.status(503).json({ error: "Admin recovery is unavailable" });
+  }
+
+  try {
+    await resetAdminPassword(req.body.setupKey, req.body.password);
+    clearFailures(key);
+    const { maxAge: _maxAge, ...clearOptions } = getAdminCookieOptions();
+    res.clearCookie(ADMIN_COOKIE_NAME, clearOptions);
+    return res.json({ ok: true });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (message === "INVALID_SETUP_KEY") {
+      recordFailure(key);
+      return res.status(401).json({ error: "Invalid setup key" });
+    }
+    if (message === "SETUP_REQUIRED") {
+      return res.status(409).json({ error: "Admin setup required" });
+    }
+    return res.status(503).json({ error: "Admin password reset failed" });
   }
 });
 
