@@ -14,7 +14,7 @@ const child = spawn(process.execPath, ["--enable-source-maps", "./dist/index.mjs
     NODE_ENV: "test",
     DATABASE_URL: "postgresql://invalid:invalid@127.0.0.1:1/invalid",
     RESEND_API_KEY: "re_test_key",
-    ADMIN_API_KEY: "",
+    ADMIN_API_KEY: process.env.SECURITY_TEST_ADMIN_API_KEY ?? "",
     SKIP_DB_MIGRATIONS: "true",
   },
   stdio: ["ignore", "pipe", "pipe"],
@@ -53,6 +53,18 @@ try {
   await expectBlocked("/api/stats");
   await expectBlocked("/api/analytics/overview");
   await expectBlocked("/api/analytics/overview?days=7");
+  const resetRequest = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ setupKey: "invalid-recovery-key", password: "new-test-password-123" }),
+  };
+  const resetResponse = await fetch(`${baseUrl}/api/admin/reset-password`, resetRequest);
+  assert.equal(resetResponse.status, process.env.SECURITY_TEST_ADMIN_API_KEY ? 401 : 503);
+  const invalidReset = await fetch(`${baseUrl}/api/admin/reset-password`, {
+    ...resetRequest,
+    body: JSON.stringify({ setupKey: "invalid-recovery-key", password: "short" }),
+  });
+  assert.equal(invalidReset.status, 400);
   await expectBlocked("/api/bookings/1/status", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },

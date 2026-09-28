@@ -97,6 +97,7 @@ app.get("/api/distance", distanceRateLimiter);
 app.post("/api/track", trackRateLimiter, validateBody(TrackEventsRequestSchema));
 app.get("/api/places/autocomplete", placesRateLimiter);
 app.post("/api/admin/setup", validateBody(AdminSetupRequestSchema));
+app.post("/api/admin/reset-password", validateBody(AdminSetupRequestSchema));
 app.post("/api/admin/login", validateBody(AdminLoginRequestSchema));
 app.get("/api/bookings/:id", validateParams(BookingIdParamsSchema));
 app.patch(

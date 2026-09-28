@@ -84,6 +84,32 @@ export async function configureAdminPassword(setupKey: string, password: string)
   await db.insert(adminCredentialsTable).values({ passwordHash });
 }
 
+export async function resetAdminPassword(setupKey: string, password: string): Promise<void> {
+  // Recovery requires the server-side operator key, never just a browser session.
+  if (!isValidAdminApiKey(setupKey)) {
+    throw new Error("INVALID_SETUP_KEY");
+  }
+
+  const passwordHash = await hashAdminPassword(password);
+  await db.transaction(async (tx) => {
+    const [credential] = await tx
+      .select({ id: adminCredentialsTable.id })
+      .from(adminCredentialsTable)
+      .orderBy(desc(adminCredentialsTable.id))
+      .limit(1)
+      .for("update");
+
+    if (!credential) throw new Error("SETUP_REQUIRED");
+
+    await tx
+      .update(adminCredentialsTable)
+      .set({ passwordHash, updatedAt: new Date() })
+      .where(eq(adminCredentialsTable.id, credential.id));
+    // Revoke sessions atomically with the password change.
+    await tx.delete(adminSessionsTable);
+  });
+}
+
 export async function createAdminSession(): Promise<{ token: string; session: AdminSession }> {
   await deleteExpiredAdminSessions();
 
