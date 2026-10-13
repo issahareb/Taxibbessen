@@ -83,7 +83,7 @@ export function ServicePageTemplate({
 }: ServicePageTemplateProps) {
   usePageMeta({ title, description, schemaOrg: schema });
   const service = h1.includes("Flughafen") ? "Flughafentransfer" : h1.includes("Großraum") ? "Großraumtaxi" : h1.includes("Kranken") || h1.includes("Dialyse") ? "Krankenfahrt" : h1.includes("Kurier") ? "Kurierfahrt" : "";
-  const bookingHref = service ? `/?service=${encodeURIComponent(service)}#anfrage` : "/#anfrage";
+  const bookingHref = service ? `/?service=${encodeURIComponent(service)}#fahrtanfrage` : "/#fahrtanfrage";
 
   return (
     <Layout>

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const ANFRAGE_URL = `${import.meta.env.BASE_URL}#anfrage`;
+const ANFRAGE_URL = `${import.meta.env.BASE_URL}#fahrtanfrage`;
 
 export default function Book() {
   useEffect(() => {

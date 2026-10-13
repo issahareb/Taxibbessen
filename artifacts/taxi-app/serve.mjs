@@ -58,7 +58,7 @@ app.use((req, res, next) => {
   const normalizedPath = req.path === "/" ? "/" : req.path.replace(/\/$/, "");
 
   if (normalizedPath === "/book") {
-    return res.redirect(301, "/#anfrage");
+    return res.redirect(301, "/#fahrtanfrage");
   }
 
   const isKnownRoute = Boolean(knownPaths?.has(normalizedPath));
