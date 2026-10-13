@@ -42,8 +42,10 @@ async function runMigrations(): Promise<void> {
     }
   }
 
-  logger.error("Database migrations did not complete. Check DATABASE_URL.");
+  throw new Error("Database migrations did not complete. Check DATABASE_URL.");
 }
+
+if (process.env.SKIP_DB_MIGRATIONS !== "true") await runMigrations();
 
 app.listen(port, (error) => {
   if (error) {
@@ -53,9 +55,6 @@ app.listen(port, (error) => {
 
   logger.info({ port }, "Server listening");
 
-  if (process.env.SKIP_DB_MIGRATIONS !== "true") {
-    void runMigrations();
-  }
 
   // Analytics events are kept for a bounded window only. Pruning runs daily
   // and on startup; failures are logged but never take the server down.
@@ -65,6 +64,7 @@ app.listen(port, (error) => {
     });
   };
 
+  if (process.env.SKIP_DB_MIGRATIONS !== "true") pruneAnalytics();
   const analyticsPruneTimer = setInterval(pruneAnalytics, 24 * 60 * 60 * 1000);
   analyticsPruneTimer.unref();
 });

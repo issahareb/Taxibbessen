@@ -104,13 +104,14 @@ export default function Datenschutz() {
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <Database className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-lg font-bold">5. Reichweitenmessung (eigene, anonyme Statistik)</h2>
+                <h2 className="text-lg font-bold">5. Reichweitenmessung (eigene Statistik mit Einwilligung)</h2>
               </div>
               <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
-                <p>Wenn Sie im Cookie-Hinweis zustimmen, erfassen wir anonyme Nutzungsstatistiken, um zu verstehen, welche Inhalte unserer Website gebraucht werden. Ohne Ihre Zustimmung findet diese Messung nicht statt; ein Klick auf "Ablehnen" oder das Schließen des Hinweises unterbindet sie vollständig. Signalisiert Ihr Browser "Do Not Track", messen wir ebenfalls nicht.</p>
+                <p>Wenn Sie im Cookie-Hinweis zustimmen, erfassen wir pseudonyme Nutzungsstatistiken, um zu verstehen, welche Inhalte unserer Website gebraucht werden. Ohne Ihre Zustimmung findet diese Messung nicht statt; ein Klick auf "Ablehnen" oder das Schließen des Hinweises unterbindet sie vollständig. Signalisiert Ihr Browser "Do Not Track", messen wir ebenfalls nicht.</p>
                 <p>Die Messung läuft ausschließlich auf unserem eigenen Server. Es werden keine Daten an Dritte übermittelt, es gibt keine Werbenetzwerke und keine Profilbildung.</p>
                 <p>Erfasst werden: aufgerufene Seite, ungefähre Verweildauer, Scrolltiefe, Klicks auf Kontaktmöglichkeiten (Telefon, WhatsApp, E-Mail), Gerätekategorie (Mobil, Tablet, Desktop), Browserfamilie, Spracheinstellung, Fensterbreite sowie der Host einer verweisenden Seite. Ausdrücklich <span className="font-semibold">nicht</span> erfasst oder gespeichert werden Ihre IP-Adresse, Ihr vollständiger Browser-Kennstring und die vollständige Adresse der verweisenden Seite.</p>
                 <p>Zur Unterscheidung von Seitenaufrufen innerhalb eines Besuchs verwenden wir eine Zufallskennung, die ausschließlich im Sitzungsspeicher Ihres Browsers liegt und beim Schließen des Tabs verfällt. Eine Wiedererkennung bei einem späteren Besuch ist damit technisch nicht möglich. Die Statistikdaten werden nach 180 Tagen automatisch gelöscht.</p>
+                <p>Bei einer Anfrage können die zufällige Besuchskennung, die Herkunftskategorie und die Einstiegsseite mit der Anfrage und ihrem Bearbeitungsstatus verknüpft werden. So zählen wir erfolgreiche Anfragen und ausgeführte Fahrten je Herkunft. Namen, Telefonnummern, Nachrichten und Fahrtadressen werden nicht in die Ereignisstatistik übertragen. Zuordnungsdaten, die älter als 180 Tage sind, werden bei der täglichen Bereinigung entfernt. Ein unbekannter Ursprung wird nicht nachträglich erraten.</p>
                 <p>Rechtsgrundlage ist Ihre Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO in Verbindung mit § 25 Abs. 1 TDDDG. Sie können Ihre Einwilligung jederzeit widerrufen, indem Sie die Website-Daten dieser Seite in Ihrem Browser löschen; der Hinweis erscheint dann erneut zur neuen Entscheidung.</p>
               </div>
             </section>

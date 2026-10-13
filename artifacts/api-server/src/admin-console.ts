@@ -92,6 +92,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 
   <div id="tabBookings">
     <p id="dashboardError" class="error"></p>
+    <div class="top"><p id="queueSummary" class="muted"></p><div class="actions"><select id="bookingFilter" aria-label="Buchungen filtern"><option value="all">Alle Anfragen</option><option value="new">Unbearbeitet</option><option value="accepted">Angenommen</option><option value="completed">Durchgeführt</option><option value="rejected">Abgelehnt</option><option value="test">Testanfragen</option></select><button type="button" id="refreshBookings" class="button secondary">Aktualisieren</button></div></div>
     <div id="bookings" class="grid"></div>
   </div>
 
@@ -103,13 +104,16 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
           <option value="7">Letzte 7 Tage</option>
           <option value="30" selected>Letzte 30 Tage</option>
           <option value="90">Letzte 90 Tage</option>
-          <option value="365">Letzte 12 Monate</option>
+          <option value="180">Letzte 180 Tage</option>
         </select>
       </div>
       <button id="refreshAnalytics" class="button secondary" type="button">Aktualisieren</button>
     </div>
     <p id="analyticsError" class="error"></p>
     <div id="kpis" class="kpis"></div>
+    <div class="card panel"><h2>Anfragen und tatsächliche Fahrten</h2><p class="muted">Anfragen, die im gewählten Zeitraum eingegangen sind, mit ihrem heutigen Status. Testanfragen sind ausgeschlossen. Umsatz ist der manuell erfasste Betrag durchgeführter Fahrten, kein geschätzter Preis und kein Buchhaltungsabschluss.</p><div id="outcomes" class="kpis"></div><button id="exportOutcomes" class="button secondary" type="button">Ergebnisse als CSV</button></div>
+    <div class="card panel chart-wrap"><h2>Anfragen nach Herkunft</h2><div id="bookingSources"></div><p class="muted">KI umfasst erkannte KI-Verweise und bekannte Kampagnenangaben. Angaben können fehlen oder unzutreffend sein. Keine Aussage über die Häufigkeit von KI-Empfehlungen.</p></div>
+    <div class="card panel chart-wrap"><h2>Einstiegsseiten und Anfragen</h2><div id="bookingPages"></div></div>
     <div class="card panel">
       <h2>Verlauf</h2>
       <div id="chart" class="chart-wrap"></div>
@@ -184,7 +188,9 @@ function bookingCard(booking) {
   name.textContent = text(booking.customerName) + " " + text(booking.customerLastName);
   const id = document.createElement("span");
   id.className = "pill";
-  id.textContent = "#" + booking.id + " · " + text(booking.status);
+  const statusLabels = { new: "Unbearbeitet", accepted: "Angenommen", completed: "Durchgeführt", rejected: "Abgelehnt" };
+  id.textContent = "#" + booking.id + " · " + (statusLabels[booking.status] || booking.status) + (booking.isTest ? " · TEST" : "");
+  if (booking.status === "new" && !booking.isTest) card.style.borderColor = "#ffc107";
   head.append(name, id);
   const route = document.createElement("div");
   route.className = "route";
@@ -196,6 +202,8 @@ function bookingCard(booking) {
   const meta = document.createElement("div");
   meta.className = "meta";
   [
+    "Eingang: " + new Date(booking.createdAt).toLocaleString("de-DE"),
+    booking.status === "new" ? "Offen seit " + Math.max(0, Math.floor((Date.now() - Date.parse(booking.createdAt)) / 60000)) + " Min." : null,
     "Tel: " + text(booking.customerPhone),
     booking.customerEmail ? "E-Mail: " + booking.customerEmail : null,
     "Personen: " + text(booking.passengerCount),
@@ -211,15 +219,31 @@ function bookingCard(booking) {
   info.append(head, route, meta);
   const actions = document.createElement("div");
   actions.className = "actions";
+  const revenue = document.createElement("input");
+  revenue.type = "number"; revenue.min = "0"; revenue.max = "1000000"; revenue.step = "0.01";
+  revenue.placeholder = "Tatsächlicher Umsatz (€, optional)";
+  revenue.setAttribute("aria-label", "Tatsächlicher Umsatz in Euro für Anfrage " + booking.id);
+  revenue.value = booking.revenueCents == null ? "" : (booking.revenueCents / 100).toFixed(2);
+  const reason = document.createElement("select"); reason.setAttribute("aria-label", "Ablehnungsgrund für Anfrage " + booking.id);
+  [["", "Ablehnungsgrund (optional)"], ["capacity", "Keine Kapazität"], ["customer_cancelled", "Kunde abgesagt"], ["duplicate", "Doppelte Anfrage"], ["unreachable", "Nicht erreichbar"], ["other", "Sonstiges"]].forEach(([value, label]) => { const option = document.createElement("option"); option.value = value; option.textContent = label; reason.appendChild(option); });
+  reason.value = booking.rejectionReason || "";
+  actions.append(revenue, reason);
   [["accepted", "Annehmen", "button"], ["completed", "Abschließen", "button secondary"], ["rejected", "Ablehnen", "button danger"]]
     .forEach(([status, label, cls]) => {
       const button = document.createElement("button");
       button.className = cls;
       button.textContent = label;
-      button.disabled = booking.status === status;
-      button.onclick = () => setStatus(booking.id, status);
+      button.disabled = booking.status === status && status !== "completed" && status !== "rejected";
+      button.onclick = async () => {
+        if (status === "completed" && !revenue.reportValidity()) return;
+        button.disabled = true;
+        try { await setStatus(booking.id, status, { revenueCents: status === "completed" && revenue.value !== "" ? Math.round(Number(revenue.value) * 100) : null, rejectionReason: status === "rejected" ? reason.value || null : null }); }
+        finally { button.disabled = false; }
+      };
       actions.appendChild(button);
     });
+  const test = document.createElement("button"); test.type = "button"; test.className = "button secondary"; test.textContent = booking.isTest ? "Als echte Anfrage zählen" : "Als Test ausschließen";
+  test.onclick = () => setStatus(booking.id, booking.status, { isTest: !booking.isTest }); actions.appendChild(test);
   card.append(info, actions);
   return card;
 }
@@ -233,14 +257,21 @@ async function loadBookings() {
   const rows = await response.json();
   container.textContent = "";
   if (!rows.length) { container.textContent = "Keine Buchungsanfragen vorhanden."; return; }
-  rows.slice().reverse().forEach((row) => container.appendChild(bookingCard(row)));
+  const pending = rows.filter(row => row.status === "new" && !row.isTest);
+  byId("queueSummary").textContent = pending.length + " unbearbeitet · " + pending.filter(row => Date.now() - Date.parse(row.createdAt) > 1800000).length + " länger als 30 Minuten offen";
+  const filter = byId("bookingFilter").value;
+  rows.filter(row => filter === "all" || (filter === "test" ? row.isTest : !row.isTest && row.status === filter))
+    .sort((a,b) => Number(b.status === "new") - Number(a.status === "new") || Date.parse(b.createdAt) - Date.parse(a.createdAt))
+    .forEach(row => container.appendChild(bookingCard(row)));
+  if (!container.children.length) container.textContent = "Keine passenden Anfragen.";
 }
 
-async function setStatus(id, status) {
+async function setStatus(id, status, details = {}) {
+  byId("dashboardError").textContent = "";
   const response = await api("/api/bookings/" + id + "/status", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({ status, ...details }),
   });
   if (response.status === 401 || response.status === 403) { csrfToken = ""; showAuth(false); return; }
   if (!response.ok) { byId("dashboardError").textContent = "Status konnte nicht geändert werden."; return; }
@@ -458,10 +489,9 @@ function renderFunnel(funnel) {
   const base = funnel.visitors || 1;
   [
     ["Besuche", funnel.visitors],
-    ["Klick auf Kontaktmöglichkeit", funnel.ctaSessions],
+
     ["Formular begonnen", funnel.formStartSessions],
-    ["Formular abgesendet", funnel.formSubmitSessions],
-    ["Buchungsanfragen im System", funnel.bookings],
+    ["Besuche mit gespeicherter Anfrage", funnel.linkedBookingSessions],
   ].forEach(([label, value]) => {
     const wrap = document.createElement("div");
     wrap.className = "funnel-step";
@@ -485,7 +515,7 @@ function renderFunnel(funnel) {
 
   const note = document.createElement("p");
   note.className = "empty";
-  note.textContent = "Buchungsanfragen zählen alle im System angelegten Anfragen im Zeitraum, auch telefonisch entstandene ohne Zustimmung zur Messung.";
+  note.textContent = "Nur gemessene Besuche mit Einwilligung. Gespeicherte Anfragen werden über die Besuchskennung zugeordnet; wiederholte Übermittlungen und Testanfragen zählen nicht mehrfach. Die Schritte sind aggregierte Besuchszahlen, keine lückenlose Ablaufanalyse. Telefon- und WhatsApp-Klicks stehen separat und sind keine Buchungen.";
   container.appendChild(note);
 }
 
@@ -500,6 +530,23 @@ async function loadAnalytics() {
   renderKpis(data.summary);
   renderChart(data.timeline);
   renderFunnel(data.funnel);
+  const money = value => new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(value / 100);
+  const o = data.outcomes;
+  byId("outcomes").textContent = "";
+  [[o.bookings, "Gespeicherte Anfragen"], [o.pending, "Unbearbeitet"], [o.overdue, "Über 30 Min. offen"], [o.confirmed, "Angenommen inkl. durchgeführt"], [o.completed, "Durchgeführt"], [o.rejected, "Abgelehnt"], [money(o.revenueCents), "Erfasster Umsatz"], [o.revenueRecorded + "/" + o.completed, "Fahrten mit Umsatzangabe"], [o.avgResponseMinutes == null ? "Noch nicht erfasst" : Math.round(o.avgResponseMinutes) + " Min.", "Ø erste Bearbeitung"]].forEach(([value, label]) => {
+    const card = document.createElement("div"); card.className = "kpi";
+    const v = document.createElement("div"); v.className = "value"; v.textContent = value;
+    const l = document.createElement("div"); l.className = "label"; l.textContent = label; card.append(v,l); byId("outcomes").appendChild(card);
+  });
+  const labels = { direct: "Direkt / unbekannter Verweis", search: "Suchmaschine", social: "Social Media", referral: "Andere Website", ai: "KI-Suche", business_profile: "Google-Unternehmensprofil" };
+  renderTable(byId("bookingSources"), [{label:"Herkunft",value:r=>labels[r.source] || "Nicht zugeordnet"}, {label:"Anfragen",numeric:true,value:r=>r.requests}, {label:"Angenommen",numeric:true,value:r=>r.confirmed}, {label:"Durchgeführt",numeric:true,value:r=>r.completed}, {label:"Umsatz",numeric:true,value:r=>money(r.revenueCents)}], data.bookingSources, "Noch keine Anfragen.");
+  renderTable(byId("bookingPages"), [{label:"Einstiegsseite",value:r=>r.path || "Nicht zugeordnet"},{label:"Anfragen",numeric:true,value:r=>r.requests},{label:"Durchgeführt",numeric:true,value:r=>r.completed}], data.bookingPages, "Noch keine Anfragen.");
+  byId("exportOutcomes").onclick = () => {
+    const rows = [["Zeitraum (Tage)", days], ["Erstellt am", new Date().toISOString()], ...Object.entries(o)];
+    const csv = rows.map(row => row.map(v => JSON.stringify(String(v ?? ""))).join(";")).join(String.fromCharCode(13,10));
+    const url = URL.createObjectURL(new Blob([String.fromCharCode(65279) + csv], {type:"text/csv;charset=utf-8"}));
+    const a = document.createElement("a"); a.href = url; a.download = "taxibb-ergebnisse.csv"; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
 
   renderTable(
     byId("pages"),
@@ -514,7 +561,7 @@ async function loadAnalytics() {
     "Noch keine Seitenaufrufe im Zeitraum.",
   );
 
-  const sourceLabels = { direct: "Direkt", search: "Suchmaschine", social: "Social Media", referral: "Andere Website" };
+  const sourceLabels = { direct: "Direkt", search: "Suchmaschine", social: "Social Media", referral: "Andere Website", ai: "KI-Suche", business_profile: "Google-Unternehmensprofil" };
   renderShareList(
     byId("sources"),
     data.sources.map((row) => ({ label: sourceLabels[row.sourceCategory] || row.sourceCategory, sessions: row.sessions })),
@@ -556,6 +603,9 @@ function selectTab(name) {
   if (isAnalytics) loadAnalytics();
 }
 
+byId("bookingFilter").addEventListener("change", loadBookings);
+byId("refreshBookings").addEventListener("click", loadBookings);
+setInterval(() => { if (!document.hidden && !byId("dashboard").classList.contains("hidden") && !byId("tabBookings").classList.contains("hidden") && !["INPUT","SELECT"].includes(document.activeElement?.tagName)) loadBookings(); }, 30000);
 byId("tabBookingsBtn").addEventListener("click", () => selectTab("bookings"));
 byId("tabAnalyticsBtn").addEventListener("click", () => selectTab("analytics"));
 byId("refreshAnalytics").addEventListener("click", () => loadAnalytics());

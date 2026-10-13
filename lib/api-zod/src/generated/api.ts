@@ -49,6 +49,12 @@ export const ListBookingsResponse = zod.array(ListBookingsResponseItem)
  * @summary Create a booking request
  */
 export const CreateBookingBody = zod.object({
+  "requestKey": zod.string().uuid().optional(),
+  "attribution": zod.object({
+  "sessionId": zod.string(),
+  "sourceCategory": zod.enum(['direct', 'search', 'social', 'referral', 'ai', 'business_profile']),
+  "entryPath": zod.string()
+}).nullish(),
   "pickupLocation": zod.string(),
   "destination": zod.string(),
   "customerName": zod.string().optional(),
@@ -109,7 +115,10 @@ export const UpdateBookingStatusParams = zod.object({
 })
 
 export const UpdateBookingStatusBody = zod.object({
-  "status": zod.enum(['new', 'accepted', 'completed', 'rejected'])
+  "status": zod.enum(['new', 'accepted', 'completed', 'rejected']),
+  "revenueCents": zod.number().nullish(),
+  "isTest": zod.boolean().optional(),
+  "rejectionReason": zod.string().nullish()
 })
 
 export const UpdateBookingStatusResponse = zod.object({

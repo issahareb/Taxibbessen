@@ -5,8 +5,12 @@
  * Taxi B&B GmbH API
  * OpenAPI spec version: 0.1.0
  */
+import type { BookingInputAttribution } from './bookingInputAttribution';
 
 export interface BookingInput {
+  requestKey?: string;
+  /** @nullable */
+  attribution?: BookingInputAttribution;
   pickupLocation: string;
   destination: string;
   customerName?: string;

@@ -1,4 +1,4 @@
-import { pgTable, text, integer, timestamp, pgEnum, real } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, timestamp, pgEnum, real, boolean } from "drizzle-orm/pg-core";
 
 export const bookingStatusEnum = pgEnum("booking_status", ["new", "accepted", "completed", "rejected"]);
 
@@ -22,6 +22,15 @@ export const bookingsTable = pgTable("bookings", {
   returnDestination: text("return_destination"),
   callbackTime: timestamp("callback_time"),
   status: bookingStatusEnum("status").notNull().default("new"),
+  requestKey: text("request_key").unique(),
+  requestFingerprint: text("request_fingerprint"),
+  analyticsSessionId: text("analytics_session_id"),
+  sourceCategory: text("source_category"),
+  entryPath: text("entry_path"),
+  isTest: boolean("is_test").notNull().default(false),
+  revenueCents: integer("revenue_cents"),
+  rejectionReason: text("rejection_reason"),
+  firstRespondedAt: timestamp("first_responded_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

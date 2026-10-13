@@ -17,7 +17,7 @@ router.post("/track", async (req, res) => {
     eventType: "pageview" | "engagement" | "scroll" | "click" | "form_start" | "form_submit";
     path: string;
     referrerHost: string | null;
-    sourceCategory: "direct" | "search" | "social" | "referral" | null;
+    sourceCategory: "direct" | "search" | "social" | "referral" | "ai" | "business_profile" | null;
     deviceType: "mobile" | "tablet" | "desktop" | null;
     browser: string | null;
     language: string | null;
@@ -39,7 +39,7 @@ router.post("/track", async (req, res) => {
 
 router.get("/analytics/overview", requireAdmin, async (req, res) => {
   const days = Number(req.query.days ?? 30);
-  const since = sinceDate(Number.isFinite(days) && days > 0 ? Math.min(days, 365) : 30);
+  const since = sinceDate(Number.isFinite(days) && days > 0 ? Math.min(days, 180) : 30);
   const inRange = gte(analyticsEventsTable.createdAt, since);
 
   try {
@@ -54,11 +54,14 @@ router.get("/analytics/overview", requireAdmin, async (req, res) => {
       clicks,
       funnelRows,
       bookingRows,
+      bookingSources,
+      bookingPages,
+      linkedRows,
     ] = await Promise.all([
       db
         .select({
           pageviews: sql<number>`count(*) filter (where ${analyticsEventsTable.eventType} = 'pageview')`,
-          sessions: countDistinct(analyticsEventsTable.sessionId),
+          sessions: sql<number>`count(distinct ${analyticsEventsTable.sessionId}) filter (where ${analyticsEventsTable.eventType} = 'pageview')`,
           totalActiveMs: sql<number>`coalesce(sum(${analyticsEventsTable.activeMs}), 0)`,
           engagementEvents: sql<number>`count(*) filter (where ${analyticsEventsTable.eventType} = 'engagement')`,
           avgScrollDepth: sql<number>`coalesce(avg(${analyticsEventsTable.scrollDepth}) filter (where ${analyticsEventsTable.eventType} = 'scroll'), 0)`,
@@ -156,16 +159,36 @@ router.get("/analytics/overview", requireAdmin, async (req, res) => {
         .where(inRange),
 
       db
-        .select({ bookings: sql<number>`count(*)` })
+        .select({
+          bookings: sql<number>`count(*)`,
+          pending: sql<number>`count(*) filter (where status = 'new')`,
+          overdue: sql<number>`count(*) filter (where status = 'new' and created_at < now() - interval '30 minutes')`,
+          confirmed: sql<number>`count(*) filter (where status in ('accepted', 'completed'))`,
+          completed: sql<number>`count(*) filter (where status = 'completed')`,
+          rejected: sql<number>`count(*) filter (where status = 'rejected')`,
+          revenueCents: sql<number>`coalesce(sum(revenue_cents) filter (where status = 'completed'), 0)`,
+          revenueRecorded: sql<number>`count(*) filter (where status = 'completed' and revenue_cents is not null)`,
+          avgResponseMinutes: sql<number | null>`avg(extract(epoch from (first_responded_at - created_at))/60) filter (where first_responded_at is not null)`,
+        })
         .from(bookingsTable)
-        .where(gte(bookingsTable.createdAt, since)),
+        .where(and(gte(bookingsTable.createdAt, since), eq(bookingsTable.isTest, false))),
+      db.select({ source: bookingsTable.sourceCategory, requests: sql<number>`count(*)`, confirmed: sql<number>`count(*) filter (where status in ('accepted','completed'))`, completed: sql<number>`count(*) filter (where status = 'completed')`, revenueCents: sql<number>`coalesce(sum(revenue_cents) filter (where status = 'completed'), 0)` })
+        .from(bookingsTable).where(and(gte(bookingsTable.createdAt, since), eq(bookingsTable.isTest, false))).groupBy(bookingsTable.sourceCategory),
+      db.select({ path: bookingsTable.entryPath, requests: sql<number>`count(*)`, completed: sql<number>`count(*) filter (where status = 'completed')` })
+        .from(bookingsTable).where(and(gte(bookingsTable.createdAt, since), eq(bookingsTable.isTest, false))).groupBy(bookingsTable.entryPath),
+      db.select({ sessions: countDistinct(bookingsTable.analyticsSessionId) }).from(bookingsTable)
+        .where(and(gte(bookingsTable.createdAt, since), eq(bookingsTable.isTest, false), sql`exists (select 1 from analytics_events a where a.session_id = ${bookingsTable.analyticsSessionId} and a.event_type = 'pageview' and a.created_at >= ${since})`)),
     ]);
 
     const summary = summaryRows[0];
     const funnel = funnelRows[0];
 
+    const outcomes = Object.fromEntries(Object.entries(bookingRows[0] ?? {}).map(([key, value]) => [key, value === null ? null : Number(value)]));
     res.json({
-      rangeDays: Math.min(Number.isFinite(days) && days > 0 ? days : 30, 365),
+      outcomes,
+      bookingSources: bookingSources.map(row => ({ ...row, requests: Number(row.requests), confirmed: Number(row.confirmed), completed: Number(row.completed), revenueCents: Number(row.revenueCents) })),
+      bookingPages: bookingPages.map(row => ({ ...row, requests: Number(row.requests), completed: Number(row.completed) })),
+      rangeDays: Math.min(Number.isFinite(days) && days > 0 ? days : 30, 180),
       summary: {
         pageviews: Number(summary?.pageviews ?? 0),
         sessions: Number(summary?.sessions ?? 0),
@@ -213,7 +236,8 @@ router.get("/analytics/overview", requireAdmin, async (req, res) => {
         sessions: Number(row.sessions),
       })),
       funnel: {
-        visitors: Number(funnel?.visitors ?? 0),
+        visitors: Number(summary?.sessions ?? 0),
+        linkedBookingSessions: Number(linkedRows[0]?.sessions ?? 0),
         ctaSessions: Number(funnel?.ctaSessions ?? 0),
         formStartSessions: Number(funnel?.formStartSessions ?? 0),
         formSubmitSessions: Number(funnel?.formSubmitSessions ?? 0),
@@ -227,6 +251,8 @@ router.get("/analytics/overview", requireAdmin, async (req, res) => {
 });
 
 export async function deleteExpiredAnalyticsEvents(): Promise<void> {
+  await db.update(bookingsTable).set({ analyticsSessionId: null, sourceCategory: null, entryPath: null })
+    .where(sql`${bookingsTable.createdAt} < now() - interval '180 days'`);
   await db
     .delete(analyticsEventsTable)
     .where(sql`${analyticsEventsTable.createdAt} < now() - interval '${sql.raw(String(RETENTION_DAYS))} days'`);

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Cookie, X, CheckCircle } from "lucide-react";
 import { startAnalyticsIfAllowed, stopAnalytics } from "@/lib/analytics";
 
-const STORAGE_KEY = "taxi-bb-cookie-consent";
+const STORAGE_KEY = "taxi-bb-cookie-consent-v2";
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
@@ -61,7 +61,7 @@ export function CookieBanner() {
               <div>
                 <p className="text-sm font-bold text-white mb-1">Cookies & Datenschutz</p>
                 <p className="text-xs text-white/50 leading-relaxed">
-                  Technisch notwendige Speicherung nutzen wir, um die Website korrekt darzustellen. Mit Ihrer Zustimmung messen wir zusätzlich anonym, welche Seiten aufgerufen werden. Das läuft ausschließlich auf unserem eigenen Server, ohne Weitergabe an Dritte, ohne Werbeprofile und ohne Wiedererkennung bei einem späteren Besuch. Mehr dazu in unserer{" "}
+                  Technisch notwendige Speicherung nutzen wir, um die Website korrekt darzustellen. Mit Ihrer Zustimmung messen wir zusätzlich Seitenaufrufe und die Herkunft von Anfragen. Dafür verknüpfen wir eine zufällige Besuchskennung mit Ihrer Anfrage und deren Bearbeitungsstatus. Das läuft ausschließlich auf unserem eigenen Server, ohne Weitergabe an Dritte, ohne Werbeprofile und ohne Wiedererkennung bei einem späteren Besuch. Mehr dazu in unserer{" "}
                   <a href="/datenschutz/" className="text-yellow-400/80 hover:text-yellow-400 underline underline-offset-2 transition-colors">
                     Datenschutzerklärung
                   </a>.

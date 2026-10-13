@@ -8,6 +8,17 @@ on:
 jobs:
   api-security:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: taxi_test
+          POSTGRES_PASSWORD: isolated_test_only
+          POSTGRES_DB: taxi_measurement_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U taxi_test -d taxi_measurement_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,6 +36,8 @@ jobs:
       - run: pnpm --filter @workspace/api-server run typecheck
       - run: pnpm --filter @workspace/taxi-app run typecheck
       - run: pnpm --filter @workspace/api-server run test:security
+      - run: node test/measurement.mjs
+        working-directory: artifacts/api-server
       # Mirrors the two services' actual railway.toml buildCommand, so a
       # build that would fail in production fails here too. Deliberately
       # scoped to these two packages (not the recursive root build) since
@@ -32,4 +45,8 @@ jobs:
       # packages (e.g. the design sandbox) are dev-only and need env vars
       # that don't apply to production CI.
       - run: pnpm --filter @workspace/api-server run build
+      - run: node test/bookings-integration.mjs
+        working-directory: artifacts/api-server
+        env:
+          DATABASE_URL: postgresql://taxi_test:isolated_test_only@127.0.0.1:5432/taxi_measurement_test
       - run: pnpm --filter @workspace/taxi-app run build

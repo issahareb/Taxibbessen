@@ -61,7 +61,19 @@ export interface Booking {
   updatedAt: string;
 }
 
+/**
+ * @nullable
+ */
+export type BookingInputAttribution = {
+  sessionId: string;
+  sourceCategory: 'direct' | 'search' | 'social' | 'referral' | 'ai' | 'business_profile';
+  entryPath: string;
+} | null;
+
 export interface BookingInput {
+  requestKey?: string;
+  /** @nullable */
+  attribution?: BookingInputAttribution;
   pickupLocation: string;
   destination: string;
   customerName?: string;
@@ -95,5 +107,10 @@ export interface BookingInput {
 
 export interface BookingStatusUpdate {
   status: BookingStatus;
+  /** @nullable */
+  revenueCents?: number | null;
+  isTest?: boolean;
+  /** @nullable */
+  rejectionReason?: string | null;
 }
 

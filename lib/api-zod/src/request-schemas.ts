@@ -72,6 +72,12 @@ export const BookingRequestSchema = z
     returnPickupLocation: optionalText(200),
     returnDestination: optionalText(200),
     callbackTime: optionalDateTime,
+    requestKey: z.string().uuid().optional(),
+    attribution: z.object({
+      sessionId: z.string().regex(/^[a-f0-9]{32}$/),
+      sourceCategory: z.enum(["direct", "search", "social", "referral", "ai", "business_profile"]),
+      entryPath: z.string().regex(/^\/[a-zA-Z0-9/_-]*$/).max(200),
+    }).strict().nullable().optional(),
   })
   .strict();
 
@@ -94,6 +100,9 @@ export const BookingIdParamsSchema = z
 export const BookingStatusRequestSchema = z
   .object({
     status: z.enum(["new", "accepted", "completed", "rejected"]),
+    revenueCents: z.number().int().min(0).max(100_000_000).nullable().optional(),
+    isTest: z.boolean().optional(),
+    rejectionReason: z.enum(["capacity", "customer_cancelled", "duplicate", "unreachable", "other"]).nullable().optional(),
   })
   .strict();
 
@@ -122,7 +131,7 @@ const AnalyticsEventSchema = z
     eventType: z.enum(["pageview", "engagement", "scroll", "click", "form_start", "form_submit"]),
     path: z.string().trim().min(1).max(200),
     referrerHost: analyticsText(120),
-    sourceCategory: z.union([z.enum(["direct", "search", "social", "referral"]), z.null()]).optional().transform((value) => value ?? null),
+    sourceCategory: z.union([z.enum(["direct", "search", "social", "referral", "ai", "business_profile"]), z.null()]).optional().transform((value) => value ?? null),
     deviceType: z.union([z.enum(["mobile", "tablet", "desktop"]), z.null()]).optional().transform((value) => value ?? null),
     browser: analyticsText(40),
     language: analyticsText(12),
@@ -141,6 +150,6 @@ export const TrackEventsRequestSchema = z
 
 export const AnalyticsRangeQuerySchema = z
   .object({
-    days: z.coerce.number().int().min(1).max(365).optional().default(30),
+    days: z.coerce.number().int().min(1).max(180).optional().default(30),
   })
   .strict();

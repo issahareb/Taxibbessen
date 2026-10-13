@@ -1,3 +1,4 @@
+import { classifySource, safeEntryPath } from "./traffic-source";
 /**
  * First-party reach measurement.
  *
@@ -6,14 +7,14 @@
  *   nothing is sent when the browser asks not to be tracked.
  * - The session id lives in sessionStorage, so it is gone when the tab
  *   closes. There is deliberately no way to recognise a returning visitor.
- * - No personal data is collected: no IP (the server does not store it), no
+ * - Events omit direct identifiers: no IP (the server does not store it), no
  *   raw user agent, and only the *host* of the referrer, never its path.
  * - Delivery uses sendBeacon so a page can unload without losing the last
  *   engagement ping, and a failed send is silently dropped rather than
  *   retried forever.
  */
 
-const CONSENT_KEY = "taxi-bb-cookie-consent";
+const CONSENT_KEY = "taxi-bb-cookie-consent-v2";
 const SESSION_KEY = "taxi-bb-analytics-session";
 // Same base resolution as the other API callers: the API can live on its own
 // domain, in which case a relative path would post to the static site instead.
@@ -30,7 +31,7 @@ export type AnalyticsEventType =
   | "form_start"
   | "form_submit";
 
-type SourceCategory = "direct" | "search" | "social" | "referral";
+type SourceCategory = "direct" | "search" | "social" | "referral" | "ai" | "business_profile";
 type DeviceType = "mobile" | "tablet" | "desktop";
 
 type AnalyticsEvent = {
@@ -85,13 +86,13 @@ function randomId(): string {
 function sessionId(): string {
   try {
     const existing = sessionStorage.getItem(SESSION_KEY);
-    if (existing) return existing;
+    if (existing && /^[a-f0-9]{32}$/.test(existing)) return existing;
     const fresh = randomId();
     sessionStorage.setItem(SESSION_KEY, fresh);
     return fresh;
   } catch {
     // Private mode with storage blocked: fall back to a per-page-load id.
-    return randomId();
+    return fallbackSessionId ||= randomId();
   }
 }
 
@@ -105,11 +106,22 @@ function referrerHost(): string | null {
   }
 }
 
-function sourceCategory(host: string | null): SourceCategory {
-  if (!host) return "direct";
-  if (SEARCH_HOST_PATTERN.test(host)) return "search";
-  if (SOCIAL_HOST_PATTERN.test(host)) return "social";
-  return "referral";
+let fallbackSessionId = "";
+let entry: { sessionId: string; sourceCategory: SourceCategory; entryPath: string } | null = null;
+
+export function bookingAttribution() {
+  if (!isEnabled()) return null;
+  if (!entry) {
+    try {
+      const stored = JSON.parse(sessionStorage.getItem("taxi-bb-entry-v2") || "null");
+      if (stored && /^[a-f0-9]{32}$/.test(stored.sessionId) && stored.sessionId === sessionId() && ["direct", "search", "social", "referral", "ai", "business_profile"].includes(stored.sourceCategory) && typeof stored.entryPath === "string" && stored.entryPath === safeEntryPath(stored.entryPath)) entry = stored;
+    } catch { /* storage may be unavailable */ }
+    if (!entry) {
+      entry = { sessionId: sessionId(), sourceCategory: classifySource(referrerHost(), new URLSearchParams(window.location.search).get("utm_source")), entryPath: safeEntryPath(window.location.pathname) };
+      try { sessionStorage.setItem("taxi-bb-entry-v2", JSON.stringify(entry)); } catch { /* in-memory fallback */ }
+    }
+  }
+  return entry;
 }
 
 function deviceType(): DeviceType {
@@ -136,9 +148,9 @@ function baseEvent(eventType: AnalyticsEventType): AnalyticsEvent {
   return {
     sessionId: sessionId(),
     eventType,
-    path: window.location.pathname || "/",
+    path: safeEntryPath(window.location.pathname),
     referrerHost: host,
-    sourceCategory: sourceCategory(host),
+    sourceCategory: bookingAttribution()?.sourceCategory ?? "direct",
     deviceType: deviceType(),
     browser: browserFamily(),
     language: (navigator.language || "").slice(0, 12) || null,
@@ -150,7 +162,7 @@ function baseEvent(eventType: AnalyticsEventType): AnalyticsEvent {
 }
 
 function send(events: AnalyticsEvent[]): void {
-  if (events.length === 0) return;
+  if (!isEnabled() || events.length === 0) return;
   const body = JSON.stringify({ events });
 
   try {
@@ -287,7 +299,7 @@ export function trackPageview(path: string): void {
 let formStarted = false;
 
 export function trackFormStart(): void {
-  if (formStarted) return;
+  if (!isEnabled() || formStarted) return;
   formStarted = true;
   enqueue(baseEvent("form_start"));
 }
@@ -333,7 +345,7 @@ export function initAnalytics(): void {
   // component having to report it itself.
   const onFocusIn = (event: FocusEvent) => {
     const element = event.target instanceof Element ? event.target : null;
-    if (!element?.closest("form")) return;
+    if (!element?.closest("form[data-booking-form]")) return;
     if (!element.matches("input, textarea, select")) return;
     trackFormStart();
   };
@@ -358,6 +370,10 @@ export function initAnalytics(): void {
 /** Called when the visitor declines or withdraws consent. */
 export function stopAnalytics(): void {
   queue = [];
+  entry = null;
+  fallbackSessionId = "";
+  currentPath = "";
+  formStarted = false;
   if (flushTimer !== null) {
     window.clearTimeout(flushTimer);
     flushTimer = null;
@@ -365,6 +381,7 @@ export function stopAnalytics(): void {
   teardown?.();
   try {
     sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem("taxi-bb-entry-v2");
   } catch {
     // Nothing to clear.
   }

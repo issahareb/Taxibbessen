@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { db, bookingsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { createHash } from "node:crypto";
+import { bookingReceipt, fingerprintBooking } from "../lib/booking-measurement";
+import { eq, sql } from "drizzle-orm";
 import { sendBookingNotification } from "../lib/email";
 import { requireAdmin, requireAdminCsrf } from "../middleware/require-admin-key";
 
@@ -11,14 +13,19 @@ router.get("/bookings", requireAdmin, async (_req, res) => {
   res.json(bookings);
 });
 
-// Der Text-Tab des Hero-Formulars schickt bewusst nur eine Nachricht, daher
-// können Name und Telefon fehlen. Die Spalten sind NOT NULL, deshalb hier ein
-// sprechender Platzhalter statt eines leeren Strings.
+// Preserve compatibility with older clients that omit optional contact fields.
 const NOT_PROVIDED = "Nicht angegeben";
 
 router.post("/bookings", async (req, res) => {
   const body = req.body;
-  const [booking] = await db.insert(bookingsTable).values({
+  const fingerprint = fingerprintBooking(body);
+  const requestKey = body.requestKey ? createHash("sha256").update(body.requestKey).digest("hex") : null;
+  const [inserted] = await db.insert(bookingsTable).values({
+    requestKey,
+    requestFingerprint: fingerprint,
+    analyticsSessionId: body.attribution?.sessionId ?? null,
+    sourceCategory: body.attribution?.sourceCategory ?? null,
+    entryPath: body.attribution?.entryPath ?? null,
     pickupLocation: body.pickupLocation,
     destination: body.destination,
     customerName: body.customerName ?? NOT_PROVIDED,
@@ -37,7 +44,16 @@ router.post("/bookings", async (req, res) => {
     returnDestination: body.returnDestination ?? null,
     callbackTime: body.callbackTime ? new Date(body.callbackTime) : null,
     status: "new",
-  }).returning();
+  }).onConflictDoNothing({ target: bookingsTable.requestKey }).returning();
+  if (!inserted && requestKey) {
+    const [existing] = await db.select().from(bookingsTable).where(eq(bookingsTable.requestKey, requestKey));
+    if (!existing || existing.requestFingerprint !== fingerprint) {
+      return res.status(409).json({ error: "Die Anfrage wurde geändert. Bitte erneut absenden." });
+    }
+    return res.status(200).json(bookingReceipt(existing.id));
+  }
+  const booking = inserted;
+  if (!booking) return res.status(503).json({ error: "Anfrage konnte nicht gespeichert werden." });
 
   sendBookingNotification({
     id: booking.id,
@@ -59,11 +75,7 @@ router.post("/bookings", async (req, res) => {
     returnDestination: booking.returnDestination,
   }).catch((error) => console.error("Booking email failed", error));
 
-  res.status(201).json({
-    ok: true,
-    requestId: booking.id,
-    message: "Ihre Anfrage wurde übermittelt. Wir melden uns so schnell wie möglich.",
-  });
+  res.status(201).json(bookingReceipt(booking.id));
 });
 
 router.get("/bookings/:id", requireAdmin, async (req, res) => {
@@ -75,9 +87,19 @@ router.get("/bookings/:id", requireAdmin, async (req, res) => {
 
 router.patch("/bookings/:id/status", requireAdmin, requireAdminCsrf, async (req, res) => {
   const id = Number(req.params.id);
-  const { status } = req.body;
+  const { status, revenueCents, isTest, rejectionReason } = req.body;
+  if (revenueCents != null && status !== "completed") {
+    return res.status(400).json({ error: "Tatsächlichen Umsatz bitte erst nach der Fahrt erfassen." });
+  }
   const [booking] = await db.update(bookingsTable)
-    .set({ status, updatedAt: new Date() })
+    .set({
+      status, updatedAt: new Date(),
+      ...(isTest !== undefined ? { isTest } : {}),
+      ...(revenueCents !== undefined ? { revenueCents } : {}),
+      ...(status !== "completed" ? { revenueCents: null } : {}),
+      ...(status !== "rejected" ? { rejectionReason: null } : rejectionReason !== undefined ? { rejectionReason } : {}),
+      firstRespondedAt: status === "new" ? sql`${bookingsTable.firstRespondedAt}` : sql`coalesce(${bookingsTable.firstRespondedAt}, now())`,
+    })
     .where(eq(bookingsTable.id, id))
     .returning();
   if (!booking) return res.status(404).json({ error: "Not found" });

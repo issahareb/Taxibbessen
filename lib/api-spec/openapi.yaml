@@ -204,6 +204,20 @@ components:
         - pickupLocation
         - destination
       properties:
+        requestKey:
+          type: string
+          format: uuid
+        attribution:
+          type: ["object", "null"]
+          required: [sessionId, sourceCategory, entryPath]
+          properties:
+            sessionId:
+              type: string
+            sourceCategory:
+              type: string
+              enum: [direct, search, social, referral, ai, business_profile]
+            entryPath:
+              type: string
         pickupLocation:
           type: string
         destination:
@@ -246,3 +260,9 @@ components:
       properties:
         status:
           $ref: "#/components/schemas/BookingStatus"
+        revenueCents:
+          type: ["integer", "null"]
+        isTest:
+          type: boolean
+        rejectionReason:
+          type: ["string", "null"]
