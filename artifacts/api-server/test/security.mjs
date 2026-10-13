@@ -78,7 +78,7 @@ try {
 
   const source = await readFile(new URL("../src/routes/bookings.ts", import.meta.url), "utf8");
   assert.ok(!source.includes("res.status(201).json(booking)"));
-  assert.ok(source.includes("requestId: booking.id"));
+  assert.ok(source.includes("bookingReceipt(booking.id)"));
   console.log("Security regression checks passed.");
 } finally {
   child.kill("SIGTERM");

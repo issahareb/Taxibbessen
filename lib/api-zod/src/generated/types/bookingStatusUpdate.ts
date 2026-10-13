@@ -9,4 +9,9 @@ import type { BookingStatus } from './bookingStatus';
 
 export interface BookingStatusUpdate {
   status: BookingStatus;
+  /** @nullable */
+  revenueCents?: number | null;
+  isTest?: boolean;
+  /** @nullable */
+  rejectionReason?: string | null;
 }

@@ -82,6 +82,8 @@ export function ServicePageTemplate({
   title, description, h1, badge, intro, sections, faq, relatedLinks, stadtteileLinks, schema, breadcrumbLabel,
 }: ServicePageTemplateProps) {
   usePageMeta({ title, description, schemaOrg: schema });
+  const service = h1.includes("Flughafen") ? "Flughafentransfer" : h1.includes("Großraum") ? "Großraumtaxi" : h1.includes("Kranken") || h1.includes("Dialyse") ? "Krankenfahrt" : h1.includes("Kurier") ? "Kurierfahrt" : "";
+  const bookingHref = service ? `/?service=${encodeURIComponent(service)}#fahrtanfrage` : "/#fahrtanfrage";
 
   return (
     <Layout>
@@ -115,10 +117,10 @@ export function ServicePageTemplate({
                   0201 707060
                 </a>
                 <Link
-                  href="/#anfrage"
+                  href={bookingHref}
                   className="inline-flex items-center gap-2 border border-white/20 text-white font-black px-6 py-3.5 rounded-2xl hover:bg-white/5 transition-all text-sm uppercase tracking-widest"
                 >
-                  Online buchen
+                  Fahrt vorbestellen
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -228,10 +230,10 @@ export function ServicePageTemplate({
                     0201 707060
                   </a>
                   <Link
-                    href="/#anfrage"
+                    href={bookingHref}
                     className="inline-flex items-center gap-2 border border-white/20 text-white font-black px-8 py-4 rounded-2xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm"
                   >
-                    Online buchen
+                    Fahrt vorbestellen
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>

@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect, useMemo } from "react";
+import { useState, useRef, useLayoutEffect, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui";
 import {
   Phone,
@@ -60,7 +60,7 @@ function buildTimeSlots(): { value: string; label: string }[] {
 export function HeroBookingWidget() {
   const createBooking = useCreateBooking();
 
-  const [mode, setMode] = useState<Mode>("text");
+  const [mode, setMode] = useState<Mode>("auswahl");
 
   // Der Text-Tab braucht nur die Nachricht; alles Weitere gehört zum
   // Auswahl-Tab und bleibt beim Umschalten erhalten.
@@ -76,6 +76,13 @@ export function HeroBookingWidget() {
   const [customDateTime, setCustomDateTime] = useState("");
   const [passengers, setPassengers]         = useState("1");
 
+  const [step, setStep] = useState(1);
+  const [service, setService] = useState("");
+  const [requestId, setRequestId] = useState<number | null>(null);
+  useEffect(() => {
+    const selected = new URLSearchParams(window.location.search).get("service");
+    if (["Flughafentransfer", "Großraumtaxi", "Krankenfahrt", "Kurierfahrt"].includes(selected ?? "")) setService(selected!);
+  }, []);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError]         = useState(false);
 
@@ -117,15 +124,11 @@ export function HeroBookingWidget() {
     return local.toISOString().slice(0, 16);
   }, []);
 
-  const valid =
-    mode === "text"
-      ? message.trim().length >= 5
-      : pickup.trim().length >= 2 &&
-        destination.trim().length >= 2 &&
-        firstName.trim().length >= 2 &&
-        lastName.trim().length >= 2 &&
-        phone.trim().length >= 6 &&
-        (timeSlot !== CUSTOM_TIME || customDateTime !== "");
+  const rideValid = pickup.trim().length >= 2 && destination.trim().length >= 2 &&
+    (timeSlot !== CUSTOM_TIME || (customDateTime !== "" && new Date(customDateTime).getTime() > Date.now()));
+  const contactValid = /^\+?[0-9][0-9\s()\/-]{5,24}$/.test(phone.trim());
+  const valid = mode === "text" ? message.trim().length >= 5 && contactValid
+    : step === 1 ? rideValid : rideValid && firstName.trim().length >= 2 && contactValid;
 
   function selectMode(next: Mode) {
     setMode(next);
@@ -134,7 +137,8 @@ export function HeroBookingWidget() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!valid) return;
+    if (!valid || createBooking.isPending) return;
+    if (mode === "auswahl" && step === 1) { setStep(2); return; }
     setError(false);
 
     const shared = {
@@ -159,6 +163,7 @@ export function HeroBookingWidget() {
             // Der Text-Tab erhebt bewusst nur die Nachricht. Name, Telefon
             // und E-Mail werden gar nicht mitgeschickt; der Server setzt für
             // die Pflichtspalten einen Platzhalter.
+            customerPhone: phone.trim(),
             pickupLocation: NOT_SPECIFIED,
             destination:    NOT_SPECIFIED,
             scheduledTime:  null,
@@ -175,11 +180,12 @@ export function HeroBookingWidget() {
             customerEmail:    email.trim() || null,
             scheduledTime,
             passengerCount: Number(passengers),
-            notes:          message.trim() || null,
+            notes:          [service ? `Leistung: ${service}` : "", message.trim()].filter(Boolean).join("\n") || null,
           };
 
     try {
-      await createBooking.mutateAsync({ data: payload });
+      const receipt = await createBooking.mutateAsync({ data: payload });
+      setRequestId(receipt.requestId);
       setSubmitted(true);
     } catch {
       setError(true);
@@ -197,6 +203,8 @@ export function HeroBookingWidget() {
 
   return (
     <motion.div
+      id="fahrtanfrage"
+      style={{ scrollMarginTop: "6rem" }}
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
@@ -223,8 +231,8 @@ export function HeroBookingWidget() {
             className="relative flex items-end gap-1 px-4 pt-4"
           >
             {([
-              ["text", "Text"],
-              ["auswahl", "Auswahl"],
+              ["auswahl", "Fahrt vorbestellen"],
+              ["text", "Nachricht"],
             ] as const).map(([key, label]) => {
               const active = mode === key;
               return (
@@ -279,21 +287,21 @@ export function HeroBookingWidget() {
                 className="flex flex-col items-center gap-3 py-6 text-center"
               >
                 <CheckCircle2 className="w-12 h-12 text-primary" />
-                <p className="text-white font-semibold text-lg">Vielen Dank!</p>
+                <p className="text-white font-semibold text-lg">Anfrage eingegangen</p>
                 <p className="text-white/60 text-sm">
-                  Wir melden uns so schnell wie möglich bei Ihnen.
+                  Anfrage #{requestId}. Ihre Fahrt ist erst nach unserer persönlichen Bestätigung verbindlich. Für eine sofortige Abholung rufen Sie bitte an.
                 </p>
               </motion.div>
             ) : (
-              <motion.form key="form" onSubmit={handleSubmit} className="space-y-3">
+              <motion.form key="form" data-booking-form onSubmit={handleSubmit} className="space-y-3">
 
                 {/* Titel - immer sichtbar */}
                 <div className="mb-4">
                   <h2 className="text-xl sm:text-2xl lg:text-3xl font-display font-bold text-white leading-snug">
-                    Stellen Sie jetzt Ihre Anfrage
+                    {mode === "text" ? "Wie können wir helfen?" : step === 1 ? "Wohin dürfen wir Sie fahren?" : "Wie erreichen wir Sie?"}
                   </h2>
                   <p className="text-sm sm:text-base font-semibold text-primary/90 mt-1.5">
-                    zum günstigsten Festpreis.
+                    {mode === "auswahl" ? `Schritt ${step} von 2` : "Wir melden uns unter Ihrer Rückrufnummer."}
                   </p>
                 </div>
 
@@ -301,13 +309,14 @@ export function HeroBookingWidget() {
                   /* Nur der Nachrichtblock. Kontaktdaten werden hier bewusst
                      nicht erhoben; für alles Strukturierte gibt es den
                      Auswahl-Reiter. */
-                  <textarea
+                  <div className="space-y-3"><textarea
+                    aria-label="Ihre Nachricht"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     rows={4}
-                    placeholder="Schreiben Sie eine kurze Nachricht und wir melden uns bei Ihnen! Bitte Telefonnummer angeben."
+                    placeholder="Ihre Frage oder Ihr Fahrtwunsch"
                     className={textarea}
-                  />
+                  /><input type="tel" autoComplete="tel" aria-label="Rückrufnummer" required value={phone} onChange={e => setPhone(e.target.value)} placeholder="Rückrufnummer" className={fieldIcon} /></div>
                 ) : (
                   <motion.div
                     key="auswahl"
@@ -316,8 +325,13 @@ export function HeroBookingWidget() {
                     transition={{ duration: 0.3 }}
                     className="space-y-5"
                   >
-                    {/* ── Fahrt ── */}
-                    <div>
+                    {step === 1 && <div>
+                      <label className="block text-sm text-white/70 mb-2">Fahrtart
+                        <select aria-label="Fahrtart" value={service} onChange={e => setService(e.target.value)} className={select}>
+                          <option value="">Taxifahrt</option>
+                          {["Flughafentransfer", "Großraumtaxi", "Krankenfahrt", "Kurierfahrt"].map(value => <option key={value}>{value}</option>)}
+                        </select>
+                      </label>
                       <p className={sectionLabel}>Fahrt</p>
                       <div className="space-y-2.5">
                         <AddressField
@@ -343,7 +357,7 @@ export function HeroBookingWidget() {
                               aria-label="Abholzeit"
                               className={select}
                             >
-                              <option value="">Sofort</option>
+                              <option value="">Zeit telefonisch abstimmen</option>
                               {timeSlots.map((slot) => (
                                 <option key={slot.value} value={slot.value}>
                                   {slot.label}
@@ -396,8 +410,10 @@ export function HeroBookingWidget() {
                           </motion.div>
                         )}
                       </div>
-                    </div>
-
+                    </div>}
+                    {step === 2 && <div className="space-y-4">
+                    <button type="button" onClick={() => setStep(1)} className="text-primary text-sm">← Fahrt ändern</button>
+                    <p className="text-white/70 text-sm">{pickup} → {destination}</p>
                     {/* ── Anmerkungen ── */}
                     <div>
                       <p className={sectionLabel}>Besondere Anmerkungen</p>
@@ -435,7 +451,7 @@ export function HeroBookingWidget() {
                               type="text"
                               value={lastName}
                               onChange={(e) => setLastName(e.target.value)}
-                              placeholder="Nachname"
+                              placeholder="Nachname (optional)"
                               autoComplete="family-name"
                               className={fieldIcon}
                             />
@@ -465,6 +481,7 @@ export function HeroBookingWidget() {
                         </div>
                       </div>
                     </div>
+                  </div>}
                   </motion.div>
                 )}
 
@@ -481,7 +498,7 @@ export function HeroBookingWidget() {
                   className="w-full text-base font-bold"
                   isLoading={createBooking.isPending}
                 >
-                  {createBooking.isPending ? "Wird gesendet…" : "Anfrage absenden"}
+                  {createBooking.isPending ? "Wird gesendet…" : mode === "auswahl" && step === 1 ? "Weiter zu den Kontaktdaten" : mode === "text" ? "Nachricht senden" : "Fahrt unverbindlich anfragen"}
                 </Button>
 
               </motion.form>
@@ -498,7 +515,7 @@ export function HeroBookingWidget() {
           className="group relative flex items-center justify-center gap-2.5 py-4 rounded-2xl bg-primary text-black font-black text-sm tracking-wide transition-all duration-300 shadow-[0_4px_24px_rgba(255,193,7,0.45)] hover:shadow-[0_4px_32px_rgba(255,193,7,0.7)] hover:scale-[1.03] active:scale-[0.98]"
         >
           <Phone className="w-4 h-4 shrink-0" />
-          <span>Anrufen</span>
+          <span>Jetzt ein Taxi</span>
         </a>
         <a
           href="https://wa.me/491711111535"

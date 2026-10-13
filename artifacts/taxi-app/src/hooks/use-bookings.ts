@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { trackFormSubmit } from "@/lib/analytics";
+import { useRef } from "react";
+import { bookingAttribution, trackFormSubmit } from "@/lib/analytics";
 import {
   useListBookings,
   useCreateBooking as useApiCreateBooking,
@@ -53,12 +54,16 @@ export function useRealtimeBookings() {
 export function useCreateBooking() {
   const queryClient = useQueryClient();
   const mutation = useApiCreateBooking();
+  const pendingRequest = useRef<{ payload: string; key: string } | null>(null);
 
   return {
     ...mutation,
     mutateAsync: async (data: Parameters<typeof mutation.mutateAsync>[0]) => {
       try {
-        const result = await mutation.mutateAsync(data);
+        const payload = JSON.stringify(data.data);
+        if (pendingRequest.current?.payload !== payload) pendingRequest.current = { payload, key: crypto.randomUUID() };
+        const result = await mutation.mutateAsync({ ...data, data: { ...data.data, requestKey: pendingRequest.current.key, attribution: bookingAttribution() } });
+        pendingRequest.current = null;
         trackFormSubmit();
         await queryClient.invalidateQueries({ queryKey: getListBookingsQueryKey() });
         return result;

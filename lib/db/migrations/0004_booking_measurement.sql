@@ -1,0 +1,11 @@
+ALTER TABLE bookings ADD COLUMN request_key text UNIQUE;
+ALTER TABLE bookings ADD COLUMN request_fingerprint text;
+ALTER TABLE bookings ADD COLUMN analytics_session_id text;
+ALTER TABLE bookings ADD COLUMN source_category text;
+ALTER TABLE bookings ADD COLUMN entry_path text;
+ALTER TABLE bookings ADD COLUMN is_test boolean NOT NULL DEFAULT false;
+ALTER TABLE bookings ADD COLUMN revenue_cents integer CHECK (revenue_cents >= 0);
+ALTER TABLE bookings ADD COLUMN rejection_reason text;
+ALTER TABLE bookings ADD COLUMN first_responded_at timestamp;
+CREATE INDEX bookings_created_at_measurement_idx ON bookings(created_at);
+CREATE INDEX bookings_analytics_session_idx ON bookings(analytics_session_id);
