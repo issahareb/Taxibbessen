@@ -11,7 +11,7 @@ import { Button } from "@/components/ui";
 import { Phone, Shield, Sparkles, Navigation, ArrowRight, Mail, Globe, MessageCircle, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useLanguage } from "@/i18n/useLanguage";
-import { createFrameSequence, drawCover } from "@/lib/frame-scrubber";
+import { createFrameSequence, drawCover, prefersLessMedia } from "@/lib/frame-scrubber";
 import depotPoster from "@assets/IMG_1642_1780001838765.png";
 
 const glassCard = "bg-white/[0.06] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.6)]";
@@ -352,14 +352,17 @@ export default function Home() {
   }, []);
 
   // Image-sequence scrubber - bulletproof on iOS Safari, no <video> black-frame issues
-  const FRAME_COUNT = 97;
+  // Keep the original sharp poster. Frames 1–6 pull the taxi backwards
+  // relative to that still; start the moving sequence at frame 7 instead.
+  const HERO_FIRST_FRAME = 7;
+  const FRAME_COUNT = 97 - HERO_FIRST_FRAME + 1;
   const framePath = (n: number) =>
-    `${import.meta.env.BASE_URL}hero-frames/frame_${String(n).padStart(3, "0")}.jpg`;
+    `${import.meta.env.BASE_URL}hero-frames/frame_${String(n + HERO_FIRST_FRAME - 1).padStart(3, "0")}.jpg`;
 
   useEffect(() => {
     const canvas = imgRef.current;
     const heroLayer = heroLayerRef.current;
-    if (!canvas) return;
+    if (!canvas || prefersLessMedia()) return;
 
     let heroTargetOpacity = 1;
 
@@ -401,7 +404,7 @@ export default function Home() {
           Math.max(0, Math.round(currentProgress * (FRAME_COUNT - 1))),
         );
         if (idx !== lastFrame) {
-          const frame = sequence.nearest(idx);
+          const frame = sequence.exact(idx);
           if (frame) {
             drawCover(canvas, frame);
             lastFrame = idx;
@@ -409,7 +412,8 @@ export default function Home() {
         }
       }
       if (sharpOverlayRef.current) {
-        const sharpOpacity = Math.max(0, 1 - currentProgress * 25);
+        // Never expose an empty canvas or a stale fallback while decoding.
+        const sharpOpacity = lastFrame < 0 ? 1 : Math.max(0, 1 - currentProgress * 25);
         sharpOverlayRef.current.style.opacity = String(sharpOpacity);
       }
       if (heroLayer) heroLayer.style.opacity = String(heroTargetOpacity);
@@ -427,11 +431,19 @@ export default function Home() {
     targetProgress = getProgress();
     heroTargetOpacity = getHeroOpacity();
     currentProgress = targetProgress;
+    if (targetProgress > 0) sequence.start();
+    const onResize = () => {
+      lastFrame = -1;
+      targetProgress = getProgress();
+      heroTargetOpacity = getHeroOpacity();
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
     rafId = requestAnimationFrame(rafLoop);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
       if (rafId) cancelAnimationFrame(rafId);
       sequence.destroy();
     };
@@ -663,7 +675,9 @@ export default function Home() {
             ref={imgRef}
             aria-hidden
             className="md:hidden block w-full h-full"
-            style={{ opacity: 0.92 }}
+            // Match the retained poster's crop: the generated frames are
+            // slightly wider and vertically offset. Overscan covers all edges.
+            style={{ transform: "translateY(2%) scale(1.05)", transformOrigin: "center" }}
           />
           {/* LCP-Bild auf Mobile: fetchpriority="high" stellt sicher, dass der Browser
               es sofort mit höchster Priorität lädt - direkter Effekt auf LCP-Score */}

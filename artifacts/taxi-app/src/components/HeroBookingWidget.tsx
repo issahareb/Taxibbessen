@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect, useMemo, useEffect } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui";
 import {
   Phone,
@@ -16,13 +16,12 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useCreateBooking } from "@/hooks/use-bookings";
 import { AddressField } from "@/components/AddressField";
+import { inferRideServices } from "@/lib/ride-services";
 
 type Mode = "text" | "auswahl";
 
 /** Wert im Zeit-Auswahlfeld, der das freie Datumsfeld einblendet. */
 const CUSTOM_TIME = "custom";
-
-const LINE_SPRING = { type: "spring", stiffness: 340, damping: 32 } as const;
 
 /** Placeholder for the free-text tab, which has no address fields of its own. */
 const NOT_SPECIFIED = "Nicht angegeben";
@@ -60,9 +59,9 @@ function buildTimeSlots(): { value: string; label: string }[] {
 export function HeroBookingWidget() {
   const createBooking = useCreateBooking();
 
-  const [mode, setMode] = useState<Mode>("auswahl");
+  const [mode, setMode] = useState<Mode>("text");
 
-  // Der Text-Tab braucht nur die Nachricht; alles Weitere gehört zum
+  // Nachricht und Rückrufnummer genügen im Kontakt-Tab; alles Weitere gehört zum
   // Auswahl-Tab und bleibt beim Umschalten erhalten.
   const [message, setMessage]     = useState("");
   const [firstName, setFirstName] = useState("");
@@ -77,43 +76,16 @@ export function HeroBookingWidget() {
   const [passengers, setPassengers]         = useState("1");
 
   const [step, setStep] = useState(1);
-  const [service, setService] = useState("");
+  const [requestedService, setRequestedService] = useState("");
   const [requestId, setRequestId] = useState<number | null>(null);
   useEffect(() => {
     const selected = new URLSearchParams(window.location.search).get("service");
-    if (["Flughafentransfer", "Großraumtaxi", "Krankenfahrt", "Kurierfahrt"].includes(selected ?? "")) setService(selected!);
+    if (["Flughafentransfer", "Großraumtaxi", "Krankenfahrt", "Kurierfahrt"].includes(selected ?? "")) setRequestedService(selected!);
   }, []);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError]         = useState(false);
 
-  const widgetRef = useRef<HTMLDivElement>(null);
-  const stripRef  = useRef<HTMLDivElement>(null);
-  const tabRefs   = useRef<Partial<Record<Mode, HTMLButtonElement | null>>>({});
-
-  // Geometrie des aktiven Reiters. Die Aktenlinie wird daraus gezeichnet,
-  // statt sie aus festen Werten zu raten: die Reiterbreite hängt an der
-  // Textlänge und der Schriftgröße.
-  const [bump, setBump] = useState({ left: 0, width: 0, height: 0, ready: false });
-
-  useLayoutEffect(() => {
-    const strip = stripRef.current;
-    const button = tabRefs.current[mode];
-    if (!strip || !button) return;
-
-    const measure = () =>
-      setBump({
-        left: button.offsetLeft,
-        width: button.offsetWidth,
-        height: button.offsetHeight,
-        ready: true,
-      });
-
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(strip);
-    observer.observe(button);
-    return () => observer.disconnect();
-  }, [mode]);
+  const tabRefs = useRef<Partial<Record<Mode, HTMLButtonElement | null>>>({});
 
   const timeSlots = useMemo(buildTimeSlots, []);
   // Untergrenze für das freie Datumsfeld: lokale Zeit, nicht UTC, sonst
@@ -156,13 +128,15 @@ export function HeroBookingWidget() {
           : null
         : timeSlot || null;
 
+    const services = inferRideServices({ pickup, destination, passengers: Number(passengers), requestedService });
+    const serviceNote = services.length ? `Leistung: ${services.join(" · ")}` : "";
+
     const payload =
       mode === "text"
         ? {
             ...shared,
-            // Der Text-Tab erhebt bewusst nur die Nachricht. Name, Telefon
-            // und E-Mail werden gar nicht mitgeschickt; der Server setzt für
-            // die Pflichtspalten einen Platzhalter.
+            // Kontaktanfragen enthalten Nachricht und Rückrufnummer;
+            // die Streckenangaben bleiben als nicht angegeben markiert.
             customerPhone: phone.trim(),
             pickupLocation: NOT_SPECIFIED,
             destination:    NOT_SPECIFIED,
@@ -180,7 +154,7 @@ export function HeroBookingWidget() {
             customerEmail:    email.trim() || null,
             scheduledTime,
             passengerCount: Number(passengers),
-            notes:          [service ? `Leistung: ${service}` : "", message.trim()].filter(Boolean).join("\n") || null,
+            notes:          [serviceNote, message.trim()].filter(Boolean).join("\n") || null,
           };
 
     try {
@@ -215,66 +189,62 @@ export function HeroBookingWidget() {
           hard to read. Deliberately no backdrop-blur - the background here is
           a scroll-scrubbed video, and re-blurring it every frame is costly on
           phones. */}
-      <div ref={widgetRef} className="bg-black/45 border border-white/20 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden">
+      <div className="bg-black/65 border border-white/15 rounded-3xl shadow-2xl shadow-black/50 overflow-hidden">
 
-        {/* Registerreiter wie bei einer Akte: eine durchgehende Grundlinie am
-            unteren Rand der Leiste, die sich um den aktiven Reiter nach oben
-            herauszieht. Beide Reiter sind flächenlos, markiert wird
-            ausschließlich über diese Linie. Sie wird aus der gemessenen
-            Reitergeometrie gezeichnet und wandert beim Umschalten animiert
-            zum anderen Reiter. */}
         {!submitted && (
-          <div
-            ref={stripRef}
-            role="tablist"
-            aria-label="Art der Anfrage"
-            className="relative flex items-end gap-1 px-4 pt-4"
-          >
-            {([
-              ["auswahl", "Fahrt vorbestellen"],
-              ["text", "Nachricht"],
-            ] as const).map(([key, label]) => {
-              const active = mode === key;
-              return (
-                <button
-                  key={key}
-                  ref={(el) => { tabRefs.current[key] = el; }}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => selectMode(key)}
-                  className={`relative z-10 rounded-t-xl px-5 text-xs font-black uppercase tracking-widest transition-colors duration-200 ${
-                    active ? "h-10 text-white" : "h-8 text-white/35 hover:text-white/65"
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-
-            {bump.ready && (
-              <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
-                <motion.span
-                  className="absolute bottom-0 left-0 h-px bg-primary/45 shadow-[0_0_8px_rgba(255,193,7,0.4)]"
-                  animate={{ width: bump.left }}
-                  transition={LINE_SPRING}
-                />
-                <motion.span
-                  className="absolute bottom-0 rounded-t-xl border-l border-r border-t border-primary/55 shadow-[0_0_10px_rgba(255,193,7,0.3)]"
-                  animate={{ left: bump.left, width: bump.width, height: bump.height }}
-                  transition={LINE_SPRING}
-                />
-                <motion.span
-                  className="absolute bottom-0 right-0 h-px bg-primary/45 shadow-[0_0_8px_rgba(255,193,7,0.4)]"
-                  animate={{ left: bump.left + bump.width }}
-                  transition={LINE_SPRING}
-                />
-              </div>
-            )}
+          <div className="px-3 pt-3 sm:px-5 sm:pt-5">
+            <div
+              role="tablist"
+              aria-label="Art der Anfrage"
+              className="grid grid-cols-2 gap-1.5 rounded-[20px] border border-white/10 bg-black/35 p-1.5"
+            >
+              {([
+                { key: "text", label: "Kontakt aufnehmen", detail: "Fragen & Wünsche", Icon: MessageSquare },
+                { key: "auswahl", label: "Fahrt anfragen", detail: "Route & Termin", Icon: CalendarClock },
+              ] as const).map(({ key, label, detail, Icon }) => {
+                const active = mode === key;
+                return (
+                  <button
+                    key={key}
+                    id={`hero-tab-${key}`}
+                    ref={(el) => { tabRefs.current[key] = el; }}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    aria-controls="hero-request-panel"
+                    tabIndex={active ? 0 : -1}
+                    onClick={() => selectMode(key)}
+                    onKeyDown={(event) => {
+                      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+                      event.preventDefault();
+                      const next: Mode = event.key === "Home" ? "text" : event.key === "End" ? "auswahl" : key === "text" ? "auswahl" : "text";
+                      selectMode(next);
+                      tabRefs.current[next]?.focus();
+                    }}
+                    className={`flex min-h-[76px] min-w-0 flex-col items-center justify-center gap-1.5 rounded-[14px] px-2 py-3 text-center transition-[background-color,color,box-shadow] duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:min-h-[68px] sm:flex-row sm:gap-3 sm:px-4 sm:text-left ${
+                      active
+                        ? "bg-gradient-to-br from-[#ffda40] to-[#ffc107] text-black shadow-[0_4px_18px_rgba(255,193,7,0.16),inset_0_1px_0_rgba(255,255,255,0.35)]"
+                        : "text-white/70 hover:bg-white/[0.07] hover:text-white"
+                    }`}
+                  >
+                    <Icon aria-hidden="true" className="h-[18px] w-[18px] shrink-0 sm:h-5 sm:w-5" strokeWidth={1.8} />
+                    <span className="min-w-0">
+                      <span className="block text-xs font-bold leading-snug sm:text-sm">{label}</span>
+                      <span className={`mt-0.5 hidden text-[11px] font-medium sm:block ${active ? "text-black/60" : "text-white/40"}`}>{detail}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
-        <div className="p-5 sm:p-6">
+        <div
+          id="hero-request-panel"
+          role={submitted ? undefined : "tabpanel"}
+          aria-labelledby={submitted ? undefined : `hero-tab-${mode}`}
+          className="p-5 sm:p-6"
+        >
 
           <AnimatePresence mode="wait">
             {submitted ? (
@@ -306,9 +276,7 @@ export function HeroBookingWidget() {
                 </div>
 
                 {mode === "text" ? (
-                  /* Nur der Nachrichtblock. Kontaktdaten werden hier bewusst
-                     nicht erhoben; für alles Strukturierte gibt es den
-                     Auswahl-Reiter. */
+                  /* Kurze Kontaktanfrage mit Rückrufnummer. */
                   <div className="space-y-3"><textarea
                     aria-label="Ihre Nachricht"
                     value={message}
@@ -326,12 +294,6 @@ export function HeroBookingWidget() {
                     className="space-y-5"
                   >
                     {step === 1 && <div>
-                      <label className="block text-sm text-white/70 mb-2">Fahrtart
-                        <select aria-label="Fahrtart" value={service} onChange={e => setService(e.target.value)} className={select}>
-                          <option value="">Taxifahrt</option>
-                          {["Flughafentransfer", "Großraumtaxi", "Krankenfahrt", "Kurierfahrt"].map(value => <option key={value}>{value}</option>)}
-                        </select>
-                      </label>
                       <p className={sectionLabel}>Fahrt</p>
                       <div className="space-y-2.5">
                         <AddressField
@@ -515,7 +477,7 @@ export function HeroBookingWidget() {
           className="group relative flex items-center justify-center gap-2.5 py-4 rounded-2xl bg-primary text-black font-black text-sm tracking-wide transition-all duration-300 shadow-[0_4px_24px_rgba(255,193,7,0.45)] hover:shadow-[0_4px_32px_rgba(255,193,7,0.7)] hover:scale-[1.03] active:scale-[0.98]"
         >
           <Phone className="w-4 h-4 shrink-0" />
-          <span>Jetzt ein Taxi</span>
+          <span>Jetzt anrufen</span>
         </a>
         <a
           href="https://wa.me/491711111535"
