@@ -3,6 +3,7 @@ import { usePageMeta } from "@/hooks/use-page-meta";
 import { getPageMeta } from "@/page-meta-manifest";
 import { HOME_FAQ as FAQ_ITEMS } from "@/content/home";
 import { Link } from "wouter";
+import { BrandLogo } from "@/components/BrandLogo";
 import { Layout } from "@/components/Layout";
 import { HeroBookingWidget } from "@/components/HeroBookingWidget";
 import { ContactForm } from "@/components/ContactForm";
@@ -764,19 +765,11 @@ export default function Home() {
                 className="text-center"
               >
                 <h1 className="text-center font-display font-black uppercase tracking-[0.22em] text-white/50 mb-2" style={{ fontSize: "clamp(0.7rem, 1.4vw, 0.85rem)" }}>24/7 Taxiservice in Essen: Krankenfahrten, Flughafentransfer und Großraumtaxi</h1>
-                <img
+                <BrandLogo
                   id="hero-logo"
-                  src={`${import.meta.env.BASE_URL}bb-logo-v7-transparent.webp`}
-                  alt="Taxi B&B"
-                  width="520"
-                  height="130"
                   fetchPriority="high"
                   decoding="sync"
-                  className="mx-auto w-auto"
-                  style={{
-                    maxHeight: "clamp(68px, 11vw, 130px)",
-                    filter: "drop-shadow(0 4px 32px rgba(255,193,7,0.35))",
-                  }}
+                  className="mx-auto w-[clamp(184px,25vw,300px)] max-w-full"
                 />
                 <div className="flex items-center justify-center gap-3 mt-3">
                   <div className="h-px w-10 bg-primary/70 shrink-0" />
