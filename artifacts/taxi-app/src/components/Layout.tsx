@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/i18n/useLanguage";
 import { Language, languageNames } from "@/i18n/translations";
 
+import { BrandLogo } from "@/components/BrandLogo";
+
 const LANGUAGES: Language[] = ["de", "en", "fr", "tr", "ar"];
 
 const glassClass = "backdrop-blur-2xl bg-white/[0.03] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.6)]";
@@ -165,11 +167,7 @@ export function Layout({ children }: { children: ReactNode }) {
               className="flex items-center gap-3 group shrink-0 transition-opacity duration-500"
               style={{ opacity: heroLogoVisible ? 0 : 1, pointerEvents: heroLogoVisible ? "none" : "auto" }}
             >
-              <img
-                src={`${import.meta.env.BASE_URL}bb-logo-v7-transparent.webp`}
-                alt="Taxi B&B"
-                className="h-7 w-auto group-hover:scale-105 transition-all duration-500"
-              />
+              <BrandLogo className="w-[84px] sm:w-[92px] group-hover:scale-105 transition-transform duration-300" />
             </Link>
           </div>
 
@@ -305,7 +303,7 @@ export function Layout({ children }: { children: ReactNode }) {
             >
               <div className="flex items-center justify-between px-6 py-6 border-b border-border/50">
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <img src={`${import.meta.env.BASE_URL}bb-logo-v7-transparent.webp`} alt="Taxi B&B" className="h-9 w-auto" loading="lazy" decoding="async" />
+                  <BrandLogo className="w-28" />
                 </Link>
                 <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-xl hover:bg-muted transition-colors">
                   <X className="w-5 h-5" />
@@ -395,9 +393,9 @@ export function Layout({ children }: { children: ReactNode }) {
         <div className="container mx-auto px-4 lg:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-12">
             <div className="md:col-span-2 lg:col-span-2 xl:col-span-2">
-              <div className="flex items-center gap-3 mb-5">
-                <img id="footer-logo" src={`${import.meta.env.BASE_URL}bb-logo-v7-transparent.webp`} alt="Taxi B&B" className="h-9 w-auto" loading="lazy" decoding="async" />
-                <span className="font-display font-black text-xl uppercase tracking-tighter">Taxi B&B GmbH</span>
+              <div className="flex flex-col items-start gap-3 mb-5">
+                <BrandLogo id="footer-logo" className="w-36 sm:w-40" loading="lazy" />
+                <span className="font-display font-bold text-sm tracking-wide text-white/70">Taxi B&B GmbH</span>
               </div>
               <p className="text-muted-foreground max-w-sm leading-relaxed text-sm mb-6">{t("footer_desc")}</p>
               <div className="flex gap-3">

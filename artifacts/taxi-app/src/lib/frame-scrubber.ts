@@ -23,6 +23,8 @@
 export interface FrameSequence {
   /** Start downloading. Safe to call repeatedly; only the first call counts. */
   start(): void;
+  /** Exact decoded frame; holds the current canvas while this frame loads. */
+  exact(index: number): ImageBitmap | HTMLImageElement | null;
   /** Nearest already-decoded frame to `index`, or null while nothing is ready. */
   nearest(index: number): ImageBitmap | HTMLImageElement | null;
   destroy(): void;
@@ -142,6 +144,12 @@ export function createFrameSequence(
       if (started || prefersLessMedia()) return;
       started = true;
       reconcile(0);
+    },
+    exact(index) {
+      if (disposed || !started) return null;
+      const clamped = Math.min(count - 1, Math.max(0, index));
+      reconcile(clamped);
+      return decoded.get(clamped) ?? null;
     },
     nearest(index) {
       if (disposed) return null;

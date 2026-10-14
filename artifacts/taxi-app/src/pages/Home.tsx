@@ -3,6 +3,7 @@ import { usePageMeta } from "@/hooks/use-page-meta";
 import { getPageMeta } from "@/page-meta-manifest";
 import { HOME_FAQ as FAQ_ITEMS } from "@/content/home";
 import { Link } from "wouter";
+import { BrandLogo } from "@/components/BrandLogo";
 import { Layout } from "@/components/Layout";
 import { HeroBookingWidget } from "@/components/HeroBookingWidget";
 import { ContactForm } from "@/components/ContactForm";
@@ -10,7 +11,7 @@ import { Button } from "@/components/ui";
 import { Phone, Shield, Sparkles, Navigation, ArrowRight, Mail, Globe, MessageCircle, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useLanguage } from "@/i18n/useLanguage";
-import { createFrameSequence, drawCover } from "@/lib/frame-scrubber";
+import { createFrameSequence, drawCover, prefersLessMedia } from "@/lib/frame-scrubber";
 import depotPoster from "@assets/IMG_1642_1780001838765.png";
 
 const glassCard = "bg-white/[0.06] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.6)]";
@@ -351,14 +352,17 @@ export default function Home() {
   }, []);
 
   // Image-sequence scrubber - bulletproof on iOS Safari, no <video> black-frame issues
-  const FRAME_COUNT = 97;
+  // Keep the original sharp poster. Frames 1–6 pull the taxi backwards
+  // relative to that still; start the moving sequence at frame 7 instead.
+  const HERO_FIRST_FRAME = 7;
+  const FRAME_COUNT = 97 - HERO_FIRST_FRAME + 1;
   const framePath = (n: number) =>
-    `${import.meta.env.BASE_URL}hero-frames/frame_${String(n).padStart(3, "0")}.jpg`;
+    `${import.meta.env.BASE_URL}hero-frames/frame_${String(n + HERO_FIRST_FRAME - 1).padStart(3, "0")}.jpg`;
 
   useEffect(() => {
     const canvas = imgRef.current;
     const heroLayer = heroLayerRef.current;
-    if (!canvas) return;
+    if (!canvas || prefersLessMedia()) return;
 
     let heroTargetOpacity = 1;
 
@@ -400,7 +404,7 @@ export default function Home() {
           Math.max(0, Math.round(currentProgress * (FRAME_COUNT - 1))),
         );
         if (idx !== lastFrame) {
-          const frame = sequence.nearest(idx);
+          const frame = sequence.exact(idx);
           if (frame) {
             drawCover(canvas, frame);
             lastFrame = idx;
@@ -408,7 +412,8 @@ export default function Home() {
         }
       }
       if (sharpOverlayRef.current) {
-        const sharpOpacity = Math.max(0, 1 - currentProgress * 25);
+        // Never expose an empty canvas or a stale fallback while decoding.
+        const sharpOpacity = lastFrame < 0 ? 1 : Math.max(0, 1 - currentProgress * 25);
         sharpOverlayRef.current.style.opacity = String(sharpOpacity);
       }
       if (heroLayer) heroLayer.style.opacity = String(heroTargetOpacity);
@@ -426,11 +431,19 @@ export default function Home() {
     targetProgress = getProgress();
     heroTargetOpacity = getHeroOpacity();
     currentProgress = targetProgress;
+    if (targetProgress > 0) sequence.start();
+    const onResize = () => {
+      lastFrame = -1;
+      targetProgress = getProgress();
+      heroTargetOpacity = getHeroOpacity();
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
     rafId = requestAnimationFrame(rafLoop);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
       if (rafId) cancelAnimationFrame(rafId);
       sequence.destroy();
     };
@@ -662,7 +675,9 @@ export default function Home() {
             ref={imgRef}
             aria-hidden
             className="md:hidden block w-full h-full"
-            style={{ opacity: 0.92 }}
+            // Match the retained poster's crop: the generated frames are
+            // slightly wider and vertically offset. Overscan covers all edges.
+            style={{ transform: "translateY(2%) scale(1.05)", transformOrigin: "center" }}
           />
           {/* LCP-Bild auf Mobile: fetchpriority="high" stellt sicher, dass der Browser
               es sofort mit höchster Priorität lädt - direkter Effekt auf LCP-Score */}
@@ -764,19 +779,11 @@ export default function Home() {
                 className="text-center"
               >
                 <h1 className="text-center font-display font-black uppercase tracking-[0.22em] text-white/50 mb-2" style={{ fontSize: "clamp(0.7rem, 1.4vw, 0.85rem)" }}>24/7 Taxiservice in Essen: Krankenfahrten, Flughafentransfer und Großraumtaxi</h1>
-                <img
+                <BrandLogo
                   id="hero-logo"
-                  src={`${import.meta.env.BASE_URL}bb-logo-v7-transparent.webp`}
-                  alt="Taxi B&B"
-                  width="520"
-                  height="130"
                   fetchPriority="high"
                   decoding="sync"
-                  className="mx-auto w-auto"
-                  style={{
-                    maxHeight: "clamp(68px, 11vw, 130px)",
-                    filter: "drop-shadow(0 4px 32px rgba(255,193,7,0.35))",
-                  }}
+                  className="mx-auto w-[clamp(184px,25vw,300px)] max-w-full"
                 />
                 <div className="flex items-center justify-center gap-3 mt-3">
                   <div className="h-px w-10 bg-primary/70 shrink-0" />
