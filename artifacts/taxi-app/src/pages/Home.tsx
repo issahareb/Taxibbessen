@@ -65,7 +65,7 @@ const SERVICE_ITEMS = [
   { src: "krankenfahrten.webp",    titleKey: "hero_service2_title", descKey: "hero_service2_desc", href: "/krankenfahrten-essen/" },
   { src: "geschaeftsfahrten.webp", titleKey: "hero_service1_title", descKey: "hero_service1_desc", href: "/grossraumtaxi-essen/" },
   { src: "flughafentransfer.webp", titleKey: "hero_service3_title", descKey: "hero_service3_desc", href: "/flughafentransfer-essen-duesseldorf/" },
-  { src: "kurierdokumente.webp",   titleKey: "hero_service4_title", descKey: "hero_service4_desc", href: "/dialysefahrten-essen/" },
+  { src: "kurierdokumente.webp",   titleKey: "hero_service4_title", descKey: "hero_service4_desc", href: "/kurierdienst-essen/" },
   { src: "kurierdienst.webp",      titleKey: "hero_service5_title", descKey: "hero_service5_desc", href: "/kurierdienst-essen/" },
   { src: "hauszuhaus.webp",        titleKey: "hero_service6_title", descKey: "hero_service6_desc", href: "/taxi-essen-hbf/" },
 ] as const;
@@ -853,7 +853,7 @@ export default function Home() {
             <div className="mt-16 pt-10 border-t border-white/[0.07] grid grid-cols-3 gap-6">
               {[
                 { src: "icons/247.png",        label: "24 Std., 7 Tage\ndie Woche",        delay: 0 },
-                { src: "icons/grossraum7.png", label: "Großraum-Taxi's\nfür 7 Personen",   delay: 0.2 },
+                { src: "icons/grossraum7.png", label: "Großraumtaxis\nfür 7 Personen",   delay: 0.2 },
                 { src: "icons/bundesweit.png", label: "Essen, Bundesweit\n& Ausland",       delay: 0.4 },
               ].map(({ src, label, delay }) => (
                 <motion.div
