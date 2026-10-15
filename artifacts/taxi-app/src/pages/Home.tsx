@@ -32,8 +32,8 @@ const ctaGlowItem = {
   show: (c: CtaGlow) => ({
     opacity: 1,
     y: 0,
-    boxShadow: c.glow,
-    backgroundColor: c.bgLit,
+    boxShadow: "none",
+    backgroundColor: c.bgDim,
     transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
@@ -778,20 +778,16 @@ export default function Home() {
                 transition={{ duration: 0.8 }}
                 className="text-center"
               >
-                <h1 className="text-center font-display font-black uppercase tracking-[0.22em] text-white/50 mb-2" style={{ fontSize: "clamp(0.7rem, 1.4vw, 0.85rem)" }}>24/7 Taxiservice in Essen: Krankenfahrten, Flughafentransfer und Großraumtaxi</h1>
+                <h1 className="mx-auto mb-4 max-w-xs text-balance text-sm font-medium leading-relaxed text-white/85 sm:max-w-none sm:text-base">Taxi in Essen. Rund um die Uhr.</h1>
                 <BrandLogo
                   id="hero-logo"
                   fetchPriority="high"
                   decoding="sync"
                   className="mx-auto w-[clamp(184px,25vw,300px)] max-w-full"
                 />
-                <div className="flex items-center justify-center gap-3 mt-3">
-                  <div className="h-px w-10 bg-primary/70 shrink-0" />
-                  <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.28em] text-primary uppercase whitespace-nowrap drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
-                    {t("hero_tagline")}
-                  </span>
-                  <div className="h-px w-10 bg-primary/70 shrink-0" />
-                </div>
+                <p className="mx-auto mt-3 max-w-xs text-balance text-xs font-medium leading-relaxed tracking-wide text-primary/90 sm:max-w-none sm:text-sm">
+                  {t("hero_tagline")}
+                </p>
               </motion.div>
             </div>
 
@@ -931,7 +927,7 @@ export default function Home() {
                 href="https://www.google.com/maps/place/BB+Taxi+Essen,+Menzelstra%C3%9Fe+8-10,+45147+Essen/@51.44145,6.98577,16z/data=!4m6!3m5!1s0x47b8c2c2c2e3a687:0x62c65c2ad983a6f2!8m2!3d51.44145!4d6.98577!16s%2Fg%2F11vd3lt6kg"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 bg-primary text-black font-black text-sm uppercase tracking-widest px-7 py-3.5 rounded-full hover:shadow-[0_0_28px_rgba(255,193,7,0.5)] transition-all hover:scale-[1.03]"
+                className="inline-flex min-h-12 items-center gap-2.5 bg-primary text-black font-semibold text-sm px-6 py-3 rounded-xl hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -1050,41 +1046,41 @@ export default function Home() {
               variants={ctaGlowContainer}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: false, amount: 0.5, margin: "-40% 0px 0px 0px" }}
+              viewport={{ once: true, amount: 0.2 }}
             >
               {/* E-Mail */}
               <motion.a
                 variants={ctaGlowItem}
                 custom={{ glow: "0 0 26px rgba(255,193,7,0.5)", bgDim: "rgba(255,255,255,0.04)", bgLit: "rgba(255,255,255,0.22)" }}
-                whileHover={{ backgroundColor: "rgba(255,255,255,0.28)", scale: 1.03 }}
+                whileHover={{ backgroundColor: "rgba(255,255,255,0.09)" }}
                 href="mailto:taxibb@outlook.com"
                 className="group flex flex-col items-center gap-2 px-4 py-4 rounded-2xl border border-primary/30 hover:border-primary/60 transition-colors"
               >
                 <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
                   <Mail className="w-5 h-5 text-primary" />
                 </div>
-                <span className="text-xs font-black uppercase tracking-widest text-white/85 group-hover:text-white transition-colors">E-Mail</span>
+                <span className="text-sm font-medium text-white/85 group-hover:text-white transition-colors">E-Mail</span>
               </motion.a>
 
               {/* Telefon */}
               <motion.a
                 variants={ctaGlowItem}
                 custom={{ glow: "0 0 26px rgba(255,193,7,0.5)", bgDim: "rgba(255,255,255,0.04)", bgLit: "rgba(255,255,255,0.22)" }}
-                whileHover={{ backgroundColor: "rgba(255,255,255,0.28)", scale: 1.03 }}
+                whileHover={{ backgroundColor: "rgba(255,255,255,0.09)" }}
                 href="tel:0201707060"
                 className="group flex flex-col items-center gap-2 px-4 py-4 rounded-2xl border border-primary/30 hover:border-primary/60 transition-colors"
               >
                 <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
-                <span className="text-xs font-black uppercase tracking-widest text-white/85 group-hover:text-white transition-colors">Telefon</span>
+                <span className="text-sm font-medium text-white/85 group-hover:text-white transition-colors">Telefon</span>
               </motion.a>
 
               {/* WhatsApp */}
               <motion.a
                 variants={ctaGlowItem}
                 custom={{ glow: "0 0 26px rgba(37,211,102,0.55)", bgDim: "rgba(37,211,102,0.06)", bgLit: "rgba(37,211,102,0.32)" }}
-                whileHover={{ backgroundColor: "rgba(37,211,102,0.4)", scale: 1.03 }}
+                whileHover={{ backgroundColor: "rgba(37,211,102,0.12)" }}
                 href="https://wa.me/491711111535"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -1095,21 +1091,21 @@ export default function Home() {
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                   </svg>
                 </div>
-                <span className="text-xs font-black uppercase tracking-widest text-[#25D366] group-hover:text-[#25D366] transition-colors">WhatsApp</span>
+                <span className="text-sm font-medium text-[#25D366] group-hover:text-[#25D366] transition-colors">WhatsApp</span>
               </motion.a>
 
               {/* Online buchen */}
               <motion.a
                 variants={ctaGlowItem}
                 custom={{ glow: "0 0 26px rgba(255,193,7,0.55)", bgDim: "rgba(255,193,7,0.06)", bgLit: "rgba(255,193,7,0.32)" }}
-                whileHover={{ backgroundColor: "rgba(255,193,7,0.4)", scale: 1.03 }}
+                whileHover={{ backgroundColor: "rgba(255,193,7,0.12)" }}
                 href="#anfrage"
                 className="group flex flex-col items-center gap-2 px-4 py-4 rounded-2xl border border-primary/40 hover:border-primary/70 transition-colors"
               >
                 <div className="w-10 h-10 rounded-xl bg-primary/25 flex items-center justify-center group-hover:bg-primary/35 transition-colors">
                   <Globe className="w-5 h-5 text-primary" />
                 </div>
-                <span className="text-xs font-black uppercase tracking-widest text-primary group-hover:text-primary transition-colors">Online</span>
+                <span className="text-sm font-medium text-primary group-hover:text-primary transition-colors">Online</span>
               </motion.a>
             </motion.div>
 

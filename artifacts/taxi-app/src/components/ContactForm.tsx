@@ -116,7 +116,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={state === "loading"}
-        className="w-full bg-primary text-black font-black py-3.5 rounded-xl text-sm hover:bg-primary/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+        className="w-full bg-primary text-black font-semibold py-3.5 rounded-xl text-sm hover:bg-primary/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
       >
         {state === "loading" ? (
           <><Loader2 className="w-4 h-4 animate-spin" /> Wird gesendet…</>
@@ -128,16 +128,16 @@ export function ContactForm() {
       <div className="grid grid-cols-2 gap-2.5 pt-1">
         <a
           href="tel:0201707060"
-          className="flex items-center justify-center gap-2.5 py-4 rounded-2xl bg-primary text-black font-black text-sm tracking-wide transition-all duration-300 shadow-[0_4px_24px_rgba(255,193,7,0.45)] hover:shadow-[0_4px_32px_rgba(255,193,7,0.7)] hover:scale-[1.03] active:scale-[0.98]"
+          className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-black/55 px-3 py-3 text-sm font-medium text-white transition-colors hover:border-primary/50 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
-          <Phone className="w-4 h-4 shrink-0" />
+          <Phone className="w-4 h-4 shrink-0 text-primary" />
           <span>Anrufen</span>
         </a>
         <a
           href="https://wa.me/491711111535"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2.5 py-4 rounded-2xl bg-[#25D366] text-white font-black text-sm tracking-wide transition-all duration-300 shadow-[0_4px_24px_rgba(37,211,102,0.4)] hover:shadow-[0_4px_32px_rgba(37,211,102,0.65)] hover:scale-[1.03] active:scale-[0.98]"
+          className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-black/55 px-3 py-3 text-sm font-medium text-white transition-colors hover:border-[#25D366]/50 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"
         >
           <WaIcon />
           <span>WhatsApp</span>
