@@ -1,6 +1,6 @@
 import { ReactNode, useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Globe, Phone, MapPin, Mail } from "lucide-react";
+import { Menu, X, Globe, Phone, MapPin, Mail, ArrowUpRight, ChevronRight } from "lucide-react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/i18n/useLanguage";
 import { Language, languageNames } from "@/i18n/translations";
@@ -67,7 +67,10 @@ export function Layout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [editPanelOpen, setEditPanelOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [callCtaPassed, setCallCtaPassed] = useState(false);
+  const [callCtaVisible, setCallCtaVisible] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const [heroLogoVisible, setHeroLogoVisible] = useState(true);
   const { t, isRtl } = useLanguage();
 
@@ -82,11 +85,20 @@ export function Layout({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // Highlight the header phone only after the main call CTA has passed above it.
+  // A CTA below the viewport (or a page without one) must not start the pulse.
   useEffect(() => {
-    const handle = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handle, { passive: true });
-    return () => window.removeEventListener("scroll", handle);
-  }, []);
+    setCallCtaPassed(false);
+    setCallCtaVisible(false);
+    const cta = document.getElementById("hero-call-cta");
+    if (!cta) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setCallCtaPassed(entry.boundingClientRect.bottom <= (entry.rootBounds?.top ?? 80));
+      setCallCtaVisible(entry.isIntersecting);
+    }, { rootMargin: "-80px 0px 0px 0px", threshold: 0 });
+    observer.observe(cta);
+    return () => observer.disconnect();
+  }, [location]);
 
   // Track hero logo visibility - header logo + blur only appear when hero logo scrolls away
   useEffect(() => {
@@ -111,8 +123,30 @@ export function Layout({ children }: { children: ReactNode }) {
   }, [location]);
 
   useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (!isMobileMenuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeButton = menuRef.current?.querySelector<HTMLButtonElement>('[data-menu-close]');
+    closeButton?.focus({ preventScroll: true });
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsMobileMenuOpen(false);
+      if (event.key !== "Tab") return;
+      const items = menuRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+      if (!items?.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault(); last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault(); first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+      menuButtonRef.current?.focus({ preventScroll: true });
+    };
   }, [isMobileMenuOpen]);
 
   const navLinks = [
@@ -137,7 +171,7 @@ export function Layout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background" dir={isRtl ? "rtl" : "ltr"}>
+    <div className="min-h-screen flex flex-col bg-background" data-call-passed={callCtaPassed} data-call-visible={callCtaVisible} data-menu-open={isMobileMenuOpen} dir={isRtl ? "rtl" : "ltr"}>
       {/* Fixed Nav */}
       <header
         className="fixed top-0 left-0 right-0 z-[100] py-4"
@@ -152,12 +186,15 @@ export function Layout({ children }: { children: ReactNode }) {
             WebkitMaskImage: "linear-gradient(to bottom, black 60%, transparent 100%)",
           }}
         />
-        <div className="relative container mx-auto px-4 lg:px-12 flex items-center justify-between gap-6">
+        <div className="relative container mx-auto px-4 lg:px-12 flex items-center justify-between gap-3 lg:gap-6">
 
           {/* Logo */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
-              className="lg:hidden p-2 text-foreground/80 rounded-lg hover:bg-white/5 transition-colors"
+              ref={menuButtonRef}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation"
+              className="lg:hidden min-w-11 min-h-11 p-2 text-foreground/80 rounded-lg hover:bg-white/5 transition-colors"
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Menü öffnen"
             >
@@ -167,7 +204,7 @@ export function Layout({ children }: { children: ReactNode }) {
               className="flex items-center gap-3 group shrink-0 transition-opacity duration-500"
               style={{ opacity: heroLogoVisible ? 0 : 1, pointerEvents: heroLogoVisible ? "none" : "auto" }}
             >
-              <BrandLogo className="w-[84px] sm:w-[92px] group-hover:scale-105 transition-transform duration-300" />
+              <BrandLogo className="w-[60px] sm:w-[68px] lg:w-[76px] group-hover:scale-105 transition-transform duration-300" />
             </Link>
           </div>
 
@@ -215,13 +252,14 @@ export function Layout({ children }: { children: ReactNode }) {
             <a href="tel:0201707060" aria-label="Taxi B&B anrufen" className="group rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
               <div className="relative flex items-center justify-center">
                 <div
-                  className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 ${
-                    scrolled
-                      ? "bg-primary"
+                  className={`header-call-icon relative w-11 h-11 rounded-xl flex items-center justify-center transition-colors duration-300 ${
+                    callCtaPassed
+                      ? "bg-primary header-call-pulse"
                       : "bg-transparent border border-white/20"
                   }`}
                 >
-                  <Phone className={`w-4 h-4 transition-colors duration-500 ${scrolled ? "text-black" : "text-primary"}`} />
+                  <span className="call-halo" aria-hidden="true"><span className="call-halo-ring" /></span>
+                  <Phone className={`relative w-4 h-4 transition-colors duration-500 ${callCtaPassed ? "text-black" : "text-primary"}`} />
                 </div>
               </div>
             </a>
@@ -244,13 +282,14 @@ export function Layout({ children }: { children: ReactNode }) {
               </div>
               <div className="relative flex items-center justify-center">
                 <div
-                  className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-500 ${
-                    scrolled
-                      ? "bg-primary group-hover:bg-primary/90"
+                  className={`header-call-icon relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-300 ${
+                    callCtaPassed
+                      ? "bg-primary header-call-pulse group-hover:bg-primary/90"
                       : "hover:bg-white/15 group-hover:bg-white/15"
                   }`}
                 >
-                  <Phone className={`w-4 h-4 transition-colors duration-500 ${scrolled ? "text-black" : "text-primary"}`} />
+                  <span className="call-halo" aria-hidden="true"><span className="call-halo-ring" /></span>
+                  <Phone className={`relative w-4 h-4 transition-colors duration-500 ${callCtaPassed ? "text-black" : "text-primary"}`} />
                 </div>
               </div>
             </a>
@@ -287,82 +326,83 @@ export function Layout({ children }: { children: ReactNode }) {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 h-[100dvh] w-[70%] max-w-[260px] bg-card border-r border-border z-[110] flex flex-col shadow-2xl"
+              ref={menuRef}
+              id="mobile-navigation"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation"
+              className="taxi-drawer fixed top-0 left-0 z-[110] flex flex-col"
             >
-              <div className="flex items-center justify-between px-6 py-6 border-b border-border/50">
+              <div className="taxi-drawer-top">
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <BrandLogo className="w-28" />
+                  <BrandLogo className="w-[78px]" />
                 </Link>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-xl hover:bg-muted transition-colors">
+                <button data-menu-close aria-label="Menü schließen" onClick={() => setIsMobileMenuOpen(false)} className="taxi-drawer-close">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <nav className="flex-1 flex flex-col px-4 pt-6 gap-1 overflow-y-auto min-h-0">
+              <nav aria-label="Hauptnavigation" className="taxi-drawer-nav">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center px-3 py-2.5 rounded-xl font-black text-base transition-all ${
-                      location === link.href ? "bg-primary/10 text-primary" : "text-foreground hover:bg-white/5"
+                    className={`taxi-drawer-link ${
+                      location === link.href ? "is-active" : ""
                     }`}
                   >
-                    {link.label}
+                    <span>{link.label}</span><ChevronRight size={16} aria-hidden="true" />
                   </Link>
                 ))}
                 <button
                   onClick={() => scrollToSection("anfrage")}
-                  className="flex items-center px-3 py-2.5 rounded-xl font-black text-base text-foreground hover:bg-white/5 transition-all text-left"
+                  className="taxi-drawer-link"
                 >
-                  {t("nav_book")}
+                  <span>{t("nav_book")}</span><ChevronRight size={16} aria-hidden="true" />
                 </button>
                 <button
                   onClick={() => scrollToSection("leistungen")}
-                  className="flex items-center px-3 py-2.5 rounded-xl font-black text-base text-foreground hover:bg-white/5 transition-all text-left"
+                  className="taxi-drawer-link"
                 >
-                  {t("nav_services")}
+                  <span>{t("nav_services")}</span><ChevronRight size={16} aria-hidden="true" />
                 </button>
                 <Link
                   href="/ueber-uns/"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center px-3 py-2.5 rounded-xl font-black text-base transition-all ${
-                    location === "/ueber-uns/" ? "bg-primary/10 text-primary" : "text-foreground hover:bg-white/5"
+                  className={`taxi-drawer-link ${
+                    location === "/ueber-uns/" ? "is-active" : ""
                   }`}
                 >
-                  {t("nav_about")}
+                  <span>{t("nav_about")}</span><ChevronRight size={16} aria-hidden="true" />
                 </Link>
 
+                <button onClick={() => scrollToSection("faq")} className="taxi-drawer-link taxi-drawer-faq">
+                  <span>FAQ</span><ChevronRight size={16} aria-hidden="true" />
+                </button>
               </nav>
 
-              <div className="px-4 pb-10 pt-4 border-t border-border/50 space-y-3">
-                {/* Oberste Zeile: WhatsApp (links) + FAQ (rechts) */}
-                <div className="flex gap-2">
+              <div className="taxi-drawer-contact">
+
                   <a
                     href="https://wa.me/491711111535"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-1.5 bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#25D366] border border-[#25D366]/30 font-bold py-3 rounded-2xl text-sm transition-colors backdrop-blur-sm"
+                    className="taxi-drawer-whatsapp"
                   >
                     <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current shrink-0" xmlns="http://www.w3.org/2000/svg">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                     </svg>
-                    WhatsApp
+                    <span>WhatsApp</span><ArrowUpRight size={16} aria-hidden="true" />
                   </a>
-                  <button
-                    onClick={() => scrollToSection("faq")}
-                    className="flex-1 flex items-center justify-center gap-1.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border border-white/10 font-bold py-3 rounded-2xl text-sm transition-colors"
-                  >
-                    FAQ
-                  </button>
-                </div>
                 {/* Telefon: volle Breite */}
                 <a
                   href="tel:0201707060"
-                  className="w-full flex min-h-12 items-center justify-center gap-2 bg-primary text-primary-foreground font-semibold py-3 rounded-xl text-sm hover:bg-primary/90 transition-colors"
+                  className="taxi-drawer-phone"
                 >
-                  <Phone className="w-5 h-5" />
-                  0201 707060
+                  <span className="taxi-drawer-phone-icon"><Phone size={20} aria-hidden="true" /></span>
+                  <span><small>Taxi B&amp;B · 24/7</small><strong>0201 707060</strong></span>
+                  <ArrowUpRight size={18} aria-hidden="true" />
                 </a>
               </div>
             </motion.div>

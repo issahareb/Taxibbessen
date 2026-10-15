@@ -55,6 +55,12 @@ export async function sendBookingNotification(booking: BookingEmailData): Promis
     sonstiges: "Sonstiges",
   };
 
+  const hasPhone = /^\+?[0-9][0-9\s()\/-]{5,24}$/.test(booking.customerPhone.trim());
+  const contactHref = hasPhone
+    ? `tel:${booking.customerPhone.trim()}`
+    : booking.customerEmail ? `mailto:${encodeURIComponent(booking.customerEmail)}` : null;
+  const contactLabel = hasPhone ? "📞 Jetzt zurückrufen" : "✉ Per E-Mail antworten";
+
   const rows = [
     ["Buchungs-Nr.", `#${booking.id}`],
     ["Name", `${booking.customerName} ${booking.customerLastName}`],
@@ -116,9 +122,9 @@ export async function sendBookingNotification(booking: BookingEmailData): Promis
         <!-- CTA -->
         <tr>
           <td style="padding:8px 32px 32px;text-align:center;">
-            <a href="tel:${escapeHtml(booking.customerPhone)}" style="display:inline-block;background:#FFC107;color:#1a1a1a;font-weight:800;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;letter-spacing:0.5px;">
-              📞 Jetzt zurückrufen
-            </a>
+            ${contactHref ? `<a href="${escapeHtml(contactHref)}" style="display:inline-block;background:#FFC107;color:#1a1a1a;font-weight:800;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;letter-spacing:0.5px;">
+              ${contactLabel}
+            </a>` : ""}
           </td>
         </tr>
 

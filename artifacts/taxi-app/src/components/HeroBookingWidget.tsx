@@ -62,9 +62,11 @@ export function HeroBookingWidget() {
 
   const [mode, setMode] = useState<Mode>("text");
 
-  // Nachricht und Rückrufnummer genügen im Kontakt-Tab; alles Weitere gehört zum
+  // Nachricht und Telefon oder E-Mail genügen im Kontakt-Tab; alles Weitere gehört zum
   // Auswahl-Tab und bleibt beim Umschalten erhalten.
   const [message, setMessage]     = useState("");
+  const [contact, setContact] = useState("");
+  const [contactTouched, setContactTouched] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName]   = useState("");
   const [phone, setPhone]         = useState("");
@@ -100,7 +102,11 @@ export function HeroBookingWidget() {
   const rideValid = pickup.trim().length >= 2 && destination.trim().length >= 2 &&
     (timeSlot !== CUSTOM_TIME || (customDateTime !== "" && new Date(customDateTime).getTime() > Date.now()));
   const contactValid = /^\+?[0-9][0-9\s()\/-]{5,24}$/.test(phone.trim());
-  const valid = mode === "text" ? message.trim().length >= 5 && contactValid
+  const contactValue = contact.trim();
+  const textContactIsEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactValue) && contactValue.length <= 254;
+  const textContactIsPhone = /^\+?[0-9][0-9\s()\/-]{5,24}$/.test(contactValue);
+  const textContactValid = textContactIsEmail || textContactIsPhone;
+  const valid = mode === "text" ? message.trim().length >= 5 && textContactValid
     : step === 1 ? rideValid : rideValid && firstName.trim().length >= 2 && contactValid;
 
   function selectMode(next: Mode) {
@@ -136,9 +142,10 @@ export function HeroBookingWidget() {
       mode === "text"
         ? {
             ...shared,
-            // Kontaktanfragen enthalten Nachricht und Rückrufnummer;
+            // Kontaktanfragen enthalten Nachricht und genau den gewählten Kontaktweg;
             // die Streckenangaben bleiben als nicht angegeben markiert.
-            customerPhone: phone.trim(),
+            customerPhone: textContactIsPhone ? contactValue : undefined,
+            customerEmail: textContactIsEmail ? contactValue : null,
             pickupLocation: NOT_SPECIFIED,
             destination:    NOT_SPECIFIED,
             scheduledTime:  null,
@@ -273,12 +280,12 @@ export function HeroBookingWidget() {
                     {mode === "text" ? "Wie können wir helfen?" : step === 1 ? "Wohin dürfen wir Sie fahren?" : "Wie erreichen wir Sie?"}
                   </h2>
                   <p className="text-sm sm:text-base font-semibold text-primary/90 mt-1.5">
-                    {mode === "auswahl" ? `Schritt ${step} von 2` : "Wir melden uns unter Ihrer Rückrufnummer."}
+                    {mode === "auswahl" ? `Schritt ${step} von 2` : "Wir melden uns telefonisch oder per E-Mail."}
                   </p>
                 </div>
 
                 {mode === "text" ? (
-                  /* Kurze Kontaktanfrage mit Rückrufnummer. */
+                  /* Kurze Kontaktanfrage: ein Feld für Telefon oder E-Mail. */
                   <div className="space-y-3"><textarea
                     aria-label="Ihre Nachricht"
                     value={message}
@@ -286,7 +293,35 @@ export function HeroBookingWidget() {
                     rows={4}
                     placeholder="Ihre Frage oder Ihr Fahrtwunsch"
                     className={textarea}
-                  /><input type="tel" autoComplete="tel" aria-label="Rückrufnummer" required value={phone} onChange={e => setPhone(e.target.value)} placeholder="Rückrufnummer" className={fieldIcon} /></div>
+                  />
+                    <div className="relative">
+                      {contactValue.includes("@")
+                        ? <Mail className="absolute left-4 top-4 w-4 h-4 text-white/50 pointer-events-none" aria-hidden="true" />
+                        : <Phone className="absolute left-4 top-4 w-4 h-4 text-white/50 pointer-events-none" aria-hidden="true" />}
+                      <input
+                        type="text"
+                        inputMode="text"
+                        autoComplete="off"
+                        autoCapitalize="none"
+                        spellCheck={false}
+                        aria-label="Telefonnummer oder E-Mail"
+                        aria-invalid={contactTouched && !textContactValid}
+                        aria-describedby={contactTouched && !textContactValid ? "hero-contact-error" : undefined}
+                        required
+                        maxLength={254}
+                        value={contact}
+                        onChange={e => setContact(e.target.value)}
+                        onBlur={() => setContactTouched(true)}
+                        placeholder="Telefonnummer / E-Mail"
+                        className={fieldIcon}
+                      />
+                    </div>
+                    {contactTouched && !textContactValid && (
+                      <p id="hero-contact-error" className="text-xs text-red-300" role="status">
+                        Bitte geben Sie eine gültige Telefonnummer oder E-Mail-Adresse ein.
+                      </p>
+                    )}
+                  </div>
                 ) : (
                   <motion.div
                     key="auswahl"
@@ -475,11 +510,13 @@ export function HeroBookingWidget() {
       {/* CTA-Buttons: Anrufen + WhatsApp */}
       <div className="grid grid-cols-2 gap-2.5">
         <a
+          id="hero-call-cta"
           href="tel:0201707060"
-          className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-black/55 px-3 py-3 text-sm font-medium text-white transition-colors hover:border-primary/50 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="hero-call-button flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-black/55 px-3 py-3 text-sm font-medium text-white transition-colors hover:border-primary/50 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
-          <Phone className="w-4 h-4 shrink-0 text-primary" />
-          <span>Jetzt anrufen</span>
+          <span className="call-halo" aria-hidden="true"><span className="call-halo-ring" /></span>
+          <Phone className="relative w-4 h-4 shrink-0 text-primary" />
+          <span className="relative">Jetzt anrufen</span>
         </a>
         <a
           href="https://wa.me/491711111535"
