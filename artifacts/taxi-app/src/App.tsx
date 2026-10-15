@@ -1,31 +1,31 @@
 import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { CookieBanner } from "@/components/CookieBanner";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
-import Book from "@/pages/Book";
-import Confirmation from "@/pages/Confirmation";
-import Admin from "@/pages/Admin";
-import Impressum from "@/pages/Impressum";
-import AGB from "@/pages/AGB";
-import Datenschutz from "@/pages/Datenschutz";
-import Fahrzeuge from "@/pages/Fahrzeuge";
-import UeberUns from "@/pages/UeberUns";
-import EcoTaxi from "@/pages/EcoTaxi";
-import FlughafentransferEssen from "@/pages/FlughafentransferEssen";
-import KrankenfahrtenEssen from "@/pages/KrankenfahrtenEssen";
-import GrossraumtaxiEssen from "@/pages/GrossraumtaxiEssen";
-import DialysefahrtenEssen from "@/pages/DialysefahrtenEssen";
-import KurierdienstEssen from "@/pages/KurierdienstEssen";
-import TaxiEssenHbf from "@/pages/TaxiEssenHbf";
-import TaxiHolsterhausen from "@/pages/TaxiHolsterhausen";
-import TaxiRuettenscheid from "@/pages/TaxiRuettenscheid";
-import TaxiFrohnhausen from "@/pages/TaxiFrohnhausen";
-import TaxiSuedviertel from "@/pages/TaxiSuedviertel";
+const Book = lazy(() => import("@/pages/Book"));
+const Confirmation = lazy(() => import("@/pages/Confirmation"));
+const Admin = lazy(() => import("@/pages/Admin"));
+const Impressum = lazy(() => import("@/pages/Impressum"));
+const AGB = lazy(() => import("@/pages/AGB"));
+const Datenschutz = lazy(() => import("@/pages/Datenschutz"));
+const Fahrzeuge = lazy(() => import("@/pages/Fahrzeuge"));
+const UeberUns = lazy(() => import("@/pages/UeberUns"));
+const EcoTaxi = lazy(() => import("@/pages/EcoTaxi"));
+const FlughafentransferEssen = lazy(() => import("@/pages/FlughafentransferEssen"));
+const KrankenfahrtenEssen = lazy(() => import("@/pages/KrankenfahrtenEssen"));
+const GrossraumtaxiEssen = lazy(() => import("@/pages/GrossraumtaxiEssen"));
+const DialysefahrtenEssen = lazy(() => import("@/pages/DialysefahrtenEssen"));
+const KurierdienstEssen = lazy(() => import("@/pages/KurierdienstEssen"));
+const TaxiEssenHbf = lazy(() => import("@/pages/TaxiEssenHbf"));
+const TaxiHolsterhausen = lazy(() => import("@/pages/TaxiHolsterhausen"));
+const TaxiRuettenscheid = lazy(() => import("@/pages/TaxiRuettenscheid"));
+const TaxiFrohnhausen = lazy(() => import("@/pages/TaxiFrohnhausen"));
+const TaxiSuedviertel = lazy(() => import("@/pages/TaxiSuedviertel"));
 import { routeConfigs } from "@/routes";
 
 import { useLenis } from "@/hooks/useLenis";
@@ -96,6 +96,7 @@ function Router() {
     <>
       <ScrollToTop />
       <AnalyticsTracker />
+      <Suspense fallback={<div aria-busy="true" className="min-h-screen bg-[#07090d]" />}>
       <Switch>
         {routeConfigs.map(({ path }) => {
           const Component = routeComponents[path];
@@ -104,6 +105,7 @@ function Router() {
         })}
         <Route component={NotFound} />
       </Switch>
+      </Suspense>
     </>
   );
 }
