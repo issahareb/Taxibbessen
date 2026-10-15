@@ -128,7 +128,7 @@ const analyticsText = (max: number) =>
 const AnalyticsEventSchema = z
   .object({
     sessionId: z.string().trim().min(8).max(64),
-    eventType: z.enum(["pageview", "engagement", "scroll", "click", "form_start", "form_submit"]),
+    eventType: z.enum(["pageview", "engagement", "scroll", "click", "form_start", "form_submit", "form_attempt", "form_error"]),
     path: z.string().trim().min(1).max(200),
     referrerHost: analyticsText(120),
     sourceCategory: z.union([z.enum(["direct", "search", "social", "referral", "ai", "business_profile"]), z.null()]).optional().transform((value) => value ?? null),

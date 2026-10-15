@@ -7,6 +7,8 @@ export const analyticsEventTypeEnum = pgEnum("analytics_event_type", [
   "click",
   "form_start",
   "form_submit",
+  "form_attempt",
+  "form_error",
 ]);
 
 /**

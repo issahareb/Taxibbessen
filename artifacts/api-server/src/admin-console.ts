@@ -141,6 +141,11 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
       </div>
     </div>
     <div class="card panel">
+      <h2>Formularanfragen</h2>
+      <p class="muted">Nur mit Zustimmung. Versuche und Ergebnisse zählen einzeln; Erfolg bedeutet Serverbestätigung. Ältere Messungen haben keine Formularzuordnung.</p>
+      <div id="formMetrics"></div>
+    </div>
+    <div class="card panel">
       <h2>Klicks auf Buttons</h2>
       <div id="clicks"></div>
     </div>
@@ -579,8 +584,16 @@ async function loadAnalytics() {
   );
   renderShareList(byId("browsers"), data.browsers.map((row) => ({ label: row.browser, sessions: row.sessions })), "label", "Noch keine Daten.");
 
+  const formLabels = { text: "Hero-Textanfrage", ride: "Fahrtanfrage", contact: "Unteres Kontaktformular", legacy: "Ältere Messung ohne Zuordnung" };
+  renderTable(byId("formMetrics"), [
+    { label: "Formular", value: row => formLabels[row.kind] || row.kind },
+    { label: "Begonnen", numeric: true, value: row => String(row.starts) },
+    { label: "Versuche", numeric: true, value: row => row.kind === "legacy" ? "–" : String(row.attempts) },
+    { label: "Erfolgreich", numeric: true, value: row => String(row.successes) },
+    { label: "Fehler", numeric: true, value: row => row.kind === "legacy" ? "–" : String(row.errors) },
+  ], data.forms || [], "Noch keine Formularereignisse erfasst.");
   const clickLabels = { phone: "Anruf", whatsapp: "WhatsApp", email: "E-Mail", google_maps: "Google Maps" };
-  const positions = { header: "Header", hero: "Hero", menu: "Menü", footer: "Footer", content: "Seiteninhalt" };
+  const positions = { header: "Header", hero: "Hero", menu: "Menü", footer: "Footer", content: "Seiteninhalt", contact: "Kontaktformular" };
   const actions = { menu_open: "Menü öffnen", menu_close: "Menü schließen", booking_cta: "Fahrt buchen", services_nav: "Leistungen", faq_menu: "FAQ im Menü" };
   const clickName = (target) => {
     if (actions[target]) return actions[target];

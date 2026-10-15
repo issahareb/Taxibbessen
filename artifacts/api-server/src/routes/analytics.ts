@@ -14,7 +14,7 @@ function sinceDate(days: number): Date {
 router.post("/track", async (req, res) => {
   const events = req.body.events as {
     sessionId: string;
-    eventType: "pageview" | "engagement" | "scroll" | "click" | "form_start" | "form_submit";
+    eventType: "pageview" | "engagement" | "scroll" | "click" | "form_start" | "form_submit" | "form_attempt" | "form_error";
     path: string;
     referrerHost: string | null;
     sourceCategory: "direct" | "search" | "social" | "referral" | "ai" | "business_profile" | null;
@@ -57,6 +57,7 @@ router.get("/analytics/overview", requireAnalyticsRead, async (req, res) => {
       bookingSources,
       bookingPages,
       linkedRows,
+      formRows,
     ] = await Promise.all([
       db
         .select({
@@ -178,6 +179,17 @@ router.get("/analytics/overview", requireAnalyticsRead, async (req, res) => {
         .from(bookingsTable).where(and(gte(bookingsTable.createdAt, since), eq(bookingsTable.isTest, false))).groupBy(bookingsTable.entryPath),
       db.select({ sessions: countDistinct(bookingsTable.analyticsSessionId) }).from(bookingsTable)
         .where(and(gte(bookingsTable.createdAt, since), eq(bookingsTable.isTest, false), sql`exists (select 1 from analytics_events a where a.session_id = ${bookingsTable.analyticsSessionId} and a.event_type = 'pageview' and a.created_at >= ${since})`)),
+      db.select({
+        kind: sql<string>`coalesce(${analyticsEventsTable.target}, 'legacy')`,
+        starts: sql<number>`count(*) filter (where event_type = 'form_start')`,
+        attempts: sql<number>`count(*) filter (where event_type = 'form_attempt')`,
+        successes: sql<number>`count(*) filter (where event_type = 'form_submit')`,
+        errors: sql<number>`count(*) filter (where event_type = 'form_error')`,
+        startedSessions: sql<number>`count(distinct session_id) filter (where event_type = 'form_start')`,
+        successSessions: sql<number>`count(distinct session_id) filter (where event_type = 'form_submit')`,
+      }).from(analyticsEventsTable)
+        .where(and(inRange, sql`event_type in ('form_start', 'form_attempt', 'form_submit', 'form_error')`))
+        .groupBy(sql`coalesce(${analyticsEventsTable.target}, 'legacy')`),
     ]);
 
     const summary = summaryRows[0];
@@ -186,6 +198,7 @@ router.get("/analytics/overview", requireAnalyticsRead, async (req, res) => {
     const outcomes = Object.fromEntries(Object.entries(bookingRows[0] ?? {}).map(([key, value]) => [key, value === null ? null : Number(value)]));
     res.json({
       outcomes,
+      forms: formRows.map(row => ({ kind: row.kind, starts: Number(row.starts), attempts: Number(row.attempts), successes: Number(row.successes), errors: Number(row.errors), startedSessions: Number(row.startedSessions), successSessions: Number(row.successSessions) })),
       bookingSources: bookingSources.map(row => ({ ...row, requests: Number(row.requests), confirmed: Number(row.confirmed), completed: Number(row.completed), revenueCents: Number(row.revenueCents) })),
       bookingPages: bookingPages.map(row => ({ ...row, requests: Number(row.requests), completed: Number(row.completed) })),
       rangeDays: Math.min(Number.isFinite(days) && days > 0 ? days : 30, 180),
