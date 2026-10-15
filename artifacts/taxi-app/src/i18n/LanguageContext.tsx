@@ -1,5 +1,5 @@
-import { createContext, useState, ReactNode } from "react";
-import { Language, translations, TranslationKey } from "./translations";
+import { createContext, useRef, useState, ReactNode } from "react";
+import { type Language, defaultDictionary, loadDictionary, type TranslationKey } from "./translations";
 
 export interface LanguageContextType {
   lang: Language;
@@ -11,16 +11,26 @@ export interface LanguageContextType {
 export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Language>("de");
+  const [{ lang, dictionary }, setLocale] = useState({ lang: "de" as Language, dictionary: defaultDictionary });
+  const selection = useRef(0);
 
   const setLang = (newLang: Language) => {
-    setLangState(newLang);
-    document.documentElement.lang = newLang;
-    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+    const request = ++selection.current;
+    void loadDictionary(newLang).then(dictionary => {
+      // Fast successive choices must not allow a slower download to win.
+      if (request !== selection.current) return;
+      setLocale({ lang: newLang, dictionary });
+      document.documentElement.lang = newLang;
+      document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+    }).catch(() => {
+      // Keep the current readable language on a transient network failure;
+      // a new selection retries the download.
+      if (request === selection.current) console.warn("Sprache konnte nicht geladen werden. Bitte erneut auswählen.");
+    });
   };
 
   const t = (key: TranslationKey): string => {
-    return translations[lang][key] as string;
+    return dictionary[key];
   };
 
   const isRtl = lang === "ar";

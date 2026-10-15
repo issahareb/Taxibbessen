@@ -1,8 +1,4 @@
 import de from "./locales/de";
-import en from "./locales/en";
-import fr from "./locales/fr";
-import tr from "./locales/tr";
-import ar from "./locales/ar";
 
 export type Language = "de" | "en" | "fr" | "tr" | "ar";
 
@@ -22,6 +18,24 @@ export const languageFlags: Record<Language, string> = {
   ar: "🇸🇦",
 };
 
-export const translations = { de, en, fr, tr, ar } as const;
+export type Dictionary = Record<keyof typeof de, string>;
+export const defaultDictionary: Dictionary = de;
+const dictionaries: Partial<Record<Language, Dictionary>> = { de };
+const pending: Partial<Record<Language, Promise<Dictionary>>> = {};
+const loaders = {
+  en: () => import("./locales/en"),
+  fr: () => import("./locales/fr"),
+  tr: () => import("./locales/tr"),
+  ar: () => import("./locales/ar"),
+};
+
+export async function loadDictionary(lang: Language): Promise<Dictionary> {
+  if (dictionaries[lang]) return dictionaries[lang]!;
+  if (lang === "de") return de;
+  return pending[lang] ??= loaders[lang]().then(module => {
+    dictionaries[lang] = module.default;
+    return module.default;
+  }).finally(() => { delete pending[lang]; });
+}
 
 export type TranslationKey = keyof typeof de;

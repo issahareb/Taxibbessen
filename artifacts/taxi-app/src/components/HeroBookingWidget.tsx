@@ -41,6 +41,8 @@ function buildTimeSlots(): { value: string; label: string }[] {
 
   const today = now.toDateString();
   const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000).toDateString();
+  const timeFormat = new Intl.DateTimeFormat("de-DE", { hour: "2-digit", minute: "2-digit" });
+  const dayFormat = new Intl.DateTimeFormat("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" });
 
   return Array.from({ length: 96 }, (_, index) => {
     const slot = new Date(start.getTime() + index * 15 * 60 * 1000);
@@ -50,8 +52,8 @@ function buildTimeSlots(): { value: string; label: string }[] {
         ? "Heute"
         : day === tomorrow
           ? "Morgen"
-          : slot.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" });
-    const time = slot.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+          : dayFormat.format(slot);
+    const time = timeFormat.format(slot);
     return { value: slot.toISOString(), label: `${dayLabel} ${time}` };
   });
 }
@@ -90,7 +92,9 @@ export function HeroBookingWidget() {
 
   const tabRefs = useRef<Partial<Record<Mode, HTMLButtonElement | null>>>({});
 
-  const timeSlots = useMemo(buildTimeSlots, []);
+  // The initial text tab has no date picker. Build and retain its 96 options
+  // only when the customer opens the ride tab, using shared formatters.
+  const [timeSlots, setTimeSlots] = useState<ReturnType<typeof buildTimeSlots>>([]);
   // Untergrenze für das freie Datumsfeld: lokale Zeit, nicht UTC, sonst
   // verschiebt der Browser die Auswahl um den Zeitzonen-Offset.
   const minDateTime = useMemo(() => {
@@ -110,6 +114,7 @@ export function HeroBookingWidget() {
     : step === 1 ? rideValid : rideValid && firstName.trim().length >= 2 && contactValid;
 
   function selectMode(next: Mode) {
+    if (next === "auswahl" && timeSlots.length === 0) setTimeSlots(buildTimeSlots());
     setMode(next);
     setError(false);
   }

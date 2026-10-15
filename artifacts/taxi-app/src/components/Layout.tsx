@@ -204,7 +204,7 @@ export function Layout({ children }: { children: ReactNode }) {
               className="flex items-center gap-3 group shrink-0 transition-opacity duration-500"
               style={{ opacity: heroLogoVisible ? 0 : 1, pointerEvents: heroLogoVisible ? "none" : "auto" }}
             >
-              <BrandLogo className="w-[60px] sm:w-[68px] lg:w-[76px] group-hover:scale-105 transition-transform duration-300" />
+              <BrandLogo sizes="(min-width: 1024px) 76px, (min-width: 640px) 68px, 60px" className="w-[60px] sm:w-[68px] lg:w-[76px] group-hover:scale-105 transition-transform duration-300" />
             </Link>
           </div>
 
@@ -335,7 +335,7 @@ export function Layout({ children }: { children: ReactNode }) {
             >
               <div className="taxi-drawer-top">
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                  <BrandLogo className="w-[78px]" />
+                  <BrandLogo sizes="78px" className="w-[78px]" />
                 </Link>
                 <button data-menu-close data-track="menu_close" aria-label="Menü schließen" onClick={() => setIsMobileMenuOpen(false)} className="taxi-drawer-close">
                   <X className="w-5 h-5" />

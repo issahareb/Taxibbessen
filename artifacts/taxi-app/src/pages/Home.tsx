@@ -810,6 +810,7 @@ export default function Home() {
                 <h1 className="mx-auto mb-4 max-w-xs text-balance text-sm font-medium leading-relaxed text-white/85 sm:max-w-none sm:text-base">Taxi in Essen. Rund um die Uhr.</h1>
                 <BrandLogo
                   id="hero-logo"
+                  sizes="(max-width: 736px) 184px, (max-width: 1200px) 25vw, 300px"
                   fetchPriority="high"
                   decoding="sync"
                   className="mx-auto w-[clamp(184px,25vw,300px)] max-w-full"
