@@ -29,7 +29,7 @@ function LanguageSwitcher() {
       <button
         onClick={() => setOpen(!open)}
         className="w-9 h-9 rounded-xl flex flex-col items-center justify-center gap-0.5 hover:bg-white/15 transition-colors"
-        aria-label="Sprache / Language"
+        aria-label={`${lang.toUpperCase()}: Sprache / Language`}
       >
         <Globe className="w-4 h-4 text-primary" />
         <span className="text-[10px] font-black uppercase leading-none text-white/70">{lang.toUpperCase()}</span>
@@ -387,10 +387,10 @@ export function Layout({ children }: { children: ReactNode }) {
               </div>
               <p className="text-muted-foreground max-w-sm leading-relaxed text-sm mb-6">{t("footer_desc")}</p>
               <div className="flex gap-3">
-                <a href="mailto:taxibb@outlook.com" className="p-3 bg-white/5 rounded-xl hover:text-primary transition-colors border border-white/5">
+                <a href="mailto:taxibb@outlook.com" aria-label="E-Mail an Taxi B&B" className="p-3 bg-white/5 rounded-xl hover:text-primary transition-colors border border-white/5">
                   <Mail className="w-5 h-5" />
                 </a>
-                <a href="tel:0201707060" className="p-3 bg-white/5 rounded-xl hover:text-primary transition-colors border border-white/5">
+                <a href="tel:0201707060" aria-label="Taxi B&B anrufen" className="p-3 bg-white/5 rounded-xl hover:text-primary transition-colors border border-white/5">
                   <Phone className="w-5 h-5" />
                 </a>
                 <a

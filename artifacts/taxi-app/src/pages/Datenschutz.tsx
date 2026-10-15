@@ -185,8 +185,22 @@ export default function Datenschutz() {
               </div>
             </section>
 
+            <section id="schriftarten" className="bg-card border border-border rounded-2xl p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <Eye className="w-5 h-5 text-primary" />
+                </div>
+                <h2 className="text-lg font-bold">10. Schriftarten (Google Fonts, lokal eingebunden)</h2>
+              </div>
+              <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
+                <p>Für eine einheitliche und gut lesbare Darstellung verwenden wir Schriftarten aus dem Angebot Google Fonts. Die Schriftdateien sind lokal auf dem Webserver dieser Website gespeichert und werden von dort ausgeliefert.</p>
+                <p>Beim Laden dieser Schriftarten wird keine Verbindung zu Google-Servern hergestellt. Ihre IP-Adresse und andere Nutzungsdaten werden zu diesem Zweck nicht an Google übermittelt. Die Einbindung setzt keine zusätzlichen Cookies und dient nicht der Analyse oder Werbung.</p>
+                <p>Die technisch erforderliche Verarbeitung beim Abruf der lokal gespeicherten Dateien erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt in der einheitlichen, nutzerfreundlichen und datensparsamen Bereitstellung der Website. Eine gesonderte Einwilligung für eine Übermittlung an Google ist hierfür nicht erforderlich, da eine solche Übermittlung beim Schriftabruf nicht stattfindet.</p>
+              </div>
+            </section>
+
             <section className="bg-muted/40 border border-border rounded-2xl p-6 sm:p-8">
-              <h2 className="text-base font-bold mb-3">9. Änderungen dieser Datenschutzerklärung</h2>
+              <h2 className="text-base font-bold mb-3">11. Änderungen dieser Datenschutzerklärung</h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen, insbesondere bei Änderungen der gesetzlichen Anforderungen oder unserer Dienstleistungen. Die jeweils aktuelle Version ist auf dieser Seite abrufbar.
               </p>

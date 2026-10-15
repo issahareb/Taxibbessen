@@ -11,8 +11,7 @@ export function CookieBanner() {
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) {
-      const timer = setTimeout(() => setVisible(true), 1200);
-      return () => clearTimeout(timer);
+      setVisible(true);
     }
     return undefined;
   }, []);

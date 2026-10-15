@@ -199,6 +199,12 @@ export function renderRoute(template: string, path: string, indexable: boolean):
     html = html.replace("</head>", `${createHeadTags(path, meta.title, meta.description)}\n  </head>`);
   }
 
+  if (path === "/") {
+    html = html.replace("</head>", `    <link rel="preload" as="image" type="image/avif" href="/hero-sharp-943w.avif" imagesrcset="/hero-sharp-540w.avif 540w, /hero-sharp-824w.avif 824w, /hero-sharp-943w.avif 943w" imagesizes="100vw" media="(max-width: 767px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/hero-desktop-poster.webp" media="(min-width: 768px)" fetchpriority="high" />
+  </head>`);
+  }
+
   const staticContent = indexable ? createStaticContent(path) : null;
 
   return html.replace(

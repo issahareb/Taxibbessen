@@ -35,16 +35,16 @@ async function convertDir(dir) {
       const webpOut = join(dir, `${nameNoExt}.webp`);
       const avifOut = join(dir, `${nameNoExt}.avif`);
 
-      await sharp(filePath).webp(WEBP_OPTIONS).toFile(webpOut);
+      await sharp(filePath).resize({ height: dir.endsWith("icons") ? 192 : undefined, withoutEnlargement: true }).webp(WEBP_OPTIONS).toFile(webpOut);
       console.log(`  ✓ ${file} → ${nameNoExt}.webp`);
 
-      await sharp(filePath).avif(AVIF_OPTIONS).toFile(avifOut);
+      await sharp(filePath).resize({ height: dir.endsWith("icons") ? 192 : undefined, withoutEnlargement: true }).avif(AVIF_OPTIONS).toFile(avifOut);
       console.log(`  ✓ ${file} → ${nameNoExt}.avif`);
     }
 
     if (ext === ".webp") {
       const avifOut = join(dir, `${nameNoExt}.avif`);
-      await sharp(filePath).avif(AVIF_OPTIONS).toFile(avifOut);
+      await sharp(filePath).resize({ height: dir.endsWith("icons") ? 192 : undefined, withoutEnlargement: true }).avif(AVIF_OPTIONS).toFile(avifOut);
       console.log(`  ✓ ${file} → ${nameNoExt}.avif`);
     }
   }
@@ -58,6 +58,8 @@ async function generateResponsiveVariants() {
       src: join(publicDir, "hero-sharp.webp"),
       outputs: [
         { suffix: "-540w", width: 540 },
+        { suffix: "-824w", width: 824 },
+        { suffix: "-943w", width: 943 },
       ],
     },
     {
@@ -80,6 +82,9 @@ async function generateResponsiveVariants() {
       const outWebp = join(dir, `${nameNoExt}${suffix}.webp`);
       await sharp(src).resize(width).webp(WEBP_OPTIONS).toFile(outWebp);
       console.log(`  ✓ ${basename(src)} → ${basename(outWebp)}`);
+      if (nameNoExt === "hero-sharp") {
+        await sharp(src).resize(width).avif({ quality: 55, effort: 5 }).toFile(join(dir, `${nameNoExt}${suffix}.avif`));
+      }
     }
   }
 }

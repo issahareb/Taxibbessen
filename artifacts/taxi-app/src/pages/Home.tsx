@@ -11,8 +11,8 @@ import { Button } from "@/components/ui";
 import { Phone, Shield, Sparkles, Navigation, ArrowRight, Mail, Globe, MessageCircle, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useLanguage } from "@/i18n/useLanguage";
-import { createFrameSequence, drawCover, prefersLessMedia } from "@/lib/frame-scrubber";
-import depotPoster from "@assets/IMG_1642_1780001838765.png";
+import { createFrameSequence, drawCover, prefersLessMedia, isPhoneViewport } from "@/lib/frame-scrubber";
+import { DesktopScrollVideo } from "@/components/DesktopScrollVideo";
 
 const glassCard = "bg-white/[0.06] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.6)]";
 
@@ -313,6 +313,13 @@ function FAQSection() {
 }
 
 export default function Home() {
+  const [phoneViewport, setPhoneViewport] = useState(isPhoneViewport);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const update = () => setPhoneViewport(query.matches);
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
   const { t } = useLanguage();
   const imgRef = useRef<HTMLCanvasElement>(null);
   const sharpOverlayRef = useRef<HTMLImageElement>(null);
@@ -362,7 +369,7 @@ export default function Home() {
   useEffect(() => {
     const canvas = imgRef.current;
     const heroLayer = heroLayerRef.current;
-    if (!canvas || prefersLessMedia()) return;
+    if (!canvas || !phoneViewport || prefersLessMedia()) return;
 
     let heroTargetOpacity = 1;
 
@@ -379,12 +386,17 @@ export default function Home() {
 
     // Downloads stay deferred until the first scroll: until then the poster
     // covers the canvas completely, so no frame is visible yet.
-    const sequence = createFrameSequence(FRAME_COUNT, framePath);
+    const sequence = createFrameSequence(FRAME_COUNT, framePath, { onReady: () => requestRender() });
 
     let targetProgress = 0;
     let currentProgress = 0;
     let lastFrame = -1;
-    let rafId: number;
+    let rafId = 0;
+    let lastTimestamp = 0;
+    let disposed = false;
+    function requestRender() {
+      if (!disposed && !rafId) rafId = requestAnimationFrame(rafLoop);
+    }
 
     const getProgress = () => {
       const servicesEl = servicesRef.current;
@@ -394,8 +406,11 @@ export default function Home() {
       return Math.min(Math.max(window.scrollY / Math.max(servicesTop, 1), 0), 1);
     };
 
-    const rafLoop = () => {
-      currentProgress += (targetProgress - currentProgress) * 0.12;
+    const rafLoop = (timestamp: number) => {
+      rafId = 0;
+      const delta = Math.min((timestamp - lastTimestamp) / 1000 || 1 / 60, 0.05);
+      lastTimestamp = timestamp;
+      currentProgress += (targetProgress - currentProgress) * (1 - Math.exp(-8 * delta));
       // Ist die Ebene ausgeblendet, kostet ein drawImage nur Füllrate ohne
       // sichtbaren Effekt - dann wird der Frame erst beim Wiedereinblenden gesetzt.
       if (heroTargetOpacity > 0.01) {
@@ -417,7 +432,7 @@ export default function Home() {
         sharpOverlayRef.current.style.opacity = String(sharpOpacity);
       }
       if (heroLayer) heroLayer.style.opacity = String(heroTargetOpacity);
-      rafId = requestAnimationFrame(rafLoop);
+      if (Math.abs(targetProgress - currentProgress) > 0.0001) requestRender();
     };
 
     const onScroll = () => {
@@ -425,6 +440,7 @@ export default function Home() {
       sequence.start();
       targetProgress = getProgress();
       heroTargetOpacity = getHeroOpacity();
+      requestRender();
     };
 
     // Start the RAF loop immediately - frames load lazily on first scroll
@@ -436,18 +452,20 @@ export default function Home() {
       lastFrame = -1;
       targetProgress = getProgress();
       heroTargetOpacity = getHeroOpacity();
+      requestRender();
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-    rafId = requestAnimationFrame(rafLoop);
+    requestRender();
 
     return () => {
+      disposed = true;
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (rafId) cancelAnimationFrame(rafId);
       sequence.destroy();
     };
-  }, []);
+  }, [phoneViewport]);
 
   // ─── Story-section scroll video - second image-sequence, fades in at the
   // story section and reaches its last frame at the CTA section ───
@@ -461,18 +479,23 @@ export default function Home() {
     // Observe the services section - the story animation begins while it's on screen,
     // so starting frame downloads then gives enough lead time before they're needed.
     const triggerEl = servicesRef.current;
-    if (!canvas || !layer || !triggerEl) return;
+    if (!canvas || !layer || !triggerEl || prefersLessMedia()) return;
 
     const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b);
 
-    const sequence = createFrameSequence(STORY_FRAME_COUNT, storyFramePath);
+    const sequence = createFrameSequence(STORY_FRAME_COUNT, storyFramePath, { onReady: () => requestRender() });
 
     let targetProgress = 0;
     let currentProgress = 0;
     let targetOpacity = 0;
     let currentOpacity = 0;
     let lastFrame = -1;
-    let rafId: number;
+    let rafId = 0;
+    let lastTimestamp = 0;
+    let disposed = false;
+    function requestRender() {
+      if (!disposed && !rafId) rafId = requestAnimationFrame(rafLoop);
+    }
     let started = false;
 
 
@@ -499,10 +522,14 @@ export default function Home() {
       const m = measure();
       targetProgress = m.progress;
       targetOpacity = m.opacity;
+      requestRender();
     };
 
-    const rafLoop = () => {
-      currentProgress += (targetProgress - currentProgress) * 0.12;
+    const rafLoop = (timestamp: number) => {
+      rafId = 0;
+      const delta = Math.min((timestamp - lastTimestamp) / 1000 || 1 / 60, 0.05);
+      lastTimestamp = timestamp;
+      currentProgress += (targetProgress - currentProgress) * (1 - Math.exp(-8 * delta));
       // Opacity is NOT lerped - the measure() ramp already gives a smooth
       // linear fade; lerping on top just adds lag that lets the silver hero
       // bleed through at fast scroll speeds.
@@ -513,7 +540,7 @@ export default function Home() {
           Math.max(0, Math.round(currentProgress * (STORY_FRAME_COUNT - 1))),
         );
         if (idx !== lastFrame) {
-          const frame = sequence.nearest(idx);
+          const frame = sequence.exact(idx);
           if (frame) {
             drawCover(canvas, frame);
             lastFrame = idx;
@@ -521,11 +548,14 @@ export default function Home() {
         }
       }
       layer.style.opacity = String(currentOpacity);
-      rafId = requestAnimationFrame(rafLoop);
+      if (Math.abs(targetProgress - currentProgress) > 0.0001) requestRender();
     };
 
-    const onScroll = () => update();
-    const onResize = () => update();
+    const onScroll = () => {
+      update();
+      if (window.scrollY > 0 && triggerEl.getBoundingClientRect().top < window.innerHeight * 1.25) sequence.start();
+    };
+    const onResize = () => { lastFrame = -1; update(); };
 
     const startLoop = () => {
       if (started) return;
@@ -534,7 +564,7 @@ export default function Home() {
       currentProgress = targetProgress;
       window.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", onResize);
-      rafId = requestAnimationFrame(rafLoop);
+      if (Math.abs(targetProgress - currentProgress) > 0.0001) requestRender();
     };
 
     // Start the opacity animation immediately - but defer frame src assignment
@@ -542,14 +572,15 @@ export default function Home() {
     startLoop();
 
     const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
+      if (!entry.isIntersecting || window.scrollY === 0) return;
       observer.disconnect();
       sequence.start();
-    }, { rootMargin: '100% 0px' });
+    }, { rootMargin: '25% 0px' });
 
     observer.observe(triggerEl);
 
     return () => {
+      disposed = true;
       observer.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
@@ -569,18 +600,23 @@ export default function Home() {
     const canvas = ctaImgRef.current;
     const layer = ctaLayerRef.current;
     const sectionEl = ctaSectionRef.current;
-    if (!canvas || !layer || !sectionEl) return;
+    if (!canvas || !layer || !sectionEl || !phoneViewport || prefersLessMedia()) return;
 
     const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b);
 
-    const sequence = createFrameSequence(CTA_FRAME_COUNT, ctaFramePath);
+    const sequence = createFrameSequence(CTA_FRAME_COUNT, ctaFramePath, { onReady: () => requestRender() });
 
     let targetProgress = 0;
     let currentProgress = 0;
     let targetOpacity = 0;
     let currentOpacity = 0;
     let lastFrame = -1;
-    let rafId: number;
+    let rafId = 0;
+    let lastTimestamp = 0;
+    let disposed = false;
+    function requestRender() {
+      if (!disposed && !rafId) rafId = requestAnimationFrame(rafLoop);
+    }
     let started = false;
 
 
@@ -609,10 +645,14 @@ export default function Home() {
       const m = measure();
       targetProgress = m.progress;
       targetOpacity = m.opacity;
+      requestRender();
     };
 
-    const rafLoop = () => {
-      currentProgress += (targetProgress - currentProgress) * 0.12;
+    const rafLoop = (timestamp: number) => {
+      rafId = 0;
+      const delta = Math.min((timestamp - lastTimestamp) / 1000 || 1 / 60, 0.05);
+      lastTimestamp = timestamp;
+      currentProgress += (targetProgress - currentProgress) * (1 - Math.exp(-8 * delta));
       // Opacity is NOT lerped - the measure() ramp is the smooth transition.
       currentOpacity = targetOpacity;
       if (currentOpacity > 0.01) {
@@ -621,7 +661,7 @@ export default function Home() {
           Math.max(0, Math.round(currentProgress * (CTA_FRAME_COUNT - 1))),
         );
         if (idx !== lastFrame) {
-          const frame = sequence.nearest(idx);
+          const frame = sequence.exact(idx);
           if (frame) {
             drawCover(canvas, frame);
             lastFrame = idx;
@@ -629,11 +669,11 @@ export default function Home() {
         }
       }
       layer.style.opacity = String(currentOpacity);
-      rafId = requestAnimationFrame(rafLoop);
+      if (Math.abs(targetProgress - currentProgress) > 0.0001) requestRender();
     };
 
     const onScroll = () => update();
-    const onResize = () => update();
+    const onResize = () => { lastFrame = -1; update(); };
 
     const startLoop = () => {
       if (started) return;
@@ -642,7 +682,7 @@ export default function Home() {
       currentProgress = targetProgress;
       window.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", onResize);
-      rafId = requestAnimationFrame(rafLoop);
+      if (Math.abs(targetProgress - currentProgress) > 0.0001) requestRender();
     };
 
     // Opacity animation starts right away; frame downloads wait until the CTA
@@ -657,13 +697,14 @@ export default function Home() {
     observer.observe(sectionEl);
 
     return () => {
+      disposed = true;
       observer.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (rafId) cancelAnimationFrame(rafId);
       sequence.destroy();
     };
-  }, []);
+  }, [phoneViewport]);
 
   return (
     <Layout>
@@ -681,10 +722,13 @@ export default function Home() {
           />
           {/* LCP-Bild auf Mobile: fetchpriority="high" stellt sicher, dass der Browser
               es sofort mit höchster Priorität lädt - direkter Effekt auf LCP-Score */}
+          <picture>
+            <source media="(min-width: 768px)" srcSet="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+            <source type="image/avif" srcSet={`${import.meta.env.BASE_URL}hero-sharp-540w.avif 540w, ${import.meta.env.BASE_URL}hero-sharp-824w.avif 824w, ${import.meta.env.BASE_URL}hero-sharp-943w.avif 943w`} sizes="100vw" />
           <img
             ref={sharpOverlayRef}
             src={`${import.meta.env.BASE_URL}hero-sharp.webp`}
-            srcSet={`${import.meta.env.BASE_URL}hero-sharp-540w.webp 540w, ${import.meta.env.BASE_URL}hero-sharp.webp 1080w`}
+            srcSet={`${import.meta.env.BASE_URL}hero-sharp-540w.webp 540w, ${import.meta.env.BASE_URL}hero-sharp-824w.webp 824w, ${import.meta.env.BASE_URL}hero-sharp.webp 943w`}
             sizes="100vw"
             alt="Mercedes-Taxis von Taxi B&amp;B vor der Zentrale in Essen-Holsterhausen"
             aria-hidden
@@ -695,16 +739,9 @@ export default function Home() {
             className="md:hidden absolute inset-0 w-full h-full object-cover"
             style={{ objectPosition: "center", opacity: 1 }}
           />
+          </picture>
           {/* Ab Tablet: Video, per Scroll gesteuert (src/desktop-video-scroll.ts) */}
-          <video
-            className="hidden md:block absolute inset-0 w-full h-full object-cover"
-            muted
-            playsInline
-            preload="auto"
-            style={{ objectPosition: "center" }}
-          >
-            <source src={`${import.meta.env.BASE_URL}hero-desktop.mp4`} type="video/mp4" />
-          </video>
+          <DesktopScrollVideo name="hero" />
           {/* Wasserzeichen der KI-Quelle unten rechts abdecken */}
           <div
             className="absolute bottom-0 right-0 pointer-events-none"
@@ -741,15 +778,7 @@ export default function Home() {
             className="md:hidden block w-full h-full"
           />
           {/* Ab Tablet: Video, per Scroll gesteuert */}
-          <video
-            className="hidden md:block absolute inset-0 w-full h-full object-cover"
-            muted
-            playsInline
-            preload="auto"
-            style={{ objectPosition: "center" }}
-          >
-            <source src={`${import.meta.env.BASE_URL}airport-desktop.mp4`} type="video/mp4" />
-          </video>
+          <DesktopScrollVideo name="airport" />
           <div
             className="absolute inset-0"
             style={{ background: "linear-gradient(to bottom, rgba(8,10,16,0.22) 0%, rgba(8,10,16,0.08) 45%, rgba(8,10,16,0.25) 100%)" }}

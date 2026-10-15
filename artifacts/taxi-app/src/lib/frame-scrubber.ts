@@ -33,6 +33,8 @@ export interface FrameSequence {
 interface Options {
   /** Parallel downloads. Kept low so a sequence never floods the connection. */
   concurrency?: number;
+  /** Wake the renderer when a requested frame finishes decoding. */
+  onReady?: () => void;
   /** Frames kept decoded on each side of the current playback position. */
   windowRadius?: number;
 }
@@ -46,7 +48,7 @@ function closeFrame(frame: Frame): void {
 export function createFrameSequence(
   count: number,
   pathFor: (frame: number) => string,
-  { concurrency = 4, windowRadius = 12 }: Options = {},
+  { concurrency = 4, windowRadius = 12, onReady }: Options = {},
 ): FrameSequence {
   const decoded = new Map<number, Frame>();
   const pending = new Set<number>();
@@ -54,6 +56,7 @@ export function createFrameSequence(
   let disposed = false;
   let started = false;
   let active = 0;
+  let currentCenter = 0;
 
   const canUseBitmap = typeof createImageBitmap === "function";
 
@@ -76,11 +79,12 @@ export function createFrameSequence(
           img.src = url;
         });
       }
-      if (disposed) {
+      if (disposed || Math.abs(index - currentCenter) > windowRadius) {
         closeFrame(frame);
         return;
       }
       decoded.set(index, frame);
+      onReady?.();
     } catch {
       // Left undecoded; the next reconcile re-queues it if still in window.
     } finally {
@@ -107,10 +111,11 @@ export function createFrameSequence(
   // a burst of in-flight decodes can finish after the playhead has already
   // moved on, and without the cap those stragglers would sit resident until
   // the next reconcile happens to notice them individually.
-  const hardCap = windowRadius * 2;
+  const hardCap = windowRadius * 2 + 1;
 
   function reconcile(center: number): void {
     const clamped = Math.min(count - 1, Math.max(0, center));
+    currentCenter = clamped;
 
     for (const [index, frame] of decoded) {
       if (Math.abs(index - clamped) > windowRadius) {
@@ -152,7 +157,7 @@ export function createFrameSequence(
       return decoded.get(clamped) ?? null;
     },
     nearest(index) {
-      if (disposed) return null;
+      if (disposed || !started) return null;
       reconcile(index);
       const clamped = Math.min(count - 1, Math.max(0, index));
       if (decoded.has(clamped)) return decoded.get(clamped) as Frame;
