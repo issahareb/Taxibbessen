@@ -277,10 +277,14 @@ function clickTarget(element: Element): string | null {
   if (!link) return null;
 
   const href = link.getAttribute("href") ?? "";
-  if (href.startsWith("tel:")) return "phone";
-  if (href.startsWith("mailto:")) return "email";
-  if (/wa\.me|whatsapp/i.test(href)) return "whatsapp";
-  if (/google\.[a-z.]+\/maps/i.test(href)) return "google_maps";
+  const position = link.closest("#mobile-navigation") ? "menu"
+    : link.closest("header") ? "header"
+    : link.closest("footer") ? "footer"
+    : link.closest("#anfrage") ? "hero" : "content";
+  if (href.startsWith("tel:")) return `phone_${position}`;
+  if (href.startsWith("mailto:")) return `email_${position}`;
+  if (/wa\.me|whatsapp/i.test(href)) return `whatsapp_${position}`;
+  if (/google\.[a-z.]+\/maps/i.test(href)) return `google_maps_${position}`;
   return null;
 }
 

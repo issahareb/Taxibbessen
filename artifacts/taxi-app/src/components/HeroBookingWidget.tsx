@@ -511,7 +511,7 @@ export function HeroBookingWidget() {
       <div className="grid grid-cols-2 gap-2.5">
         <a
           id="hero-call-cta"
-          href="tel:0201707060"
+          data-track="phone_hero" href="tel:0201707060"
           className="hero-call-button flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-black/55 px-3 py-3 text-sm font-medium text-white transition-colors hover:border-primary/50 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <span className="call-halo" aria-hidden="true"><span className="call-halo-ring" /></span>
@@ -519,7 +519,7 @@ export function HeroBookingWidget() {
           <span className="relative">Jetzt anrufen</span>
         </a>
         <a
-          href="https://wa.me/491711111535"
+          data-track="whatsapp_hero" href="https://wa.me/491711111535"
           target="_blank"
           rel="noopener noreferrer"
           className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-black/55 px-3 py-3 text-sm font-medium text-white transition-colors hover:border-[#25D366]/50 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"

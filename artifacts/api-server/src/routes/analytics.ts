@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { analyticsEventsTable, bookingsTable, db } from "@workspace/db";
 import { and, countDistinct, desc, eq, gte, isNotNull, sql } from "drizzle-orm";
-import { requireAdmin } from "../middleware/require-admin-key";
+import { requireAnalyticsRead } from "../middleware/require-analytics-read";
 
 const router: IRouter = Router();
 
@@ -37,7 +37,7 @@ router.post("/track", async (req, res) => {
   res.status(204).end();
 });
 
-router.get("/analytics/overview", requireAdmin, async (req, res) => {
+router.get("/analytics/overview", requireAnalyticsRead, async (req, res) => {
   const days = Number(req.query.days ?? 30);
   const since = sinceDate(Number.isFinite(days) && days > 0 ? Math.min(days, 180) : 30);
   const inRange = gte(analyticsEventsTable.createdAt, since);
@@ -146,12 +146,12 @@ router.get("/analytics/overview", requireAdmin, async (req, res) => {
         .where(and(inRange, eq(analyticsEventsTable.eventType, "click"), isNotNull(analyticsEventsTable.target)))
         .groupBy(analyticsEventsTable.target)
         .orderBy(desc(sql`count(*)`))
-        .limit(20),
+        .limit(100),
 
       db
         .select({
           visitors: countDistinct(analyticsEventsTable.sessionId),
-          ctaSessions: sql<number>`count(distinct ${analyticsEventsTable.sessionId}) filter (where ${analyticsEventsTable.eventType} = 'click')`,
+          ctaSessions: sql<number>`count(distinct ${analyticsEventsTable.sessionId}) filter (where ${analyticsEventsTable.eventType} = 'click' and (${analyticsEventsTable.target} ~ '^(phone|email|whatsapp|google_maps)($|_)' or ${analyticsEventsTable.target} = 'booking_cta'))`,
           formStartSessions: sql<number>`count(distinct ${analyticsEventsTable.sessionId}) filter (where ${analyticsEventsTable.eventType} = 'form_start')`,
           formSubmitSessions: sql<number>`count(distinct ${analyticsEventsTable.sessionId}) filter (where ${analyticsEventsTable.eventType} = 'form_submit')`,
         })

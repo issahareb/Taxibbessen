@@ -16,6 +16,7 @@ const child = spawn(process.execPath, ["--enable-source-maps", "./dist/index.mjs
     RESEND_API_KEY: "re_test_key",
     ADMIN_API_KEY: process.env.SECURITY_TEST_ADMIN_API_KEY ?? "",
     SKIP_DB_MIGRATIONS: "true",
+    TAXIBB_ANALYTICS_READ_TOKEN: "test-read-token-01234567890123456789",
   },
   stdio: ["ignore", "pipe", "pipe"],
 });
@@ -53,6 +54,15 @@ try {
   await expectBlocked("/api/stats");
   await expectBlocked("/api/analytics/overview");
   await expectBlocked("/api/analytics/overview?days=7");
+  const readHeaders = { "x-analytics-token": "test-read-token-01234567890123456789" };
+  const invalidRead = await fetch(`${baseUrl}/api/analytics/overview`, { headers: { "x-analytics-token": "wrong" } });
+  assert.equal(invalidRead.status, 401);
+  const scopedRead = await fetch(`${baseUrl}/api/analytics/overview`, { headers: readHeaders });
+  assert.equal(scopedRead.status, 503);
+  assert.equal(scopedRead.headers.get("cache-control"), "no-store");
+  assert.equal((await scopedRead.json()).error, "Statistiken sind derzeit nicht verfügbar");
+  await expectBlocked("/api/bookings", { headers: readHeaders });
+  await expectBlocked("/api/bookings/1/status", { method: "PATCH", headers: { ...readHeaders, "Content-Type": "application/json" }, body: '{"status":"accepted"}' });
   const resetRequest = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
