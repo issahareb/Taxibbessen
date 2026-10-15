@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useRef } from "react";
-import { bookingAttribution, trackFormSubmit } from "@/lib/analytics";
+import { bookingAttribution, trackFormSubmit, trackFormAttempt, trackFormError, type FormKind } from "@/lib/analytics";
 import {
   useListBookings,
   useCreateBooking as useApiCreateBooking,
@@ -51,7 +51,7 @@ export function useRealtimeBookings() {
   });
 }
 
-export function useCreateBooking() {
+export function useCreateBooking(formKind: FormKind) {
   const queryClient = useQueryClient();
   const mutation = useApiCreateBooking();
   const pendingRequest = useRef<{ payload: string; key: string } | null>(null);
@@ -59,15 +59,17 @@ export function useCreateBooking() {
   return {
     ...mutation,
     mutateAsync: async (data: Parameters<typeof mutation.mutateAsync>[0]) => {
+      trackFormAttempt(formKind);
       try {
         const payload = JSON.stringify(data.data);
         if (pendingRequest.current?.payload !== payload) pendingRequest.current = { payload, key: crypto.randomUUID() };
         const result = await mutation.mutateAsync({ ...data, data: { ...data.data, requestKey: pendingRequest.current.key, attribution: bookingAttribution() } });
         pendingRequest.current = null;
-        trackFormSubmit();
-        await queryClient.invalidateQueries({ queryKey: getListBookingsQueryKey() });
+        trackFormSubmit(formKind);
+        void queryClient.invalidateQueries({ queryKey: getListBookingsQueryKey() }).catch(() => {});
         return result;
       } catch (err) {
+        trackFormError(formKind);
         throw parseNetworkError(err);
       }
     }

@@ -29,7 +29,9 @@ export type AnalyticsEventType =
   | "scroll"
   | "click"
   | "form_start"
-  | "form_submit";
+  | "form_submit"
+  | "form_attempt"
+  | "form_error";
 
 type SourceCategory = "direct" | "search" | "social" | "referral" | "ai" | "business_profile";
 type DeviceType = "mobile" | "tablet" | "desktop";
@@ -280,7 +282,7 @@ function clickTarget(element: Element): string | null {
   const position = link.closest("#mobile-navigation") ? "menu"
     : link.closest("header") ? "header"
     : link.closest("footer") ? "footer"
-    : link.closest("#anfrage") ? "hero" : "content";
+    : link.closest("#anfrage") ? "contact" : "content";
   if (href.startsWith("tel:")) return `phone_${position}`;
   if (href.startsWith("mailto:")) return `email_${position}`;
   if (/wa\.me|whatsapp/i.test(href)) return `whatsapp_${position}`;
@@ -300,16 +302,26 @@ export function trackPageview(path: string): void {
   checkScrollDepth();
 }
 
-let formStarted = false;
+export type FormKind = "text" | "ride" | "contact";
+const startedForms = new Set<FormKind>();
 
-export function trackFormStart(): void {
-  if (!isEnabled() || formStarted) return;
-  formStarted = true;
-  enqueue(baseEvent("form_start"));
+export function trackFormStart(kind: FormKind): void {
+  if (!isEnabled() || startedForms.has(kind)) return;
+  startedForms.add(kind);
+  enqueue({ ...baseEvent("form_start"), target: kind }, true);
 }
 
-export function trackFormSubmit(): void {
-  enqueue(baseEvent("form_submit"), true);
+export function trackFormAttempt(kind: FormKind): void {
+  trackFormStart(kind);
+  enqueue({ ...baseEvent("form_attempt"), target: kind }, true);
+}
+
+export function trackFormSubmit(kind: FormKind): void {
+  enqueue({ ...baseEvent("form_submit"), target: kind }, true);
+}
+
+export function trackFormError(kind: FormKind): void {
+  enqueue({ ...baseEvent("form_error"), target: kind }, true);
 }
 
 export function trackClick(target: string): void {
@@ -349,9 +361,10 @@ export function initAnalytics(): void {
   // component having to report it itself.
   const onFocusIn = (event: FocusEvent) => {
     const element = event.target instanceof Element ? event.target : null;
-    if (!element?.closest("form[data-booking-form]")) return;
-    if (!element.matches("input, textarea, select")) return;
-    trackFormStart();
+    const form = element?.closest<HTMLElement>("form[data-form-kind]");
+    if (!form || !element?.matches("input, textarea, select")) return;
+    const kind = form.dataset.formKind;
+    if (kind === "text" || kind === "ride" || kind === "contact") trackFormStart(kind);
   };
 
   window.addEventListener("scroll", onScroll, { passive: true });
@@ -377,7 +390,7 @@ export function stopAnalytics(): void {
   entry = null;
   fallbackSessionId = "";
   currentPath = "";
-  formStarted = false;
+  startedForms.clear();
   if (flushTimer !== null) {
     window.clearTimeout(flushTimer);
     flushTimer = null;

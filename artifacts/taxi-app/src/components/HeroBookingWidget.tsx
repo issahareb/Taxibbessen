@@ -57,10 +57,10 @@ function buildTimeSlots(): { value: string; label: string }[] {
 }
 
 export function HeroBookingWidget() {
-  const createBooking = useCreateBooking();
   const reducedMotion = useReducedMotion();
 
   const [mode, setMode] = useState<Mode>("text");
+  const createBooking = useCreateBooking(mode === "text" ? "text" : "ride");
 
   // Nachricht und Telefon oder E-Mail genügen im Kontakt-Tab; alles Weitere gehört zum
   // Auswahl-Tab und bleibt beim Umschalten erhalten.
@@ -272,7 +272,7 @@ export function HeroBookingWidget() {
                 </p>
               </motion.div>
             ) : (
-              <motion.form key="form" data-booking-form onSubmit={handleSubmit} className="space-y-3">
+              <motion.form key="form" data-booking-form data-form-kind={mode === "text" ? "text" : "ride"} onSubmit={handleSubmit} className="space-y-3">
 
                 {/* Titel - immer sichtbar */}
                 <div className="mb-4">

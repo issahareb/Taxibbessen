@@ -1,3 +1,4 @@
+import { trackFormAttempt, trackFormSubmit, trackFormError } from "@/lib/analytics";
 import { useState } from "react";
 import { Phone, Mail, User, MessageSquare, CheckCircle2, Loader2 } from "lucide-react";
 
@@ -22,6 +23,7 @@ export function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.phone.trim() || !form.firstName.trim() || !form.lastName.trim()) return;
+    trackFormAttempt("contact");
     setState("loading");
     try {
       const res = await fetch(`${BASE}/api/contact`, {
@@ -30,8 +32,10 @@ export function ContactForm() {
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error();
+      trackFormSubmit("contact");
       setState("success");
     } catch {
+      trackFormError("contact");
       setState("error");
     }
   };
@@ -50,7 +54,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
+    <form data-form-kind="contact" onSubmit={handleSubmit} className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="relative">
           <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/55 pointer-events-none" />
