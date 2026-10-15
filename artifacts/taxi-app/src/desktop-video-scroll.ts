@@ -20,13 +20,15 @@ const getSourceName = (video: HTMLVideoElement) => {
   return source.split("?")[0]?.split("/").pop() ?? "";
 };
 
+const sourceIsHero = (video: HTMLVideoElement) => getSourceName(video) === HERO_SOURCE;
+
 const prepareVideo = (video: HTMLVideoElement) => {
   video.pause();
   video.autoplay = false;
   video.loop = false;
   video.removeAttribute("autoplay");
   video.removeAttribute("loop");
-  video.preload = "auto";
+  video.preload = sourceIsHero(video) ? "metadata" : "none";
 };
 
 const findStorySection = () => {
@@ -77,6 +79,7 @@ const startDesktopVideoController = () => {
   let rafId = 0;
   let lastTimestamp = performance.now();
   let layoutDirty = true;
+  let lastSeek = 0;
 
   const updateTargets = () => {
     for (const item of scrollVideos) {
@@ -99,12 +102,12 @@ const startDesktopVideoController = () => {
     const smoothing = 1 - Math.exp(-14 * deltaSeconds);
 
     for (const item of scrollVideos) {
-      prepareVideo(item.video);
       if (!Number.isFinite(item.video.duration) || item.video.duration <= 0) continue;
 
       item.currentTime += (item.targetTime - item.currentTime) * smoothing;
-      if (Math.abs(item.video.currentTime - item.currentTime) > 1 / 120) {
+      if (timestamp - lastSeek >= 32 && Math.abs(item.video.currentTime - item.currentTime) > 1 / 30 && !item.video.seeking) {
         item.video.currentTime = item.currentTime;
+        lastSeek = timestamp;
       }
     }
 
