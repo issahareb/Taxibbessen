@@ -212,18 +212,12 @@ export function Layout({ children }: { children: ReactNode }) {
 
           {/* Mobile: individual buttons (no glass pill) */}
           <div className="flex lg:hidden items-center gap-2">
-            <a href="tel:0201707060" className="group">
+            <a href="tel:0201707060" aria-label="Taxi B&B anrufen" className="group rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
               <div className="relative flex items-center justify-center">
-                {scrolled && (
-                  <>
-                    <span className="absolute inset-0 rounded-xl bg-primary/50 animate-call-glow" />
-                    <span className="absolute inset-0 rounded-xl bg-primary/35 animate-call-glow-delay" />
-                  </>
-                )}
                 <div
                   className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 ${
                     scrolled
-                      ? "bg-primary shadow-[0_0_22px_6px_rgba(255,193,7,0.65)]"
+                      ? "bg-primary"
                       : "bg-transparent border border-white/20"
                   }`}
                 >
@@ -249,16 +243,10 @@ export function Layout({ children }: { children: ReactNode }) {
                 <span className="font-display font-black text-sm text-primary leading-none">0201 707060</span>
               </div>
               <div className="relative flex items-center justify-center">
-                {scrolled && (
-                  <>
-                    <span className="absolute inset-0 rounded-xl bg-primary/50 animate-call-glow" />
-                    <span className="absolute inset-0 rounded-xl bg-primary/35 animate-call-glow-delay" />
-                  </>
-                )}
                 <div
                   className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-500 ${
                     scrolled
-                      ? "bg-primary shadow-[0_0_22px_6px_rgba(255,193,7,0.65)] group-hover:shadow-[0_0_32px_10px_rgba(255,193,7,0.8)]"
+                      ? "bg-primary group-hover:bg-primary/90"
                       : "hover:bg-white/15 group-hover:bg-white/15"
                   }`}
                 >
@@ -371,7 +359,7 @@ export function Layout({ children }: { children: ReactNode }) {
                 {/* Telefon: volle Breite */}
                 <a
                   href="tel:0201707060"
-                  className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-black py-4 rounded-2xl text-base hover:shadow-[0_0_20px_rgba(255,193,7,0.35)] transition-all"
+                  className="w-full flex min-h-12 items-center justify-center gap-2 bg-primary text-primary-foreground font-semibold py-3 rounded-xl text-sm hover:bg-primary/90 transition-colors"
                 >
                   <Phone className="w-5 h-5" />
                   0201 707060

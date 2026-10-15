@@ -92,7 +92,7 @@ export function ServicePageTemplate({
         <section className="relative pt-8 pb-16 sm:pt-12 sm:pb-20" style={{ background: "linear-gradient(to bottom, rgba(255,193,7,0.04) 0%, transparent 60%)" }}>
           <div className="container mx-auto px-4 sm:px-6 lg:px-12">
             {/* Breadcrumb */}
-            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-white/40 font-bold uppercase tracking-widest mb-8">
+            <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs text-white/40 font-bold uppercase tracking-widest mb-8">
               <Link href="/" className="hover:text-primary transition-colors">Startseite</Link>
               <span>/</span>
               <span className="text-white/60">{breadcrumbLabel}</span>
@@ -111,16 +111,16 @@ export function ServicePageTemplate({
               <div className="flex flex-wrap gap-3">
                 <a
                   href="tel:0201707060"
-                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-black px-6 py-3.5 rounded-2xl hover:shadow-[0_0_24px_rgba(255,193,7,0.4)] transition-all text-sm uppercase tracking-widest"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 bg-primary text-primary-foreground font-semibold px-5 py-3 rounded-xl hover:bg-primary/90 transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                 >
                   <Phone className="w-4 h-4" />
                   0201 707060
                 </a>
                 <Link
                   href={bookingHref}
-                  className="inline-flex items-center gap-2 border border-white/20 text-white font-black px-6 py-3.5 rounded-2xl hover:bg-white/5 transition-all text-sm uppercase tracking-widest"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 border border-white/20 text-white font-semibold px-5 py-3 rounded-xl hover:bg-white/5 transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
-                  Fahrt vorbestellen
+                  Fahrt anfragen
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -233,7 +233,7 @@ export function ServicePageTemplate({
                     href={bookingHref}
                     className="inline-flex items-center gap-2 border border-white/20 text-white font-black px-8 py-4 rounded-2xl hover:bg-white/5 transition-all uppercase tracking-widest text-sm"
                   >
-                    Fahrt vorbestellen
+                    Fahrt anfragen
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>

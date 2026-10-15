@@ -13,16 +13,16 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'default', size = 'md', isLoading, children, disabled, asChild = false, ...props }, ref) => {
     const variants = {
-      default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20",
+      default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
       secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90",
-      outline: "border-2 border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
+      outline: "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
       ghost: "hover:bg-accent hover:text-accent-foreground",
       danger: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
     }
     const sizes = {
       sm: "h-9 px-4 text-xs rounded-lg",
       md: "h-12 px-6 py-2 text-sm font-semibold rounded-xl",
-      lg: "h-14 px-8 text-base font-bold rounded-xl",
+      lg: "min-h-12 px-6 py-3 text-sm font-semibold rounded-xl",
       icon: "h-12 w-12 justify-center rounded-xl",
     }
     const Component = asChild ? Slot : "button"
@@ -33,7 +33,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={asChild ? undefined : isLoading || disabled}
         aria-disabled={asChild && (isLoading || disabled) ? true : undefined}
         className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+          "inline-flex items-center justify-center text-center leading-snug transition-[background-color,color,border-color,transform] duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 motion-safe:active:scale-[0.98]",
           variants[variant],
           sizes[size],
           className
