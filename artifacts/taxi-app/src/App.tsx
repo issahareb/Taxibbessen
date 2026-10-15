@@ -1,3 +1,4 @@
+import { LazyMotion, domAnimation } from "framer-motion";
 import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { CookieBanner } from "@/components/CookieBanner";
 import { lazy, Suspense, useEffect } from "react";
@@ -121,6 +122,7 @@ function AppInner() {
 
 function App() {
   return (
+    <LazyMotion features={domAnimation} strict>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <LanguageProvider>
@@ -130,6 +132,7 @@ function App() {
         </LanguageProvider>
       </TooltipProvider>
     </QueryClientProvider>
+    </LazyMotion>
   );
 }
 

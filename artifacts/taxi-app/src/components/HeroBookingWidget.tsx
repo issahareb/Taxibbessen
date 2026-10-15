@@ -13,7 +13,7 @@ import {
   Users,
   MessageSquare,
 } from "lucide-react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { m as motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useCreateBooking } from "@/hooks/use-bookings";
 import { AddressField } from "@/components/AddressField";
 import { inferRideServices } from "@/lib/ride-services";

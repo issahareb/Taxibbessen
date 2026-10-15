@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Layout } from "@/components/Layout";
 import { usePageMeta } from "@/hooks/use-page-meta";
 import { Phone, ArrowRight, ChevronDown, MapPin } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 
 interface FAQItem { q: string; a: string; }
 interface RelatedLink { href: string; label: string; }

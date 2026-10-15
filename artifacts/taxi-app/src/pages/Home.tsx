@@ -9,7 +9,7 @@ import { HeroBookingWidget } from "@/components/HeroBookingWidget";
 import { ContactForm } from "@/components/ContactForm";
 import { Button } from "@/components/ui";
 import { Phone, Shield, Sparkles, Navigation, ArrowRight, Mail, Globe, MessageCircle, ChevronDown } from "lucide-react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { m as motion, AnimatePresence, useInView } from "framer-motion";
 import { useLanguage } from "@/i18n/useLanguage";
 import { createFrameSequence, drawCover, prefersLessMedia, isPhoneViewport } from "@/lib/frame-scrubber";
 import { DesktopScrollVideo } from "@/components/DesktopScrollVideo";
