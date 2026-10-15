@@ -3,8 +3,6 @@ import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { CookieBanner } from "@/components/CookieBanner";
 import { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
@@ -123,15 +121,12 @@ function AppInner() {
 function App() {
   return (
     <LazyMotion features={domAnimation} strict>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
+      <QueryClientProvider client={queryClient}>
         <LanguageProvider>
           <AppInner />
-          <Toaster />
           <CookieBanner />
         </LanguageProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
     </LazyMotion>
   );
 }
