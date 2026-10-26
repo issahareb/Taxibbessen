@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /** CSS hiding alone does not stop browsers fetching a video's source. */
-export function DesktopScrollVideo({ name }: { name: "hero" | "airport" }) {
+export function DesktopScrollVideo({ name }: { name: "hero" | "city-20261026" | "transfer-20261026" }) {
   const [desktop, setDesktop] = useState(false);
   useEffect(() => {
     const query = window.matchMedia("(min-width: 768px)");
@@ -23,7 +23,7 @@ export function DesktopScrollVideo({ name }: { name: "hero" | "airport" }) {
       style={{ objectPosition: "center" }}
     >
       <source src={`${import.meta.env.BASE_URL}${name}-desktop.mp4`} type="video/mp4" />
-      <source src={`${import.meta.env.BASE_URL}${name}-desktop.webm`} type='video/webm; codecs="vp9"' />
+      {name === "hero" && <source src={`${import.meta.env.BASE_URL}${name}-desktop.webm`} type='video/webm; codecs="vp9"' />}
     </video>
   );
 }

@@ -2,7 +2,8 @@ import { prefersLessMedia } from "./lib/frame-scrubber";
 
 const DESKTOP_QUERY = "(min-width: 768px)";
 const HERO_SOURCE = "hero-desktop.mp4";
-const AIRPORT_SOURCE = "airport-desktop.mp4";
+const AIRPORT_SOURCE = "transfer-20261026-desktop.mp4";
+const CITY_SOURCE = "city-20261026-desktop.mp4";
 const clamp = (value: number) => Math.min(Math.max(value, 0), 1);
 const absoluteTop = (element: Element | null) =>
   element ? element.getBoundingClientRect().top + window.scrollY : 0;
@@ -22,7 +23,7 @@ function startDesktopVideoController() {
 
   const items = Array.from(document.querySelectorAll<HTMLVideoElement>("video"))
     .map((video) => ({ video, name: getSourceName(video), current: video.currentTime, target: 0, loading: false }))
-    .filter(({ name }) => name === HERO_SOURCE || name === AIRPORT_SOURCE);
+    .filter(({ name }) => name === HERO_SOURCE || name === AIRPORT_SOURCE || name === CITY_SOURCE);
   if (!items.length) return;
 
   let raf = 0;
@@ -30,6 +31,8 @@ function startDesktopVideoController() {
   let disposed = false;
   let layoutDirty = true;
   let servicesTop = 1;
+  let cityStart = 0;
+  let cityFinish = 1;
   let appear = 0;
   let finish = 1;
 
@@ -39,6 +42,8 @@ function startDesktopVideoController() {
   function updateTargets() {
     if (layoutDirty) {
       servicesTop = Math.max(absoluteTop(document.getElementById("leistungen")), 1);
+      cityStart = servicesTop + window.innerHeight * 0.4;
+      cityFinish = Math.max(absoluteTop(findStorySection()), cityStart + 1);
       appear = absoluteTop(findStorySection()) + window.innerHeight * 0.1;
       finish = Math.max(absoluteTop(document.getElementById("faq")) + window.innerHeight * 0.8, appear + window.innerHeight);
       layoutDirty = false;
@@ -47,7 +52,7 @@ function startDesktopVideoController() {
       // Keep the initial still until interaction; prebuffer the airport before it appears.
       const shouldLoad = item.name === HERO_SOURCE
         ? window.scrollY > 0
-        : window.scrollY > 0 && window.scrollY + window.innerHeight * 2 >= appear;
+        : window.scrollY > 0 && window.scrollY + window.innerHeight * 2 >= (item.name === CITY_SOURCE ? cityStart : appear);
       if (shouldLoad && !item.loading) {
         item.loading = true;
         item.video.preload = "auto";
@@ -55,7 +60,9 @@ function startDesktopVideoController() {
       }
       const progress = item.name === HERO_SOURCE
         ? clamp(window.scrollY / servicesTop)
-        : clamp((window.scrollY - appear) / Math.max(finish - appear, 1));
+        : item.name === CITY_SOURCE
+          ? clamp((window.scrollY - cityStart) / Math.max(cityFinish - cityStart, 1))
+          : clamp((window.scrollY - appear) / Math.max(finish - appear, 1));
       const duration = Number.isFinite(item.video.duration) ? item.video.duration : 0;
       item.target = progress * Math.max(duration - 0.04, 0);
     }

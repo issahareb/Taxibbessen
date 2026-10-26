@@ -447,9 +447,9 @@ export default function Home() {
 
   // ─── Story-section scroll video - second image-sequence, fades in at the
   // story section and reaches its last frame at the CTA section ───
-  const STORY_FRAME_COUNT = 122;
+  const STORY_FRAME_COUNT = 120;
   const storyFramePath = (n: number) =>
-    `${import.meta.env.BASE_URL}story-frames/frame_${String(n).padStart(3, "0")}.jpg`;
+    `${import.meta.env.BASE_URL}scroll-city-20261026/frame_${String(n).padStart(3, "0")}.webp`;
 
   useEffect(() => {
     const canvas = storyImgRef.current;
@@ -457,7 +457,8 @@ export default function Home() {
     // Observe the services section - the story animation begins while it's on screen,
     // so starting frame downloads then gives enough lead time before they're needed.
     const triggerEl = servicesRef.current;
-    if (!canvas || !layer || !triggerEl || prefersLessMedia()) return;
+    if (!canvas || !layer || !triggerEl) return;
+    const animateFrames = phoneViewport && !prefersLessMedia();
 
     const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b);
 
@@ -512,7 +513,7 @@ export default function Home() {
       // linear fade; lerping on top just adds lag that lets the silver hero
       // bleed through at fast scroll speeds.
       currentOpacity = targetOpacity;
-      if (currentOpacity > 0.01) {
+      if (animateFrames && currentOpacity > 0.01) {
         const idx = Math.min(
           STORY_FRAME_COUNT - 1,
           Math.max(0, Math.round(currentProgress * (STORY_FRAME_COUNT - 1))),
@@ -531,7 +532,7 @@ export default function Home() {
 
     const onScroll = () => {
       update();
-      if (window.scrollY > 0 && triggerEl.getBoundingClientRect().top < window.innerHeight * 1.25) sequence.start();
+      if (animateFrames && window.scrollY > 0 && triggerEl.getBoundingClientRect().top < window.innerHeight * 1.25) sequence.start();
     };
     const onResize = () => { lastFrame = -1; update(); };
 
@@ -552,7 +553,7 @@ export default function Home() {
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting || window.scrollY === 0) return;
       observer.disconnect();
-      sequence.start();
+      if (animateFrames) sequence.start();
     }, { rootMargin: '25% 0px' });
 
     observer.observe(triggerEl);
@@ -565,20 +566,21 @@ export default function Home() {
       if (rafId) cancelAnimationFrame(rafId);
       sequence.destroy();
     };
-  }, []);
+  }, [phoneViewport]);
 
   // ─── Third image-sequence - the "second video". Softly crossfades IN over
   // the story clip around the reviews section and scrubs through to the CTA,
   // where it holds its last frame. ───
-  const CTA_FRAME_COUNT = 122;
+  const CTA_FRAME_COUNT = 120;
   const ctaFramePath = (n: number) =>
-    `${import.meta.env.BASE_URL}cta-frames/frame_${String(n).padStart(3, "0")}.jpg`;
+    `${import.meta.env.BASE_URL}scroll-transfer-20261026/frame_${String(n).padStart(3, "0")}.webp`;
 
   useEffect(() => {
     const canvas = ctaImgRef.current;
     const layer = ctaLayerRef.current;
     const sectionEl = ctaSectionRef.current;
-    if (!canvas || !layer || !sectionEl || !phoneViewport || prefersLessMedia()) return;
+    if (!canvas || !layer || !sectionEl) return;
+    const animateFrames = phoneViewport && !prefersLessMedia();
 
     const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b);
 
@@ -633,7 +635,7 @@ export default function Home() {
       currentProgress += (targetProgress - currentProgress) * (1 - Math.exp(-8 * delta));
       // Opacity is NOT lerped - the measure() ramp is the smooth transition.
       currentOpacity = targetOpacity;
-      if (currentOpacity > 0.01) {
+      if (animateFrames && currentOpacity > 0.01) {
         const idx = Math.min(
           CTA_FRAME_COUNT - 1,
           Math.max(0, Math.round(currentProgress * (CTA_FRAME_COUNT - 1))),
@@ -670,7 +672,7 @@ export default function Home() {
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
       observer.disconnect();
-      sequence.start();
+      if (animateFrames) sequence.start();
     }, { rootMargin: '300% 0px' });
     observer.observe(sectionEl);
 
@@ -727,17 +729,19 @@ export default function Home() {
           />
         </div>
 
-        {/* ─── STORY SCROLL-VIDEO BACKGROUND (übrig - kein Desktop-Ersatz) ─── */}
+        {/* ─── CITY RIDE SCROLL BACKGROUND ─── */}
         <div
           ref={storyLayerRef}
           className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none"
           style={{ height: "100lvh", zIndex: 1, opacity: 0, backgroundColor: "#100f12" }}
         >
+          <img src={`${import.meta.env.BASE_URL}scroll-city-20261026/frame_001.webp`} alt="" aria-hidden loading="lazy" decoding="async" className="md:hidden absolute inset-0 w-full h-full object-cover" />
           <canvas
             ref={storyImgRef}
             aria-hidden
-            className="block w-full h-full"
+            className="md:hidden relative block w-full h-full"
           />
+          <DesktopScrollVideo name="city-20261026" />
           <div
             className="absolute inset-0"
             style={{ background: "linear-gradient(to bottom, rgba(8,10,16,0.22) 0%, rgba(8,10,16,0.08) 45%, rgba(8,10,16,0.25) 100%)" }}
@@ -750,13 +754,14 @@ export default function Home() {
           className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none"
           style={{ height: "100lvh", zIndex: 1, opacity: 0, backgroundColor: "#100a0a" }}
         >
+          <img src={`${import.meta.env.BASE_URL}scroll-transfer-20261026/frame_001.webp`} alt="" aria-hidden loading="lazy" decoding="async" className="md:hidden absolute inset-0 w-full h-full object-cover" />
           <canvas
             ref={ctaImgRef}
             aria-hidden
-            className="md:hidden block w-full h-full"
+            className="md:hidden relative block w-full h-full"
           />
           {/* Ab Tablet: Video, per Scroll gesteuert */}
-          <DesktopScrollVideo name="airport" />
+          <DesktopScrollVideo name="transfer-20261026" />
           <div
             className="absolute inset-0"
             style={{ background: "linear-gradient(to bottom, rgba(8,10,16,0.22) 0%, rgba(8,10,16,0.08) 45%, rgba(8,10,16,0.25) 100%)" }}
