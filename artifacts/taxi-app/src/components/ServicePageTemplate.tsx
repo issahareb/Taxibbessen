@@ -23,7 +23,7 @@ interface ServicePageTemplateProps {
   breadcrumbLabel: string;
 }
 
-const glassCard = "bg-white/[0.06] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]";
+const glassCard = "taxi-surface";
 const fadeUp = { hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0 } };
 
 function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
