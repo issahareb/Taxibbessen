@@ -1,9 +1,9 @@
 import { prefersLessMedia } from "./lib/frame-scrubber";
 
 const DESKTOP_QUERY = "(min-width: 768px)";
-const HERO_SOURCE = "hero-desktop.mp4";
-const AIRPORT_SOURCE = "transfer-20261026-desktop.mp4";
-const CITY_SOURCE = "city-20261026-desktop.mp4";
+const HERO_SOURCE = "hero-plates-20261026-desktop.mp4";
+const AIRPORT_SOURCE = "transfer-plates-20261026-desktop.mp4";
+const CITY_SOURCE = "city-plates-20261026-desktop.mp4";
 const clamp = (value: number) => Math.min(Math.max(value, 0), 1);
 const absoluteTop = (element: Element | null) =>
   element ? element.getBoundingClientRect().top + window.scrollY : 0;

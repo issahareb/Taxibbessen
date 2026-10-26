@@ -23,3 +23,7 @@ Desktop now has its own city clip. Both background layers update opacity on desk
 - Production compilation, prerendering of 20 routes, metadata and schema validation passed. In this runtime the tsx CLI cannot create its IPC socket; the same build stages ran with `node --import tsx` instead.
 - Hero source segments compared byte-for-byte with the parent revision.
 - Generated clips visually inspected at the start, middle and end.
+
+## Registration correction
+
+Higgsfield edits standardize foreground plates to E BB 203E. City edit: b2bc4e1f-4f19-46ee-a9a9-2759f9b3130a. Airport edit: 7088bcf5-8a8a-4424-ae04-073f6de4d01a. Desktop hero edit: e5d6f19f-e19b-493a-a0b1-4646b2e37d57. The first 0.85 seconds of the desktop hero edit were removed because the lettering had not yet stabilized; the matching poster uses the corrected start. The mobile hero sequence already has the correct plate and remains unchanged. The request panel now has a 62% opaque background, retaining the control contrast.

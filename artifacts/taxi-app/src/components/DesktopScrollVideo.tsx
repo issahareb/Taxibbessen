@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /** CSS hiding alone does not stop browsers fetching a video's source. */
-export function DesktopScrollVideo({ name }: { name: "hero" | "city-20261026" | "transfer-20261026" }) {
+export function DesktopScrollVideo({ name }: { name: "hero" | "hero-plates-20261026" | "city-plates-20261026" | "transfer-plates-20261026" }) {
   const [desktop, setDesktop] = useState(false);
   useEffect(() => {
     const query = window.matchMedia("(min-width: 768px)");

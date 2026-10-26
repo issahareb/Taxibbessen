@@ -449,7 +449,7 @@ export default function Home() {
   // story section and reaches its last frame at the CTA section ───
   const STORY_FRAME_COUNT = 120;
   const storyFramePath = (n: number) =>
-    `${import.meta.env.BASE_URL}scroll-city-20261026/frame_${String(n).padStart(3, "0")}.webp`;
+    `${import.meta.env.BASE_URL}scroll-city-plates-20261026/frame_${String(n).padStart(3, "0")}.webp`;
 
   useEffect(() => {
     const canvas = storyImgRef.current;
@@ -573,7 +573,7 @@ export default function Home() {
   // where it holds its last frame. ───
   const CTA_FRAME_COUNT = 120;
   const ctaFramePath = (n: number) =>
-    `${import.meta.env.BASE_URL}scroll-transfer-20261026/frame_${String(n).padStart(3, "0")}.webp`;
+    `${import.meta.env.BASE_URL}scroll-transfer-plates-20261026/frame_${String(n).padStart(3, "0")}.webp`;
 
   useEffect(() => {
     const canvas = ctaImgRef.current;
@@ -721,7 +721,7 @@ export default function Home() {
           />
           </picture>
           {/* Ab Tablet: Video, per Scroll gesteuert (src/desktop-video-scroll.ts) */}
-          <DesktopScrollVideo name="hero" />
+          <DesktopScrollVideo name="hero-plates-20261026" />
           {/* Wasserzeichen der KI-Quelle unten rechts abdecken */}
           <div
             className="absolute bottom-0 right-0 pointer-events-none"
@@ -735,13 +735,13 @@ export default function Home() {
           className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none"
           style={{ height: "100lvh", zIndex: 1, opacity: 0, backgroundColor: "#100f12" }}
         >
-          <img src={`${import.meta.env.BASE_URL}scroll-city-20261026/frame_001.webp`} alt="" aria-hidden loading="lazy" decoding="async" className="md:hidden absolute inset-0 w-full h-full object-cover" />
+          <img src={`${import.meta.env.BASE_URL}scroll-city-plates-20261026/frame_001.webp`} alt="" aria-hidden loading="lazy" decoding="async" className="md:hidden absolute inset-0 w-full h-full object-cover" />
           <canvas
             ref={storyImgRef}
             aria-hidden
             className="md:hidden relative block w-full h-full"
           />
-          <DesktopScrollVideo name="city-20261026" />
+          <DesktopScrollVideo name="city-plates-20261026" />
           <div
             className="absolute inset-0"
             style={{ background: "linear-gradient(to bottom, rgba(8,10,16,0.22) 0%, rgba(8,10,16,0.08) 45%, rgba(8,10,16,0.25) 100%)" }}
@@ -754,14 +754,14 @@ export default function Home() {
           className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none"
           style={{ height: "100lvh", zIndex: 1, opacity: 0, backgroundColor: "#100a0a" }}
         >
-          <img src={`${import.meta.env.BASE_URL}scroll-transfer-20261026/frame_001.webp`} alt="" aria-hidden loading="lazy" decoding="async" className="md:hidden absolute inset-0 w-full h-full object-cover" />
+          <img src={`${import.meta.env.BASE_URL}scroll-transfer-plates-20261026/frame_001.webp`} alt="" aria-hidden loading="lazy" decoding="async" className="md:hidden absolute inset-0 w-full h-full object-cover" />
           <canvas
             ref={ctaImgRef}
             aria-hidden
             className="md:hidden relative block w-full h-full"
           />
           {/* Ab Tablet: Video, per Scroll gesteuert */}
-          <DesktopScrollVideo name="transfer-20261026" />
+          <DesktopScrollVideo name="transfer-plates-20261026" />
           <div
             className="absolute inset-0"
             style={{ background: "linear-gradient(to bottom, rgba(8,10,16,0.22) 0%, rgba(8,10,16,0.08) 45%, rgba(8,10,16,0.25) 100%)" }}
