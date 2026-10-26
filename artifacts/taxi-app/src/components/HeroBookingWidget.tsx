@@ -197,8 +197,8 @@ export function HeroBookingWidget() {
       transition={{ duration: 0.5, delay: 0.3 }}
       className="w-full space-y-3"
     >
-      {/* Opaque surface keeps the form legible over every video frame. */}
-      <div className="taxi-surface rounded-3xl overflow-hidden">
+      {/* Translucent shell reveals the taxi motion; controls retain their own contrast. */}
+      <div className="taxi-surface rounded-3xl overflow-hidden" style={{ background: "rgba(21, 26, 33, 0.62)" }}>
 
         {!submitted && (
           <div className="px-3 pt-3 sm:px-5 sm:pt-5">
