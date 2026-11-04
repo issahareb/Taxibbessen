@@ -38,6 +38,9 @@ jobs:
       - run: pnpm --filter @workspace/api-server run test:security
       - run: node test/measurement.mjs
         working-directory: artifacts/api-server
+      - run: node test/notification-evidence.mjs
+        working-directory: artifacts/api-server
+      - run: node --test lib/db/scripts/reconcile-requests.test.mjs
       # Mirrors the two services' actual railway.toml buildCommand, so a
       # build that would fail in production fails here too. Deliberately
       # scoped to these two packages (not the recursive root build) since
@@ -50,3 +53,6 @@ jobs:
         env:
           DATABASE_URL: postgresql://taxi_test:isolated_test_only@127.0.0.1:5432/taxi_measurement_test
       - run: pnpm --filter @workspace/taxi-app run build
+      - run: node lib/db/scripts/reconcile-requests.database.test.mjs
+        env:
+          DATABASE_URL: postgresql://taxi_test:isolated_test_only@127.0.0.1:5432/taxi_measurement_test

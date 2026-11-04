@@ -111,7 +111,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
     </div>
     <p id="analyticsError" class="error"></p>
     <div id="kpis" class="kpis"></div>
-    <div class="card panel"><h2>Anfragen und tatsächliche Fahrten</h2><p class="muted">Anfragen, die im gewählten Zeitraum eingegangen sind, mit ihrem heutigen Status. Testanfragen sind ausgeschlossen. Umsatz ist der manuell erfasste Betrag durchgeführter Fahrten, kein geschätzter Preis und kein Buchhaltungsabschluss.</p><div id="outcomes" class="kpis"></div><button id="exportOutcomes" class="button secondary" type="button">Ergebnisse als CSV</button></div>
+    <div class="card panel"><h2>Gespeicherte Hero-Anfragen und tatsächliche Fahrten</h2><p class="muted">Gespeicherte Fahrt- und Textanfragen aus dem Hero-Formular, unabhängig von der Tracking-Einwilligung, mit ihrem heutigen Status. Testanfragen, das untere Kontaktformular und direkte E-Mails sind ausgeschlossen. Diese Zahl bestätigt keine E-Mail-Zustellung. Zeitraum: letzte N Tage bis zum Abruf, kein Kalendermonat. Umsatz ist der manuell erfasste Betrag durchgeführter Fahrten, kein geschätzter Preis und kein Buchhaltungsabschluss.</p><div id="outcomes" class="kpis"></div><button id="exportOutcomes" class="button secondary" type="button">Ergebnisse als CSV</button></div>
     <div class="card panel chart-wrap"><h2>Anfragen nach Herkunft</h2><div id="bookingSources"></div><p class="muted">KI umfasst erkannte KI-Verweise und bekannte Kampagnenangaben. Angaben können fehlen oder unzutreffend sein. Keine Aussage über die Häufigkeit von KI-Empfehlungen.</p></div>
     <div class="card panel chart-wrap"><h2>Einstiegsseiten und Anfragen</h2><div id="bookingPages"></div></div>
     <div class="card panel">
@@ -119,7 +119,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
       <div id="chart" class="chart-wrap"></div>
     </div>
     <div class="card panel">
-      <h2>Weg zur Anfrage</h2>
+      <h2>Website-Tracking mit Einwilligung</h2>
       <div id="funnel"></div>
     </div>
     <div class="card panel">
@@ -141,8 +141,8 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
       </div>
     </div>
     <div class="card panel">
-      <h2>Formularanfragen</h2>
-      <p class="muted">Nur mit Zustimmung. Versuche und Ergebnisse zählen einzeln; Erfolg bedeutet Serverbestätigung. Ältere Messungen haben keine Formularzuordnung.</p>
+      <h2>Erfasste Formularereignisse</h2>
+      <p class="muted">Nur mit Zustimmung. Versuche und Ergebnisse zählen einzeln; Erfolg bedeutet Serverbestätigung, keine E-Mail-Zustellung. Das untere Kontaktformular ist hier enthalten, in den gespeicherten Hero-Anfragen dagegen nicht. Ältere Messungen haben keine Formularzuordnung.</p>
       <div id="formMetrics"></div>
     </div>
     <div class="card panel">
@@ -495,7 +495,8 @@ function renderFunnel(funnel) {
   [
     ["Besuche", funnel.visitors],
 
-    ["Formular begonnen", funnel.formStartSessions],
+    ["Besuche mit Formularbeginn", funnel.formStartSessions],
+    ["Besuche mit bestätigtem Formularversand", funnel.formSubmitSessions],
     ["Besuche mit gespeicherter Anfrage", funnel.linkedBookingSessions],
   ].forEach(([label, value]) => {
     const wrap = document.createElement("div");
@@ -520,7 +521,7 @@ function renderFunnel(funnel) {
 
   const note = document.createElement("p");
   note.className = "empty";
-  note.textContent = "Nur gemessene Besuche mit Einwilligung. Gespeicherte Anfragen werden über die Besuchskennung zugeordnet; wiederholte Übermittlungen und Testanfragen zählen nicht mehrfach. Die Schritte sind aggregierte Besuchszahlen, keine lückenlose Ablaufanalyse. Telefon- und WhatsApp-Klicks stehen separat und sind keine Buchungen.";
+  note.textContent = "Nur gemessene Besuche mit Einwilligung. Mehrere Formularsendungen in einer Sitzung zählen einmal, einschließlich des unteren Kontaktformulars. Ohne Einwilligung, bei Do-Not-Track oder blockiertem Tracking fehlen Ereignisse. Besuche mit gespeicherter Hero-Anfrage werden separat über die Besuchskennung zugeordnet, ohne Testanfragen. Die Werte sind aggregierte Sitzungszahlen, keine lückenlose Ablaufanalyse und kein Nachweis der E-Mail-Zustellung. Telefon- und WhatsApp-Klicks sind keine Buchungen.";
   container.appendChild(note);
 }
 
@@ -538,7 +539,7 @@ async function loadAnalytics() {
   const money = value => new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(value / 100);
   const o = data.outcomes;
   byId("outcomes").textContent = "";
-  [[o.bookings, "Gespeicherte Anfragen"], [o.pending, "Unbearbeitet"], [o.overdue, "Über 30 Min. offen"], [o.confirmed, "Angenommen inkl. durchgeführt"], [o.completed, "Durchgeführt"], [o.rejected, "Abgelehnt"], [money(o.revenueCents), "Erfasster Umsatz"], [o.revenueRecorded + "/" + o.completed, "Fahrten mit Umsatzangabe"], [o.avgResponseMinutes == null ? "Noch nicht erfasst" : Math.round(o.avgResponseMinutes) + " Min.", "Ø erste Bearbeitung"]].forEach(([value, label]) => {
+  [[o.bookings, "Gespeicherte Hero-Anfragen"], [o.pending, "Unbearbeitet"], [o.overdue, "Über 30 Min. offen"], [o.confirmed, "Angenommen inkl. durchgeführt"], [o.completed, "Durchgeführt"], [o.rejected, "Abgelehnt"], [money(o.revenueCents), "Erfasster Umsatz"], [o.revenueRecorded + "/" + o.completed, "Fahrten mit Umsatzangabe"], [o.avgResponseMinutes == null ? "Noch nicht erfasst" : Math.round(o.avgResponseMinutes) + " Min.", "Ø erste Bearbeitung"]].forEach(([value, label]) => {
     const card = document.createElement("div"); card.className = "kpi";
     const v = document.createElement("div"); v.className = "value"; v.textContent = value;
     const l = document.createElement("div"); l.className = "label"; l.textContent = label; card.append(v,l); byId("outcomes").appendChild(card);

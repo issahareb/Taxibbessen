@@ -50,10 +50,13 @@ router.post("/bookings", async (req, res) => {
     if (!existing || existing.requestFingerprint !== fingerprint) {
       return res.status(409).json({ error: "Die Anfrage wurde geändert. Bitte erneut absenden." });
     }
+    req.log.info({ event: "booking_replayed", bookingId: existing.id }, "Existing booking returned");
     return res.status(200).json(bookingReceipt(existing.id));
   }
   const booking = inserted;
   if (!booking) return res.status(503).json({ error: "Anfrage konnte nicht gespeichert werden." });
+
+  req.log.info({ event: "booking_saved", bookingId: booking.id }, "Booking saved");
 
   sendBookingNotification({
     id: booking.id,
@@ -73,7 +76,7 @@ router.post("/bookings", async (req, res) => {
     returnPickupTime: booking.returnPickupTime,
     returnPickupLocation: booking.returnPickupLocation,
     returnDestination: booking.returnDestination,
-  }).catch((error) => console.error("Booking email failed", error));
+  }).catch(() => req.log.error({ event: "booking_notification", bookingId: booking.id, status: "failed" }, "Booking notification failed; booking remains saved"));
 
   res.status(201).json(bookingReceipt(booking.id));
 });
