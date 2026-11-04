@@ -150,11 +150,13 @@ export async function sendBookingNotification(booking: BookingEmailData): Promis
   });
 
   if (error) {
-    console.error("[EMAIL] Buchung senden fehlgeschlagen:", JSON.stringify(error));
-    throw new Error(`Resend error: ${error.message}`);
+    // Provider errors may echo personal recipient or message fields.
+    throw new Error("Booking notification rejected by provider");
   }
 
-  console.log("[EMAIL] Buchung gesendet, id:", data?.id);
+  if (!data?.id) throw new Error("Booking notification acceptance not confirmed");
+  // Acceptance is not delivery. Log only identifiers, never customer fields.
+  console.log(JSON.stringify({ event: "booking_notification", bookingId: booking.id, status: "accepted", providerMessageId: data.id }));
 }
 
 export interface ContactEmailData {
@@ -165,7 +167,7 @@ export interface ContactEmailData {
   message: string | null;
 }
 
-export async function sendContactNotification(data: ContactEmailData): Promise<void> {
+export async function sendContactNotification(data: ContactEmailData): Promise<string> {
   const safeName = sanitizeSubjectPart(`${data.firstName} ${data.lastName}`);
   const subject = `Neue Anfrage – ${safeName}`;
 
@@ -237,9 +239,9 @@ export async function sendContactNotification(data: ContactEmailData): Promise<v
   });
 
   if (sendError) {
-    console.error("[EMAIL] Kontakt senden fehlgeschlagen:", JSON.stringify(sendError));
-    throw new Error(`Resend error: ${sendError.message}`);
+    throw new Error("Contact notification rejected by provider");
   }
 
-  console.log("[EMAIL] Kontakt gesendet, id:", sentData?.id);
+  if (!sentData?.id) throw new Error("Contact notification acceptance not confirmed");
+  return sentData.id;
 }
