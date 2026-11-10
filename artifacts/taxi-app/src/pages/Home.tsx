@@ -350,6 +350,7 @@ export default function Home() {
     if (!canvas || !phoneViewport || prefersLessMedia()) return;
 
     let heroTargetOpacity = 1;
+    let hasPaintedFrame = false;
 
     // Hero fades out on its OWN scroll progress - fully decoupled from the
     // story effect so there is zero coupling / silver-bleed risk.
@@ -362,8 +363,8 @@ export default function Home() {
       return Math.min(Math.max(1 - (window.scrollY - (servicesTop + vh * 0.15)) / (vh * 0.35), 0), 1);
     };
 
-    // Downloads stay deferred until the first scroll: until then the poster
-    // covers the canvas completely, so no frame is visible yet.
+    // Warm the bounded decode window before the first gesture. The poster
+    // stays visible until a decoded frame can actually be painted.
     const sequence = createFrameSequence(FRAME_COUNT, framePath, { onReady: () => requestRender() });
 
     let targetProgress = 0;
@@ -397,16 +398,20 @@ export default function Home() {
           Math.max(0, Math.round(currentProgress * (FRAME_COUNT - 1))),
         );
         if (idx !== lastFrame) {
-          const frame = sequence.exact(idx);
+          const exact = sequence.exact(idx);
+          const frame = exact ?? sequence.nearest(idx);
           if (frame) {
             drawCover(canvas, frame);
-            lastFrame = idx;
+            hasPaintedFrame = true;
+            // A fallback must not mark the requested frame as painted: onReady
+            // must replace it when the exact frame finishes decoding.
+            lastFrame = exact ? idx : -1;
           }
         }
       }
       if (sharpOverlayRef.current) {
-        // Never expose an empty canvas or a stale fallback while decoding.
-        const sharpOpacity = lastFrame < 0 ? 1 : Math.max(0, 1 - currentProgress * 25);
+        // Keep the poster until the canvas has a drawable frame.
+        const sharpOpacity = !hasPaintedFrame ? 1 : Math.max(0, 1 - currentProgress * 25);
         sharpOverlayRef.current.style.opacity = String(sharpOpacity);
       }
       if (heroLayer) heroLayer.style.opacity = String(heroTargetOpacity);
@@ -414,18 +419,18 @@ export default function Home() {
     };
 
     const onScroll = () => {
-      // Trigger frame loading on the very first scroll interaction
+      // Idempotent fallback for restored scroll positions.
       sequence.start();
       targetProgress = getProgress();
       heroTargetOpacity = getHeroOpacity();
       requestRender();
     };
 
-    // Start the RAF loop immediately - frames load lazily on first scroll
+    // Begin decoding immediately; keep the existing sharp poster during warmup.
     targetProgress = getProgress();
     heroTargetOpacity = getHeroOpacity();
     currentProgress = targetProgress;
-    if (targetProgress > 0) sequence.start();
+    sequence.start();
     const onResize = () => {
       lastFrame = -1;
       targetProgress = getProgress();
@@ -434,12 +439,14 @@ export default function Home() {
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
+    window.addEventListener("pageshow", onResize);
     requestRender();
 
     return () => {
       disposed = true;
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("pageshow", onResize);
       if (rafId) cancelAnimationFrame(rafId);
       sequence.destroy();
     };
@@ -519,10 +526,13 @@ export default function Home() {
           Math.max(0, Math.round(currentProgress * (STORY_FRAME_COUNT - 1))),
         );
         if (idx !== lastFrame) {
-          const frame = sequence.exact(idx);
+          const exact = sequence.exact(idx);
+          const frame = exact ?? sequence.nearest(idx);
           if (frame) {
             drawCover(canvas, frame);
-            lastFrame = idx;
+            // A fallback must not mark the requested frame as painted: onReady
+            // must replace it when the exact frame finishes decoding.
+            lastFrame = exact ? idx : -1;
           }
         }
       }
@@ -551,7 +561,7 @@ export default function Home() {
     startLoop();
 
     const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || window.scrollY === 0) return;
+      if (!entry.isIntersecting) return;
       observer.disconnect();
       if (animateFrames) sequence.start();
     }, { rootMargin: '25% 0px' });
@@ -641,10 +651,13 @@ export default function Home() {
           Math.max(0, Math.round(currentProgress * (CTA_FRAME_COUNT - 1))),
         );
         if (idx !== lastFrame) {
-          const frame = sequence.exact(idx);
+          const exact = sequence.exact(idx);
+          const frame = exact ?? sequence.nearest(idx);
           if (frame) {
             drawCover(canvas, frame);
-            lastFrame = idx;
+            // A fallback must not mark the requested frame as painted: onReady
+            // must replace it when the exact frame finishes decoding.
+            lastFrame = exact ? idx : -1;
           }
         }
       }
@@ -665,16 +678,16 @@ export default function Home() {
       if (Math.abs(targetProgress - currentProgress) > 0.0001) requestRender();
     };
 
-    // Opacity animation starts right away; frame downloads wait until the CTA
-    // section comes within a few viewports.
+    // This background starts at the story section, well before the CTA form.
+    // Warm it relative to that actual entrance, including restored scroll positions.
     startLoop();
 
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
       observer.disconnect();
       if (animateFrames) sequence.start();
-    }, { rootMargin: '300% 0px' });
-    observer.observe(sectionEl);
+    }, { rootMargin: '150% 0px' });
+    observer.observe(storySectionRef.current ?? sectionEl);
 
     return () => {
       disposed = true;

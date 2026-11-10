@@ -49,14 +49,16 @@ function startDesktopVideoController() {
       layoutDirty = false;
     }
     for (const item of items) {
-      // Keep the initial still until interaction; prebuffer the airport before it appears.
+      // Warm the hero before interaction; prebuffer later scenes before their entrance.
       const shouldLoad = item.name === HERO_SOURCE
-        ? window.scrollY > 0
+        ? true
         : window.scrollY > 0 && window.scrollY + window.innerHeight * 2 >= (item.name === CITY_SOURCE ? cityStart : appear);
       if (shouldLoad && !item.loading) {
         item.loading = true;
-        item.video.preload = "auto";
-        item.video.load();
+        if (item.video.preload !== "auto") {
+          item.video.preload = "auto";
+          item.video.load();
+        }
       }
       const progress = item.name === HERO_SOURCE
         ? clamp(window.scrollY / servicesTop)
@@ -94,6 +96,8 @@ function startDesktopVideoController() {
   for (const { video } of items) {
     video.pause();
     video.addEventListener("loadedmetadata", ready);
+    video.addEventListener("loadeddata", ready);
+    video.addEventListener("canplay", ready);
     video.addEventListener("seeked", schedule);
   }
   window.addEventListener("scroll", schedule, { passive: true });
@@ -109,6 +113,8 @@ function startDesktopVideoController() {
     document.removeEventListener("visibilitychange", schedule);
     for (const { video } of items) {
       video.removeEventListener("loadedmetadata", ready);
+      video.removeEventListener("loadeddata", ready);
+      video.removeEventListener("canplay", ready);
       video.removeEventListener("seeked", schedule);
     }
   };
