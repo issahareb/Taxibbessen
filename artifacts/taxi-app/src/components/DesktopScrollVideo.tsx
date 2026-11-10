@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { prefersLessMedia } from "@/lib/frame-scrubber";
 
 /** CSS hiding alone does not stop browsers fetching a video's source. */
 export function DesktopScrollVideo({ name }: { name: "hero" | "hero-plates-20261026" | "city-plates-20261026" | "transfer-plates-20261026" }) {
@@ -18,7 +19,7 @@ export function DesktopScrollVideo({ name }: { name: "hero" | "hero-plates-20261
       className="hidden md:block absolute inset-0 w-full h-full object-cover"
       muted
       playsInline
-      preload="none"
+      preload={name.startsWith("hero") && !prefersLessMedia() ? "auto" : "none"}
       poster={`${import.meta.env.BASE_URL}${name}-desktop-poster.webp`}
       style={{ objectPosition: "center" }}
     >
