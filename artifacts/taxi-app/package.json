@@ -7,7 +7,8 @@
     "dev": "vite --config vite.config.ts --host 0.0.0.0",
     "build": "node scripts/convert-images.mjs && tsx scripts/validate-meta.mts && vite build --config vite.config.ts && tsx prerender.mts && node scripts/canonicalize-output.mjs && tsx scripts/validate-schema.mts",
     "serve": "node serve.mjs",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:media": "node --import tsx --test scripts/frame-scrubber.test.mts"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.10.0",
