@@ -300,6 +300,8 @@ export default function Home() {
   }, []);
   const { t } = useLanguage();
   const imgRef = useRef<HTMLCanvasElement>(null);
+  const heroIntroFinishedRef = useRef(false);
+  const finishHeroWarmupRef = useRef<(() => void) | null>(null);
   const sharpOverlayRef = useRef<HTMLImageElement>(null);
   const servicesRef = useRef<HTMLElement>(null);
   const ctaHeadingRef = useRef<HTMLParagraphElement>(null);
@@ -365,7 +367,14 @@ export default function Home() {
 
     // Warm the bounded decode window before the first gesture. The poster
     // stays visible until a decoded frame can actually be painted.
-    const sequence = createFrameSequence(FRAME_COUNT, framePath, { onReady: () => requestRender() });
+    // Keep the first two frames ready for an immediate gesture. Fill the
+    // normal buffer after the unchanged logo entrance, or at the first scroll.
+    const sequence = createFrameSequence(FRAME_COUNT, framePath, {
+      warmupRadius: 1,
+      onReady: () => requestRender(),
+    });
+    finishHeroWarmupRef.current = sequence.finishWarmup;
+    if (heroIntroFinishedRef.current || window.scrollY > 0) sequence.finishWarmup();
 
     let targetProgress = 0;
     let currentProgress = 0;
@@ -420,6 +429,7 @@ export default function Home() {
 
     const onScroll = () => {
       // Idempotent fallback for restored scroll positions.
+      sequence.finishWarmup();
       sequence.start();
       targetProgress = getProgress();
       heroTargetOpacity = getHeroOpacity();
@@ -444,6 +454,7 @@ export default function Home() {
 
     return () => {
       disposed = true;
+      finishHeroWarmupRef.current = null;
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("pageshow", onResize);
@@ -801,6 +812,14 @@ export default function Home() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
+                onAnimationComplete={() => {
+                  heroIntroFinishedRef.current = true;
+                  // Finish painting the entrance before expanding its buffer.
+                  // An early scroll still expands it immediately above.
+                  requestAnimationFrame(() => requestAnimationFrame(() => {
+                    finishHeroWarmupRef.current?.();
+                  }));
+                }}
                 className="text-center"
               >
                 <h1 className="mx-auto mb-4 max-w-xs text-balance text-sm font-medium leading-relaxed text-white/85 sm:max-w-none sm:text-base">Taxi in Essen. Rund um die Uhr.</h1>

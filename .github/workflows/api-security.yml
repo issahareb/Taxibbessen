@@ -35,6 +35,7 @@ jobs:
       - run: git diff --exit-code -- lib/api-client-react/src/generated lib/api-zod/src/generated
       - run: pnpm --filter @workspace/api-server run typecheck
       - run: pnpm --filter @workspace/taxi-app run typecheck
+      - run: pnpm --filter @workspace/taxi-app run test:media
       - run: pnpm --filter @workspace/api-server run test:security
       - run: node test/measurement.mjs
         working-directory: artifacts/api-server

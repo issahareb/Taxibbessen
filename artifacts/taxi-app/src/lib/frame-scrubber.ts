@@ -23,6 +23,8 @@
 export interface FrameSequence {
   /** Start downloading. Safe to call repeatedly; only the first call counts. */
   start(): void;
+  /** Expand an optional startup buffer once the foreground has painted. */
+  finishWarmup(): void;
   /** Exact decoded frame; holds the current canvas while this frame loads. */
   exact(index: number): ImageBitmap | HTMLImageElement | null;
   /** Nearest already-decoded frame to `index`, or null while nothing is ready. */
@@ -37,6 +39,8 @@ interface Options {
   onReady?: () => void;
   /** Frames kept decoded on each side of the current playback position. */
   windowRadius?: number;
+  /** Smaller initial buffer; finishWarmup restores the normal decode window. */
+  warmupRadius?: number;
 }
 
 type Frame = ImageBitmap | HTMLImageElement;
@@ -48,7 +52,7 @@ function closeFrame(frame: Frame): void {
 export function createFrameSequence(
   count: number,
   pathFor: (frame: number) => string,
-  { concurrency = 4, windowRadius = 12, onReady }: Options = {},
+  { concurrency = 4, windowRadius = 12, warmupRadius = windowRadius, onReady }: Options = {},
 ): FrameSequence {
   const decoded = new Map<number, Frame>();
   const pending = new Set<number>();
@@ -57,6 +61,7 @@ export function createFrameSequence(
   let started = false;
   let active = 0;
   let currentCenter = 0;
+  let preloadRadius = Math.min(windowRadius, Math.max(0, warmupRadius));
 
   const canUseBitmap = typeof createImageBitmap === "function";
 
@@ -66,7 +71,10 @@ export function createFrameSequence(
     try {
       let frame: Frame;
       if (canUseBitmap) {
-        const response = await fetch(url);
+        // Warm every frame as before, but let the visible logo/poster and
+        // application finish first on a constrained mobile connection.
+        const response = await fetch(url, { priority: "low" });
+        if (!response.ok) throw new Error(`failed to load ${url}`);
         const blob = await response.blob();
         if (disposed) return;
         frame = await createImageBitmap(blob);
@@ -74,6 +82,7 @@ export function createFrameSequence(
         frame = await new Promise<HTMLImageElement>((resolve, reject) => {
           const img = new Image();
           img.decoding = "async";
+          img.fetchPriority = "low";
           img.onload = () => resolve(img);
           img.onerror = () => reject(new Error(`failed to load ${url}`));
           img.src = url;
@@ -135,7 +144,7 @@ export function createFrameSequence(
     }
 
     queue.length = 0;
-    for (let d = 0; d <= windowRadius; d++) {
+    for (let d = 0; d <= preloadRadius; d++) {
       const low = clamped - d;
       const high = clamped + d;
       if (low >= 0 && !decoded.has(low) && !pending.has(low)) queue.push(low);
@@ -149,6 +158,11 @@ export function createFrameSequence(
       if (started || prefersLessMedia()) return;
       started = true;
       reconcile(0);
+    },
+    finishWarmup() {
+      if (disposed || preloadRadius === windowRadius) return;
+      preloadRadius = windowRadius;
+      if (started) reconcile(currentCenter);
     },
     exact(index) {
       if (disposed || !started) return null;
