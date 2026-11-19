@@ -408,12 +408,14 @@ export default function Home() {
         );
         if (idx !== lastFrame) {
           const exact = sequence.exact(idx);
-          const frame = exact ?? sequence.nearest(idx);
+          // Only use a nearby frame before the first paint. Once the hero is
+          // visible, showing asynchronously decoded *older* frames makes the
+          // taxi jump backwards and creates the appearance of stutter.
+          const frame = exact ?? (!hasPaintedFrame ? sequence.nearest(idx) : null);
           if (frame) {
             drawCover(canvas, frame);
             hasPaintedFrame = true;
-            // A fallback must not mark the requested frame as painted: onReady
-            // must replace it when the exact frame finishes decoding.
+            // The next decoded exact frame wakes this renderer via onReady.
             lastFrame = exact ? idx : -1;
           }
         }

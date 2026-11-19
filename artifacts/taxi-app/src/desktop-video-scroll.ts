@@ -22,12 +22,11 @@ function startDesktopVideoController() {
   if (!window.matchMedia(DESKTOP_QUERY).matches || prefersLessMedia()) return;
 
   const items = Array.from(document.querySelectorAll<HTMLVideoElement>("video"))
-    .map((video) => ({ video, name: getSourceName(video), current: video.currentTime, target: 0, loading: false }))
+    .map((video) => ({ video, name: getSourceName(video), target: 0, loading: false, lastSeekAt: -Infinity }))
     .filter(({ name }) => name === HERO_SOURCE || name === AIRPORT_SOURCE || name === CITY_SOURCE);
   if (!items.length) return;
 
   let raf = 0;
-  let lastTimestamp = 0;
   let disposed = false;
   let layoutDirty = true;
   let servicesTop = 1;
@@ -73,20 +72,27 @@ function startDesktopVideoController() {
     raf = 0;
     if (disposed || document.hidden) return;
     updateTargets();
-    const delta = Math.min((timestamp - lastTimestamp) / 1000 || 1 / 60, 0.05);
-    lastTimestamp = timestamp;
-    const smoothing = 1 - Math.exp(-14 * delta);
-    let moving = false;
+    // Seeking is not video playback: each currentTime assignment may trigger a
+    // costly keyframe decode. Never queue dozens of intermediate seeks while
+    // the user scrolls. Keep only the latest target and wait for seeked.
+    const minSeekInterval = 1000 / 24;
+    const frameTolerance = 1 / 40;
+    let waitingForSeekBudget = false;
     for (const item of items) {
       if (!item.loading || item.video.readyState < 1) continue;
-      const distance = item.target - item.current;
-      item.current = Math.abs(distance) < 1 / 60 ? item.target : item.current + distance * smoothing;
-      if (!item.video.seeking && Math.abs(item.video.currentTime - item.current) > 1 / 60) {
-        item.video.currentTime = item.current;
+      if (Math.abs(item.video.currentTime - item.target) <= frameTolerance) continue;
+      if (item.video.seeking) continue;
+
+      if (timestamp - item.lastSeekAt < minSeekInterval) {
+        waitingForSeekBudget = true;
+        continue;
       }
-      if (Math.abs(item.target - item.current) >= 1 / 60) moving = true;
+      item.lastSeekAt = timestamp;
+      // Target is calculated from the *latest* scroll position, rather than
+      // chasing an outdated eased position after an expensive video seek.
+      item.video.currentTime = item.target;
     }
-    if (moving) schedule();
+    if (waitingForSeekBudget) schedule();
   }
   const resize = () => { layoutDirty = true; schedule(); };
   const ready = () => { layoutDirty = true; schedule(); };
