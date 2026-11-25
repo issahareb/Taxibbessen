@@ -28,22 +28,19 @@ function serializeSchema(schemaOrg: Record<string, unknown>): string {
   return JSON.stringify(schemaOrg);
 }
 
-function hasPrerenderedSchemaForUrl(url: string): boolean {
-  const withoutTrailingSlash = url.replace(/\/$/, "");
-
-  return Array.from(
-    document.querySelectorAll<HTMLScriptElement>(
-      'script[type="application/ld+json"]:not([data-schema])',
-    ),
-  ).some((script) => {
-    const text = script.textContent ?? "";
-    return text.includes(`"${url}"`) || text.includes(`"${withoutTrailingSlash}"`);
-  });
-}
+// Keep the original route graph available for back navigation. The separate
+// site-wide business graph remains valid on every route.
+const initialRouteSchema = document.querySelector<HTMLScriptElement>("script[data-route-schema]");
 
 export function usePageMeta({ title, description, schemaOrg, noindex }: PageMeta) {
   useEffect(() => {
     const url = canonicalUrl(window.location.pathname);
+
+    const hasPrerenderedSchema = !noindex && initialRouteSchema?.dataset.routeSchema === url;
+    if (initialRouteSchema) {
+      if (!hasPrerenderedSchema) initialRouteSchema.remove();
+      else if (!initialRouteSchema.isConnected) document.head.appendChild(initialRouteSchema);
+    }
 
     document.title = title;
     setMetaContent('meta[name="title"]', ["name", "title"], title);
@@ -99,7 +96,6 @@ export function usePageMeta({ title, description, schemaOrg, noindex }: PageMeta
     let scriptElement = document.querySelector<HTMLScriptElement>(
       'script[data-schema="page-specific"]',
     );
-    const hasPrerenderedSchema = hasPrerenderedSchemaForUrl(url);
 
     if (schemaOrg && !hasPrerenderedSchema) {
       if (!scriptElement) {

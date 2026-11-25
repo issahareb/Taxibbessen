@@ -9,7 +9,7 @@ import { HeroBookingWidget } from "@/components/HeroBookingWidget";
 import { ContactForm } from "@/components/ContactForm";
 import { Button } from "@/components/ui";
 import { Phone, Shield, Sparkles, Navigation, ArrowRight, Mail, Globe, MessageCircle, ChevronDown } from "lucide-react";
-import { m as motion, AnimatePresence, useInView } from "framer-motion";
+import { m as motion, useInView } from "framer-motion";
 import { useLanguage } from "@/i18n/useLanguage";
 import { createFrameSequence, drawCover, prefersLessMedia, isPhoneViewport } from "@/lib/frame-scrubber";
 import { DesktopScrollVideo } from "@/components/DesktopScrollVideo";
@@ -256,6 +256,7 @@ function FAQSection() {
                 onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
                 className="w-full flex items-start justify-between gap-4 px-5 sm:px-6 py-4 sm:py-5 text-left group"
                 aria-expanded={openIdx === idx}
+                aria-controls={`faq-answer-${idx}`}
               >
                 <span className="text-sm sm:text-base font-bold text-white/85 group-hover:text-white transition-colors leading-snug pr-2">
                   {item.q}
@@ -266,22 +267,20 @@ function FAQSection() {
                   }`}
                 />
               </button>
-              <AnimatePresence initial={false}>
-                {openIdx === idx && (
-                  <motion.div
-                    key="answer"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="overflow-hidden"
-                  >
-                    <p className="text-sm text-white/80 leading-relaxed px-5 sm:px-6 pb-5">
-                      {item.a}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <motion.div
+                initial={false}
+                animate={{ height: openIdx === idx ? "auto" : 0, opacity: openIdx === idx ? 1 : 0 }}
+                transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                aria-hidden={openIdx !== idx}
+                inert={openIdx !== idx}
+                id={`faq-answer-${idx}`}
+                className="overflow-hidden"
+              >
+                <p className="text-sm text-white/80 leading-relaxed px-5 sm:px-6 pb-5">
+                  {item.a}
+                  {item.source && <> <a href={item.source.url} className="underline underline-offset-2">{item.source.label}</a></>}
+                </p>
+              </motion.div>
             </motion.div>
           ))}
         </div>

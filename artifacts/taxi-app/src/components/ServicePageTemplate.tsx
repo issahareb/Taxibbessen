@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Layout } from "@/components/Layout";
 import { usePageMeta } from "@/hooks/use-page-meta";
 import { Phone, ArrowRight, ChevronDown, MapPin } from "lucide-react";
-import { m as motion, AnimatePresence } from "framer-motion";
+import { m as motion } from "framer-motion";
 
 interface FAQItem { q: string; a: string; }
 interface RelatedLink { href: string; label: string; }
@@ -52,26 +52,23 @@ function FAQAccordion({ items }: { items: FAQItem[] }) {
             onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
             className="w-full flex items-start justify-between gap-4 px-5 sm:px-6 py-4 sm:py-5 text-left group"
             aria-expanded={openIdx === idx}
+            aria-controls={`faq-answer-${idx}`}
           >
             <span className="text-sm sm:text-base font-bold text-white/85 group-hover:text-white transition-colors leading-snug pr-2">
               {item.q}
             </span>
             <ChevronDown className={`w-5 h-5 shrink-0 text-primary/80 transition-transform duration-300 mt-0.5 ${openIdx === idx ? "rotate-180" : ""}`} />
           </button>
-          <AnimatePresence initial={false}>
-            {openIdx === idx && (
-              <motion.div
-                key="answer"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="overflow-hidden"
-              >
-                <p className="text-sm text-white/60 leading-relaxed px-5 sm:px-6 pb-5">{item.a}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <motion.div
+            initial={false}
+            animate={{ height: openIdx === idx ? "auto" : 0, opacity: openIdx === idx ? 1 : 0 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            aria-hidden={openIdx !== idx}
+            id={`faq-answer-${idx}`}
+            className="overflow-hidden"
+          >
+            <p className="text-sm text-white/60 leading-relaxed px-5 sm:px-6 pb-5">{item.a}</p>
+          </motion.div>
         </div>
       ))}
     </div>

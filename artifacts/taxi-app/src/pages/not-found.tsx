@@ -1,7 +1,9 @@
 import { Link } from "wouter";
+import { usePageMeta } from "@/hooks/use-page-meta";
 import { Layout } from "@/components/Layout";
 
 export default function NotFound() {
+  usePageMeta({ title: "Seite nicht gefunden | Taxi B&B Essen", description: "Diese Seite ist nicht verfügbar.", noindex: true });
   return (
     <Layout>
       <div className="min-h-[70vh] flex items-center justify-center bg-background px-4">

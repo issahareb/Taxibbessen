@@ -53,6 +53,10 @@ function routeSchema(path: string, title: string, description: string) {
       inLanguage: "de-DE",
       isPartOf: { "@id": WEBSITE_ID },
       about: { "@id": ORGANIZATION_ID },
+      ...(serviceNames[path] ? {
+        mainEntity: { "@id": `${url}#service` },
+        breadcrumb: { "@id": `${url}#breadcrumb` },
+      } : {}),
     },
   ];
 
@@ -111,7 +115,7 @@ function createHeadTags(path: string, title: string, description: string): strin
     `<meta property="og:description" content="${escapeHtml(description)}" />`,
     `<meta name="twitter:title" content="${escapeHtml(title)}" />`,
     `<meta name="twitter:description" content="${escapeHtml(description)}" />`,
-    `<script type="application/ld+json" data-route-schema>\n${schema}\n</script>`,
+    `<script type="application/ld+json" data-route-schema="${url}">\n${schema}\n</script>`,
   ].map((tag) => `    ${tag}`).join("\n");
 }
 
@@ -120,8 +124,8 @@ const STATIC_CONTENT_ID = "prerender-static-content";
 function renderFaqHtml(faq: FaqItem[]): string {
   const items = faq
     .map(
-      ({ q, a }) =>
-        `    <section>\n      <h3>${escapeHtml(q)}</h3>\n      <p>${escapeHtml(a)}</p>\n    </section>`,
+      ({ q, a, source }) =>
+        `    <section>\n      <h3>${escapeHtml(q)}</h3>\n      <p>${escapeHtml(a)}${source ? ` <a href="${escapeHtml(source.url)}">${escapeHtml(source.label)}</a>` : ""}</p>\n    </section>`,
     )
     .join("\n");
   return `  <section aria-label="Häufige Fragen">\n    <h2>Häufige Fragen</h2>\n${items}\n  </section>`;
