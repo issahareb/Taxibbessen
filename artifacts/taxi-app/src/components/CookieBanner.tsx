@@ -35,13 +35,13 @@ export function CookieBanner() {
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, y: 80 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 80 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 sm:max-w-sm z-[9999]"
         >
-          <div className="relative bg-[hsl(220,18%,10%)] border border-white/[0.12] rounded-2xl shadow-2xl shadow-black/60 backdrop-blur-xl p-5 overflow-hidden">
+          <div className="relative bg-[hsl(220,18%,10%)] border border-white/[0.12] rounded-2xl shadow-2xl shadow-black/60 p-5 overflow-hidden">
             {/* Decorative yellow top bar */}
             <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-yellow-500/0 via-yellow-400/80 to-yellow-500/0" />
 
