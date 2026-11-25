@@ -7,8 +7,12 @@ export const HOME_FAQ: FaqItem[] = [
     a: "Rund um die Uhr telefonisch unter 0201 707060, per WhatsApp oder über das Formular. Wir fahren in ganz Essen und nach Absprache auch darüber hinaus. Abholzeit und Verfügbarkeit bestätigen wir persönlich.",
   },
   {
-    q: "Was kostet die Fahrt?",
-    a: "Der Preis richtet sich nach Strecke, Tarif und Fahrzeug. Für vorbestellte Sonder- oder Fernfahrten fragen Sie bitte nach einem Preisangebot und lassen es vor der Fahrt bestätigen.",
+    q: "Was kostet ein Taxi in Essen?",
+    a: "Nach dem Essener Taxameter-Tarif beginnt die Fahrt bei 4,40 €. Die ersten beiden Kilometer kosten je 2,80 €, der dritte und vierte je 2,70 €, ab dem fünften sind es 2,50 € pro Kilometer. Beispiel für fünf Kilometer im Pflichtfahrgebiet ohne Wartezeit und Zuschläge: 17,90 €. Stand: November 2026.",
+    source: {
+      label: "Tarifangaben der Stadt Essen",
+      url: "https://www.essen.de/meldungen/pressemeldung_1577339.de.html",
+    },
   },
   {
     q: "Kann ich einen Flughafentransfer vorbestellen?",

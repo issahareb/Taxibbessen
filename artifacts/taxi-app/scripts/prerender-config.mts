@@ -38,6 +38,14 @@ export const fallbackLinks = [
   ["/taxi-essen-hbf", "Taxi Essen HBF"],
   ["/fahrzeuge", "Fahrzeuge"],
   ["/ueber-uns", "Über uns"],
+  ["/eco-taxi", "Eco Taxi und Taxi B&B"],
+  ["/taxi-essen-holsterhausen", "Taxi in Holsterhausen"],
+  ["/taxi-essen-ruettenscheid", "Taxi in Rüttenscheid"],
+  ["/taxi-essen-frohnhausen", "Taxi in Frohnhausen"],
+  ["/taxi-essen-suedviertel", "Taxi im Südviertel"],
+  ["/impressum", "Impressum"],
+  ["/datenschutz", "Datenschutz"],
+  ["/agb", "AGB"],
 ] as const;
 
 export function canonicalUrl(path: string): string {
